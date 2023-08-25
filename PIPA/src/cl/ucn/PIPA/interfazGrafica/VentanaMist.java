@@ -4,11 +4,11 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class VentanaMenu implements Ventana {
+public class VentanaMist implements Ventana {
     private JFrame frame;
     private AdministradorDeVentanas administradorDeVentanas;
     public void iniciarVentana(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
-        frame = new JFrame("Menu");
+        frame = new JFrame("En 3 minuto, me lo como");
         this.administradorDeVentanas = administradorDeVentanas;
         frame.setSize(300,150);
 		frame.setLocationRelativeTo(null);
@@ -22,15 +22,15 @@ public class VentanaMenu implements Ventana {
 		panel.setLayout(null);
 		frame.getContentPane().add(panel);
 		
-		JLabel mensaje = new JLabel("Bienvenido al menú principal");
-		mensaje.setBounds(60, 0, 250, 50);
+		JLabel mensaje = new JLabel("Salsa y picante");
+		mensaje.setBounds(100, 0, 250, 50);
 		panel.add(mensaje);
 		
-		JButton boton = new JButton("Boton misterioso");
+		JButton boton = new JButton("Y nos fuimo");
 		boton.setBounds(70, 50, 140, 25);
 		panel.add(boton);
 		
-		boton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {administradorDeVentanas.misterio(administradorDeVentanas); frame.setVisible(false);}});
+		boton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {administradorDeVentanas.menu(administradorDeVentanas); frame.setVisible(false);}});
     }
 
     public JFrame getFrame() {
