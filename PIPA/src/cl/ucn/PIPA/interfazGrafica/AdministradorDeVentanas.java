@@ -11,8 +11,8 @@ public class AdministradorDeVentanas {
         v.iniciarVentana(administradorVentanas,sistema);
 		v.getFrame().setVisible(true);
 	}
-	public void misterio(AdministradorDeVentanas administradorVentanas) {
-		Ventana v = new VentanaMist();
+	public void archivo(AdministradorDeVentanas administradorVentanas) {
+		Ventana v = new VentanaArchivo();
         v.iniciarVentana(administradorVentanas,sistema);
 		v.getFrame().setVisible(true);
 	}

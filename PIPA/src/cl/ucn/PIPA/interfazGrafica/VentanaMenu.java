@@ -30,7 +30,7 @@ public class VentanaMenu implements Ventana {
 		boton.setBounds(70, 50, 140, 25);
 		panel.add(boton);
 		
-		boton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {administradorDeVentanas.misterio(administradorDeVentanas); frame.setVisible(false);}});
+		boton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {administradorDeVentanas.archivo(administradorDeVentanas); frame.setVisible(false);}});
     }
 
     public JFrame getFrame() {
