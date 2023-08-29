@@ -1,2 +1,2 @@
 # Proyecto-Integrador-Programacion-Avanzada
-PIPA del grupop PAPAYON
+PIPA del grupo PAPAYON
