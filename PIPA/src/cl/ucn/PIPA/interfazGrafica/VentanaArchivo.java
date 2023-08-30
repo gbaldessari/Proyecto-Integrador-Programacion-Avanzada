@@ -39,41 +39,35 @@ public class VentanaArchivo implements Ventana {
         panel.add(archivo);
         archivo.setVisible(true);
 		
-		JButton boton = new JButton("Siguiente");
-		boton.setBounds(70, 80, 140, 25);
-        boton.addActionListener(new ActionStar(archivo));
-		panel.add(boton);
+		JButton botonSiguiente = new JButton("Siguiente");
+		botonSiguiente.setBounds(70, 80, 140, 25);
+		panel.add(botonSiguiente);
 
-        sistema.leerArchivo(sistema,archivo.getText());
-
-        JButton stop = new JButton("Stop");
-        stop.setBounds(70, 120, 140, 25);
-        stop.addActionListener(new ActionStop());
-        panel.add(stop);
-		
-    }
-
-    public class ActionStar implements ActionListener{
-        private JTextField archivo;
-        public ActionStar(JTextField archivo){
-            this.archivo = archivo;
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            boolean valido = sistema.existeArchivo(sistema,archivo.getText());
-            if(!valido){
+        botonSiguiente.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean valido = sistema.buscarArchivo(sistema,archivo.getText());
+                if(valido){
+                    administradorDeVentanas.leerArchivo(administradorDeVentanas,archivo.getText());
+                }
+                else{
+                    administradorDeVentanas.ingresarArchivo(administradorDeVentanas);
+                }
                 frame.setVisible(false);
             }
-        }
-    }
+        
+        });
 
-    public class ActionStop implements ActionListener{
+        JButton botonMenu = new JButton("Volver");
+        botonMenu.setBounds(70, 120, 140, 25);
+        panel.add(botonMenu);
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            frame.setVisible(false);
-            throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
-        }
+        botonMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.menu(administradorDeVentanas);
+                frame.setVisible(false);
+            }
+        });
+		
     }
 
     public JFrame getFrame() {

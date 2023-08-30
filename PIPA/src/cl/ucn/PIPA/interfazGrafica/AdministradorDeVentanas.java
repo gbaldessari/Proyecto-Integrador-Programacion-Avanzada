@@ -7,13 +7,17 @@ public class AdministradorDeVentanas {
 	public AdministradorDeVentanas(Sistema sistema) {
 		this.sistema = sistema;
 	}
-    public void menu(AdministradorDeVentanas administradorVentanas) {
-		Ventana v = new VentanaMenu(administradorVentanas,sistema);
+    public void menu(AdministradorDeVentanas administradorDeVentanas) {
+		Ventana v = new VentanaMenu(administradorDeVentanas,sistema);
 		v.getFrame().setVisible(true);
 	}
 
-	public void archivo(AdministradorDeVentanas administradorVentanas) {
-		Ventana v = new VentanaArchivo(administradorVentanas,sistema);
+	public void ingresarArchivo(AdministradorDeVentanas administradorDeVentanas) {
+		Ventana v = new VentanaArchivo(administradorDeVentanas,sistema);
+		v.getFrame().setVisible(true);
+	}
+	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas,String archivo){
+		Ventana v = new VentanaLectura(administradorDeVentanas,sistema,archivo);
 		v.getFrame().setVisible(true);
 	}
 	public void mostrarError(String mensaje){

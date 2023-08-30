@@ -1,6 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-
 
 public class VentanaMenu implements Ventana {
     private JFrame frame;
@@ -39,7 +37,7 @@ public class VentanaMenu implements Ventana {
 		
 		boton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.archivo(administradorDeVentanas); 
+                administradorDeVentanas.ingresarArchivo(administradorDeVentanas);
                 frame.setVisible(false);
             }
         });

@@ -12,7 +12,8 @@ public class SistemaImpl implements Sistema{
         administradorDeVentanas = new AdministradorDeVentanas(sistema);
         administradorDeVentanas.menu(administradorDeVentanas);
     }
-    public boolean existeArchivo(Sistema sistema, String nombre) {
+
+    public boolean buscarArchivo(Sistema sistema, String nombre){
         File arch;
         Scanner scan;
         boolean formato = false;
@@ -36,16 +37,7 @@ public class SistemaImpl implements Sistema{
         return true;
     }
 
-    public void leerArchivo(Sistema sistema, String nombre){
-        File arch = new File(nombre);
-        try {
-            Scanner scan = new Scanner(arch);
-            while(scan.hasNextLine()){
-                lista.add(scan.nextLine());
-            }
-            scan.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public LinkedList<String> getLista() {
+        return lista;
     }
 }

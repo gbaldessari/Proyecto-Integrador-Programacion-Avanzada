@@ -1,7 +1,8 @@
 package cl.ucn.PIPA.logica;
+import java.util.LinkedList;
 
 public interface Sistema {
     public void iniciarApp(Sistema sistema);
-    public boolean existeArchivo(Sistema sistema, String nombre);
-    public void leerArchivo(Sistema sistema, String nombre);
+    public boolean buscarArchivo(Sistema sistema, String nombre);
+    public LinkedList<String> getLista();
 }

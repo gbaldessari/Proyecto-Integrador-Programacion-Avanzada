@@ -2,8 +2,8 @@
  * Grupo: PAPAYON
  * Integrantes:
  *  Giacomo Baldessari
- *  David Rodriguez
  *  Eduardo Miranda
+ *  David Rodriguez
  */
 package cl.ucn.PIPA.logica;
 public class App {
