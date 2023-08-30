@@ -1,13 +1,20 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+
 
 public class VentanaMenu implements Ventana {
     private JFrame frame;
     private AdministradorDeVentanas administradorDeVentanas;
-    public void iniciarVentana(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
         frame = new JFrame("Menu");
         this.administradorDeVentanas = administradorDeVentanas;
         frame.setSize(300,150);
@@ -26,11 +33,16 @@ public class VentanaMenu implements Ventana {
 		mensaje.setBounds(60, 0, 250, 50);
 		panel.add(mensaje);
 		
-		JButton boton = new JButton("Boton misterioso");
+		JButton boton = new JButton("Leer Archivo");
 		boton.setBounds(70, 50, 140, 25);
 		panel.add(boton);
 		
-		boton.addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {administradorDeVentanas.archivo(administradorDeVentanas); frame.setVisible(false);}});
+		boton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.archivo(administradorDeVentanas); 
+                frame.setVisible(false);
+            }
+        });
     }
 
     public JFrame getFrame() {

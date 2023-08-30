@@ -1,20 +1,26 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 public class VentanaArchivo implements Ventana {
     private JFrame frame;
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
-    public void iniciarVentana(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
+    public VentanaArchivo(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
         frame = new JFrame("Lectura de Archivos");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
-        frame.setSize(300,175);
+        frame.setSize(300,225);
 		frame.setLocationRelativeTo(null);
-		frame.setMinimumSize(new Dimension(300,175));
+		frame.setMinimumSize(new Dimension(300,225));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
@@ -35,17 +41,39 @@ public class VentanaArchivo implements Ventana {
 		
 		JButton boton = new JButton("Siguiente");
 		boton.setBounds(70, 80, 140, 25);
+        boton.addActionListener(new ActionStar(archivo));
 		panel.add(boton);
+
+        sistema.leerArchivo(sistema,archivo.getText());
+
+        JButton stop = new JButton("Stop");
+        stop.setBounds(70, 120, 140, 25);
+        stop.addActionListener(new ActionStop());
+        panel.add(stop);
 		
-		boton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                boolean valido = sistema.leerArchivo(sistema,archivo.getText());
-                if(valido){administradorDeVentanas.menu(administradorDeVentanas);}
-                else{administradorDeVentanas.archivo(administradorDeVentanas);}
-                
+    }
+
+    public class ActionStar implements ActionListener{
+        private JTextField archivo;
+        public ActionStar(JTextField archivo){
+            this.archivo = archivo;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            boolean valido = sistema.existeArchivo(sistema,archivo.getText());
+            if(!valido){
                 frame.setVisible(false);
             }
-        });
+        }
+    }
+
+    public class ActionStop implements ActionListener{
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            frame.setVisible(false);
+            throw new UnsupportedOperationException("Unimplemented method 'actionPerformed'");
+        }
     }
 
     public JFrame getFrame() {

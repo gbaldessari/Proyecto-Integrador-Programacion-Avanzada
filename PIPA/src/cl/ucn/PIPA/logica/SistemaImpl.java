@@ -1,10 +1,9 @@
 package cl.ucn.PIPA.logica;
+import cl.ucn.PIPA.interfazGrafica.AdministradorDeVentanas;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
-
-import cl.ucn.PIPA.interfazGrafica.AdministradorDeVentanas;
 public class SistemaImpl implements Sistema{
     private AdministradorDeVentanas administradorDeVentanas;
     private LinkedList<String> lista;
@@ -13,7 +12,7 @@ public class SistemaImpl implements Sistema{
         administradorDeVentanas = new AdministradorDeVentanas(sistema);
         administradorDeVentanas.menu(administradorDeVentanas);
     }
-    public boolean leerArchivo(Sistema sistema, String nombre) {
+    public boolean existeArchivo(Sistema sistema, String nombre) {
         File arch;
         Scanner scan;
         boolean formato = false;
@@ -30,17 +29,23 @@ public class SistemaImpl implements Sistema{
 		try {
             scan = new Scanner(arch);
         } catch (FileNotFoundException e) {
+            administradorDeVentanas.mostrarError("Archivo no encontrado");
             return false;
         }
-        while (scan.hasNextLine()) {
-			String linea = scan.nextLine();
-            lista.add(linea);
-		}
         scan.close();
-        for(String i : lista){
-            System.out.println(i);
-        }
         return true;
     }
-    
+
+    public void leerArchivo(Sistema sistema, String nombre){
+        File arch = new File(nombre);
+        try {
+            Scanner scan = new Scanner(arch);
+            while(scan.hasNextLine()){
+                lista.add(scan.nextLine());
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
