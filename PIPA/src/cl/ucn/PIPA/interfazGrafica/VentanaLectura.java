@@ -35,15 +35,10 @@ public class VentanaLectura implements Ventana {
     }
     public void iniciarComponentes() {
         JPanel panel = new JPanel();
-        panel.add(botonInicio);
-        panel.add(botonDetener);
-
         frame.getContentPane().add(panel, BorderLayout.CENTER);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
 
         botonInicio = new JButton("Iniciar Lectura");
+        panel.add(botonInicio);
         botonInicio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (!leyendo) {
@@ -97,6 +92,7 @@ public class VentanaLectura implements Ventana {
 
         botonDetener = new JButton("Detener Lectura");
         botonDetener.setEnabled(false);
+        panel.add(botonDetener);
         botonDetener.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 leyendo = false;
