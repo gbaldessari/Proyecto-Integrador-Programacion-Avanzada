@@ -6,21 +6,26 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.WindowConstants;
 
 public class VentanaLectura implements Ventana {
     private JFrame frame;
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
-    private JButton botonInicio;
-    private JButton botonDetener;
+    private String archivo;
     private boolean leyendo;
     private BufferedReader fileReader;
     private Thread hiloArchivo;
-    private String archivo;
+    private JButton botonInicio;
+    private JButton botonDetener;
+    private JProgressBar barraProgreso;
+    
     public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, String archivo){
         frame = new JFrame("Lectura de Archivo");
         this.administradorDeVentanas = administradorDeVentanas;
@@ -37,6 +42,22 @@ public class VentanaLectura implements Ventana {
         panel.setLayout(null);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
+        boolean formato = false;
+        for(int i = 0;i<archivo.length();i++){
+            if(archivo.charAt(i) == '.'){
+                formato  =true;
+                break;
+            }
+        }
+        if(!formato){
+            archivo = archivo+".txt";
+        }
+
+        barraProgreso = new JProgressBar(0, obtenerLineasTotales(archivo));
+        barraProgreso.setStringPainted(true);
+        barraProgreso.setBounds(0, 0, 300, 25);
+        panel.add(barraProgreso);
+
         botonInicio = new JButton("Iniciar Lectura");
         botonInicio.setBounds(70, 40, 140, 25);
         panel.add(botonInicio);
@@ -46,26 +67,18 @@ public class VentanaLectura implements Ventana {
                     leyendo = true;
                     botonInicio.setEnabled(false);
                     botonDetener.setEnabled(true);
-
                     hiloArchivo = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                boolean formato = false;
-                                for(int i = 0;i<archivo.length();i++){
-                                    if(archivo.charAt(i) == '.'){
-                                        formato  =true;
-                                        break;
-                                    }
-                                }
-                                if(!formato){
-                                    archivo = archivo+".txt";
-                                }
+                                
                                 fileReader = new BufferedReader(new FileReader(archivo));
-                                String line;
-                                while (leyendo && (line = fileReader.readLine()) != null) {
-                                    sistema.getLista().add(line);
-                                    System.out.println(line);
+                                String linea;
+                                int posicion = 0;
+                                while (leyendo && (linea = fileReader.readLine()) != null) {
+                                    sistema.getLista().add(linea);
+                                    posicion++;
+                                    barraProgreso.setValue(posicion);
                                 }
                                 
                             } catch (IOException ex) {
@@ -112,6 +125,17 @@ public class VentanaLectura implements Ventana {
                 }
             }
         });
+    }
+
+    private int obtenerLineasTotales(String archivo){
+        int lineas = 0;
+        try (LineNumberReader reader = new LineNumberReader(new FileReader(archivo))) {
+            reader.skip(Long.MAX_VALUE); // Saltar al final del archivo
+            lineas = reader.getLineNumber() + 1; // El número de líneas es el número de línea actual más 1
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lineas;
     }
 
     public JFrame getFrame() {

@@ -1,6 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
