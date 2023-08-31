@@ -1,7 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -27,17 +26,19 @@ public class VentanaLectura implements Ventana {
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         this.archivo = archivo;
-        frame.setSize(300,150);
+        frame.setSize(300,180);
+        frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
-		frame.setMinimumSize(new Dimension(300,150));
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
     public void iniciarComponentes() {
         JPanel panel = new JPanel();
+        panel.setLayout(null);
         frame.getContentPane().add(panel, BorderLayout.CENTER);
 
         botonInicio = new JButton("Iniciar Lectura");
+        botonInicio.setBounds(70, 40, 140, 25);
         panel.add(botonInicio);
         botonInicio.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -91,6 +92,7 @@ public class VentanaLectura implements Ventana {
         });
 
         botonDetener = new JButton("Detener Lectura");
+        botonDetener.setBounds(70, 80, 140, 25);
         botonDetener.setEnabled(false);
         panel.add(botonDetener);
         botonDetener.addActionListener(new ActionListener() {

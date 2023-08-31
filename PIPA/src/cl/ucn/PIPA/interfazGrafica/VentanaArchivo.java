@@ -1,6 +1,7 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-import java.awt.Dimension;
+
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -20,7 +21,7 @@ public class VentanaArchivo implements Ventana {
         this.sistema = sistema;
         frame.setSize(300,225);
 		frame.setLocationRelativeTo(null);
-		frame.setMinimumSize(new Dimension(300,225));
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
@@ -28,10 +29,10 @@ public class VentanaArchivo implements Ventana {
     public void iniciarComponentes() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
-		frame.getContentPane().add(panel);
+		frame.getContentPane().add(panel,BorderLayout.CENTER);
 		
 		JLabel mensaje = new JLabel("Ingrese el nombre del archivo");
-		mensaje.setBounds(60, 0, 250, 50);
+		mensaje.setBounds(55, 0, 250, 50);
 		panel.add(mensaje);
 
         JTextField archivo = new JTextField(null, null, 1);
@@ -48,11 +49,8 @@ public class VentanaArchivo implements Ventana {
                 boolean valido = sistema.buscarArchivo(sistema,archivo.getText());
                 if(valido){
                     administradorDeVentanas.leerArchivo(administradorDeVentanas,archivo.getText());
+                    frame.setVisible(false);
                 }
-                else{
-                    administradorDeVentanas.ingresarArchivo(administradorDeVentanas);
-                }
-                frame.setVisible(false);
             }
         
         });

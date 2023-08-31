@@ -1,6 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica;
 import cl.ucn.PIPA.logica.Sistema;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -17,7 +17,7 @@ public class VentanaMenu implements Ventana {
         this.administradorDeVentanas = administradorDeVentanas;
         frame.setSize(300,150);
 		frame.setLocationRelativeTo(null);
-		frame.setMinimumSize(new Dimension(300,150));
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
@@ -25,17 +25,17 @@ public class VentanaMenu implements Ventana {
     public void iniciarComponentes() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
-		frame.getContentPane().add(panel);
+		frame.getContentPane().add(panel,BorderLayout.CENTER);
 		
-		JLabel mensaje = new JLabel("Bienvenido al menú principal");
-		mensaje.setBounds(60, 0, 250, 50);
+		JLabel mensaje = new JLabel("Menú principal");
+		mensaje.setBounds(100, 0, 250, 50);
 		panel.add(mensaje);
 		
-		JButton boton = new JButton("Leer Archivo");
-		boton.setBounds(70, 50, 140, 25);
-		panel.add(boton);
+		JButton botonLeerArchivos = new JButton("Leer Archivo");
+		botonLeerArchivos.setBounds(70, 50, 140, 25);
+		panel.add(botonLeerArchivos);
 		
-		boton.addActionListener(new ActionListener() {
+		botonLeerArchivos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.ingresarArchivo(administradorDeVentanas);
                 frame.setVisible(false);
