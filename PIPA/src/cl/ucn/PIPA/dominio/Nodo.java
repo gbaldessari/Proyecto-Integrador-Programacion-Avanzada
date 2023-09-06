@@ -1,32 +1,31 @@
 package cl.ucn.PIPA.dominio;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Point;
 
 public class Nodo {
-    private int id;
-    private int posX;
-    private int posY;
-    private List<Arista> aristas;
+    String dato;
+    double id;
+    Point.Double coordenadas;
 
-    public Nodo(int id,int posX,int posY){
-        this.id = id;
-        this.posX = posX;
-        this.posY = posY;
-        aristas = new ArrayList<>();
+    public Nodo(int id, double posX, double posY){
+        id = 0;
+        coordenadas = new Point.Double(posX,posY);
     }
-    public int getId(){
+    public String getDato(){
+        return dato;
+    }
+    public double getId(){
         return id;
     }
-    public int getPosX(){
-        return posX;
+    public double getX(){
+        return coordenadas.x;
     }
-    public int getPosY(){
-        return posY;
+    public double getY(){
+        return coordenadas.y;
     }
-    public void addArista(Arista arista){
-        aristas.add(arista);
+    public void setDato(String dato){
+        this.dato = dato;
     }
-    public Arista getArista(int pos){
-        return aristas.get(pos);
+    public void setId(int id){
+        this.id = id;
     }
 }
