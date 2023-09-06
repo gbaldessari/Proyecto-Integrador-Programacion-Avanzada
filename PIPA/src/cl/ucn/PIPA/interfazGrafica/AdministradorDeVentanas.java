@@ -4,6 +4,7 @@ import cl.ucn.PIPA.logica.Sistema;
 
 public class AdministradorDeVentanas {
     private Sistema sistema;
+	
 	public AdministradorDeVentanas(Sistema sistema) {
 		this.sistema = sistema;
 	}

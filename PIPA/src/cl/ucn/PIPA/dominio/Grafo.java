@@ -1,115 +1,100 @@
 package cl.ucn.PIPA.dominio;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
-class Nodo{
-	int vertice;
-	int pesoArista;
-	Nodo sgte;
-	
-	public Nodo(int v, int p){
-		this.vertice = v;
-		this.pesoArista = p;
-		
-		sgte = null;
-	}
-}
 public class Grafo {
-	Nodo grafo[];
-	int nroVertices;
+	List<Nodo> nodos;
+	List<Arco> arcos;
 	
-	public Grafo(int nroVertices){
-		this.nroVertices = nroVertices;
-		grafo = new Nodo[this.nroVertices];
-		
-		for(int i = 0; i < grafo.length; i++){
-			grafo[i] = null;
-		}
+	public Grafo() {
+		nodos = new ArrayList<>();
+		arcos = new ArrayList<>();
 	}
-	
-	public boolean existeArista(int v1, int v2){
-		Nodo actual = grafo[v1];
-		while(actual != null){
-			if(actual.vertice == v2) return true;
-			actual = actual.sgte;
+	public void addNodo(int id)
+	{
+		Nodo nodo = new Nodo();
+		nodo.setId(id);
+		nodos.add(nodo);
+	}
+	public boolean addArco(int origen, int destino) {
+		
+		Nodo nodoOrigen = buscarNodo(origen);
+		Nodo nodoDestino = buscarNodo(destino);
+		
+		if (nodoOrigen != null&&nodoDestino != null) {
+			Arco arco = new Arco(nodoOrigen,nodoDestino);
+			arcos.add(arco);
+			nodoOrigen.agregarArco(arco);
+			return true;
 		}
 		return false;
 	}
-	
-	public void insertarArista(int v1, int v2, int peso){
-		if(!existeArista(v1, v2)){
-			Nodo nuevo = new Nodo(v2, peso);
-			
-			if(grafo[v1] == null){
-				grafo[v1] = nuevo;
-				insertarArista(v2, v1,peso);				
+	public Nodo buscarNodo(int id) 
+	{
+		for (Nodo nodo: nodos) {
+			if (nodo.getId()== id) {
+				return nodo;
 			}
-			else{
-				Nodo actual = grafo[v1];
-				
-				while(actual.sgte != null)
-				{ 
-					actual = actual.sgte;
-				}
-				actual.sgte = nuevo;
-				insertarArista(v2,v1,peso);				
-			}
-		}		
+		}
+		return null;
 	}
-	
-	public void eliminarArista(int v1, int v2){
-		if(existeArista(v1, v2)){
-			if(grafo[v1].vertice == v2){
-				grafo[v1] = grafo[v1].sgte;
-				eliminarArista(v2,v1);
-				return;
-			}
-			Nodo actual = grafo[v1].sgte;
-			Nodo anterior = grafo[v1];
-			
-			while(actual != null){
-				if(actual.vertice == v2){
-					anterior.sgte = actual.sgte;
-					eliminarArista(v2,v1);
-					return;
-				}
-				anterior = actual;
-				actual = actual.sgte;
-			}
-		}		
+	public boolean existeRuta(int origen, int destino){
+		if (buscarRuta(origen, destino) != null) {
+			return true;
+		}
+		return false;
 	}
-	
-	public void mostrarGrafo(){
-		for( int i = 0; i < grafo.length; i++){
-			Nodo actual = grafo[i];
-			
-			while(actual != null){
-				System.out.printf("%d -> " , i);
-				System.out.printf("%d(%d) \n" , actual.vertice, actual.pesoArista);
-				
-				actual = actual.sgte;
-			}
-			System.out.println();
+	public List<Nodo> buscarRuta(int origen, int destino) {
+		
+		Nodo nodoOrigen = buscarNodo(origen);
+		Nodo nodoDestino = buscarNodo(destino);
+		List<Nodo> nodosRuta = new ArrayList<>();
+		
+		if (nodoOrigen != null && nodoDestino != null && buscarRutaDFS(nodosRuta, nodoOrigen, nodoDestino)) {
+			return nodosRuta;
+		} else {
+			return null;
 		}
 	}
-	
-	public void eliminarGrafo(){
-		for( int i = 0; i < grafo.length; i++){
-			grafo[i] = null;
-		}
-	}
-	
-// ----- Operaciones para obtener la lista de adyacentes -----//
-	public boolean existeAdyacentes(int v){
-		if(grafo[v] == null) return false;
-		return true;
-	}
-	
-	public Nodo getFirstAdy(int v){
-		return grafo[v];
-	}
-	
-	//Si retorna null es que no hay más adyacentes
-	public Nodo getNextAdy(Nodo anteriorAd){
-		return anteriorAd.sgte;
-	}
-// ----- Fin de operadores para obtener la lista de adyacentes -----//
+	private boolean buscarRutaDFS(List<Nodo> nodosRuta, Nodo nodoOrigen, Nodo nodoDestino) {
+		
+		// agrega el origen
+	    nodosRuta.add(nodoOrigen);
+		
+		// origen y destino son el mismo ?
+		if(nodoOrigen.getId() == nodoDestino.getId()){
+            return true;
+        }
+		
+		// si no son el mismo, revise las rutas usando una pila
+        Stack<Nodo> pilaDeNodos = new Stack<>();
+        ArrayList<Nodo> nodosVisitados = new ArrayList<>();
+
+        pilaDeNodos.add(nodoOrigen);
+
+        while(!pilaDeNodos.isEmpty()){
+            Nodo actual = pilaDeNodos.pop();
+
+            // ignore los nodos ya visitados
+            if (nodosVisitados.contains(actual))
+            	continue;
+            
+            // es el nodo que estamos buscando ?
+            if (actual.equals(nodoDestino)) {
+            	nodosRuta.addAll(pilaDeNodos);
+            	nodosRuta.add(nodoDestino);
+                return true;
+            }
+            else {
+                // siga buscando en las rutas no visitadas
+            	nodosVisitados.add(actual);
+            	for(Nodo nodo: actual.getNodosAdyacentes()) {
+            		if (!pilaDeNodos.contains(nodo))
+            			pilaDeNodos.add(nodo);
+            	}
+            }
+        }
+        return false;
+	}	
 }
