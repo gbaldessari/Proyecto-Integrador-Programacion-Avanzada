@@ -37,7 +37,7 @@ public class VentanaMenu implements Ventana {
 		
 		botonLeerArchivos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.ingresarArchivo(administradorDeVentanas);
+                administradorDeVentanas.menu(administradorDeVentanas);
                 frame.setVisible(false);
             }
         });

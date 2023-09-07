@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Nodo {
-	private int id;
+	private String id;
     private Point.Double coordenadas;
 	private List<Arco> arcos;
 	
-	public Nodo(){
+	public Nodo(String id,double posX,double posY){
         arcos = new ArrayList<>();
-        coordenadas = new Point.Double();
-    }
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
+        coordenadas = new Point.Double(posX,posY);
 		this.id = id;
+    }
+	public String getId() {
+		return id;
 	}
 	public void agregarArco(Arco arco) {
 		arcos.add(arco);

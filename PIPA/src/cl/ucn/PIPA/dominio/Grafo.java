@@ -11,41 +11,40 @@ public class Grafo {
 		nodos = new ArrayList<>();
 		arcos = new ArrayList<>();
 	}
-	public void addNodo(int id)
+	public void addNodo(String id,double posX,double posY)
 	{
-		Nodo nodo = new Nodo();
-		nodo.setId(id);
+		Nodo nodo = new Nodo(id,posX,posY);
 		nodos.add(nodo);
 	}
-	public boolean addArco(int origen, int destino) {
+	public boolean addArco(String id, String nombre, String origen, String destino) {
 		
 		Nodo nodoOrigen = buscarNodo(origen);
 		Nodo nodoDestino = buscarNodo(destino);
 		
 		if (nodoOrigen != null&&nodoDestino != null) {
-			Arco arco = new Arco(nodoOrigen,nodoDestino);
+			Arco arco = new Arco(id,nombre,nodoOrigen,nodoDestino);
 			arcos.add(arco);
 			nodoOrigen.agregarArco(arco);
 			return true;
 		}
 		return false;
 	}
-	public Nodo buscarNodo(int id) 
+	public Nodo buscarNodo(String id) 
 	{
 		for (Nodo nodo: nodos) {
-			if (nodo.getId()== id) {
+			if (nodo.getId().equals(id)) {
 				return nodo;
 			}
 		}
 		return null;
 	}
-	public boolean existeRuta(int origen, int destino){
+	public boolean existeRuta(String origen, String destino){
 		if (buscarRuta(origen, destino) != null) {
 			return true;
 		}
 		return false;
 	}
-	public List<Nodo> buscarRuta(int origen, int destino) {
+	public List<Nodo> buscarRuta(String origen, String destino) {
 		
 		Nodo nodoOrigen = buscarNodo(origen);
 		Nodo nodoDestino = buscarNodo(destino);
