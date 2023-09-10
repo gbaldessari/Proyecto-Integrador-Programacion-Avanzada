@@ -1,11 +1,10 @@
 package cl.ucn.PIPA.dominio;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 public class Grafo {
-	List<Nodo> nodos;
-	List<Arco> arcos;
+	private ArrayList<Nodo> nodos;
+	private ArrayList<Arco> arcos;
 	
 	public Grafo() {
 		nodos = new ArrayList<>();
@@ -29,6 +28,12 @@ public class Grafo {
 		}
 		return false;
 	}
+	public ArrayList<Nodo> getNodos(){
+		return nodos;
+	}
+	public ArrayList<Arco> getArcos(){
+		return arcos;
+	}
 	public Nodo buscarNodo(String id) 
 	{
 		for (Nodo nodo: nodos) {
@@ -44,11 +49,11 @@ public class Grafo {
 		}
 		return false;
 	}
-	public List<Nodo> buscarRuta(String origen, String destino) {
+	public ArrayList<Nodo> buscarRuta(String origen, String destino) {
 		
 		Nodo nodoOrigen = buscarNodo(origen);
 		Nodo nodoDestino = buscarNodo(destino);
-		List<Nodo> nodosRuta = new ArrayList<>();
+		ArrayList<Nodo> nodosRuta = new ArrayList<>();
 		
 		if (nodoOrigen != null && nodoDestino != null && buscarRutaDFS(nodosRuta, nodoOrigen, nodoDestino)) {
 			return nodosRuta;
@@ -56,7 +61,7 @@ public class Grafo {
 			return null;
 		}
 	}
-	private boolean buscarRutaDFS(List<Nodo> nodosRuta, Nodo nodoOrigen, Nodo nodoDestino) {
+	private boolean buscarRutaDFS(ArrayList<Nodo> nodosRuta, Nodo nodoOrigen, Nodo nodoDestino) {
 		
 		// agrega el origen
 	    nodosRuta.add(nodoOrigen);

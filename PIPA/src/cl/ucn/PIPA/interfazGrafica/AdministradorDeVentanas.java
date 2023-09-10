@@ -19,16 +19,24 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana v = new VentanaMenu(administradorDeVentanas,sistema);
-		v.getFrame().setVisible(true);
+		VentanaMenu v = new VentanaMenu(administradorDeVentanas);
+		v.setVisible(true);
 	}
 	/*
 	* Metodo que despliega la ventana de lectura de archivo
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
-		Ventana v = new VentanaLectura(administradorDeVentanas,sistema);
-		v.getFrame().setVisible(true);
+		VentanaLectura v = new VentanaLectura(administradorDeVentanas,sistema);
+		v.setVisible(true);
+	}
+	/*
+	* Metodo que despliega la ventana que muestra el mapa
+	* @param administradorDeVentanas, la ventana inicializada
+	*/
+	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
+		VentanaMapa v = new VentanaMapa(administradorDeVentanas,sistema);
+		v.setVisible(true);
 	}
 	/*
 	* Metodo que despliega la ventana error

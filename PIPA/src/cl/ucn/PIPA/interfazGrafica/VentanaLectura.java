@@ -21,8 +21,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class VentanaLectura implements Ventana {
-    private JFrame frame;
+public class VentanaLectura extends JFrame {
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private boolean leyendo;
@@ -32,21 +31,20 @@ public class VentanaLectura implements Ventana {
     private int progreso;
     
     public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema){
-        frame = new JFrame("Lectura de Archivo");
+        setTitle("Lectura de Archivo");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         progreso = 0;
+        setSize(300,120);
+        setResizable(false);
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
     public void iniciarComponentes() {
-        frame.setSize(300,180);
-        frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
+        getContentPane().add(panel, BorderLayout.CENTER);
 
         barraProgreso = new JProgressBar(0, obtenerLineasTotales());
         barraProgreso.setStringPainted(true);
@@ -67,7 +65,7 @@ public class VentanaLectura implements Ventana {
                             leerXML(true);
                             leerXML(false);   
                             administradorDeVentanas.menu(administradorDeVentanas);
-                            frame.setVisible(false);
+                            setVisible(false);
                             
                         }
                     });
@@ -75,10 +73,6 @@ public class VentanaLectura implements Ventana {
                 }
             }
         });
-    }
-
-    public JFrame getFrame() {
-        return frame;
     }
 
     public void leerXML(boolean nodo){

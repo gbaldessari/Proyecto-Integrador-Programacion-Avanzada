@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.interfazGrafica;
-import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,41 +8,36 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-public class VentanaMenu implements Ventana {
-    private JFrame frame;
+public class VentanaMenu extends JFrame {
     private AdministradorDeVentanas administradorDeVentanas;
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Sistema sistema) {
-        frame = new JFrame("Menu");
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas) {
+        setTitle("Menu");
         this.administradorDeVentanas = administradorDeVentanas;
-        frame.setSize(300,150);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setSize(300,150);
+		setLocationRelativeTo(null);
+		setResizable(false);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
 
     public void iniciarComponentes() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
-		frame.getContentPane().add(panel,BorderLayout.CENTER);
+		getContentPane().add(panel,BorderLayout.CENTER);
 		
 		JLabel mensaje = new JLabel("Menú principal");
 		mensaje.setBounds(100, 0, 250, 50);
 		panel.add(mensaje);
 		
-		JButton botonLeerArchivos = new JButton("Leer Archivo");
-		botonLeerArchivos.setBounds(70, 50, 140, 25);
-		panel.add(botonLeerArchivos);
+		JButton botonMostrarMapa = new JButton("Ver mapa");
+		botonMostrarMapa.setBounds(70, 50, 140, 25);
+		panel.add(botonMostrarMapa);
 		
-		botonLeerArchivos.addActionListener(new ActionListener() {
+		botonMostrarMapa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.menu(administradorDeVentanas);
-                frame.setVisible(false);
+                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
+                setVisible(false);
             }
         });
-    }
-
-    public JFrame getFrame() {
-        return frame;
     }
 }
