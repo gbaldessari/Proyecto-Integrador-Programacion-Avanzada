@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -15,7 +14,6 @@ import javax.swing.WindowConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
