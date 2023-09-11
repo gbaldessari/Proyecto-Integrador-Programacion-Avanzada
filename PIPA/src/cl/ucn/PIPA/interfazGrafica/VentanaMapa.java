@@ -4,6 +4,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -22,7 +26,7 @@ public class VentanaMapa extends JFrame {
         this.sistema = sistema;
         setSize(1000,10000);
 		setLocationRelativeTo(null);
-		setResizable(true);
+		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;
@@ -35,6 +39,17 @@ public class VentanaMapa extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(null);
         add(panel);
+
+        JButton botonMenu = new JButton("Volver al menu");
+		botonMenu.setBounds(0, 0, 140, 25);
+		panel.add(botonMenu);
+		
+		botonMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.menu(administradorDeVentanas);
+                setVisible(false);
+            }
+        });
     }
     public void paint(Graphics g){
         super.paint(g);
