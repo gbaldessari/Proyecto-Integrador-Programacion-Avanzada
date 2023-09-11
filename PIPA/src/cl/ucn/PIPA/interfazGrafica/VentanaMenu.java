@@ -20,7 +20,7 @@ public class VentanaMenu extends JFrame {
 		iniciarComponentes();
     }
 
-    public void iniciarComponentes() {
+    private void iniciarComponentes() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
 		getContentPane().add(panel,BorderLayout.CENTER);

@@ -41,7 +41,7 @@ public class VentanaLectura extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		iniciarComponentes();
     }
-    public void iniciarComponentes() {
+    private void iniciarComponentes() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
         getContentPane().add(panel, BorderLayout.CENTER);
