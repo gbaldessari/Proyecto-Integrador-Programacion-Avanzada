@@ -6,7 +6,7 @@
  *  @author Eduardo Miranda
  *  @author David Rodriguez
  * 
- *  @Version: 06/09/23
+ *  @Version: 12/09/23
  */
 package cl.ucn.PIPA.logica;
 public class App {

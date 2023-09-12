@@ -8,8 +8,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+/* 
+ * Subclase ventana menu
+*/
 public class VentanaMenu extends JFrame {
     private AdministradorDeVentanas administradorDeVentanas;
+
+    /**
+     * Constructor de la clase
+     * @param administradorDeVentanas, herramienta para inicializar la ventana
+     */
     public VentanaMenu(AdministradorDeVentanas administradorDeVentanas) {
         setTitle("Menu");
         this.administradorDeVentanas = administradorDeVentanas;
@@ -20,6 +28,9 @@ public class VentanaMenu extends JFrame {
 		iniciarComponentes();
     }
 
+    /**
+     * Inicia la ventana principal
+     */
     private void iniciarComponentes() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
