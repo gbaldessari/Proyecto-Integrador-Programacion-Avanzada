@@ -35,16 +35,16 @@ public class VentanaMapa extends JFrame {
         setTitle("Mapa");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
-        setSize(1000,1000);
+        setSize(700,700);
 		setLocationRelativeTo(null);
-		setResizable(false);
+		setResizable(true);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;
         mayorY = Double.MIN_VALUE;
         menorY = Double.MAX_VALUE;
         scale = 1;
-        offsetX = -1000;
+        offsetX = -2000;
         offsetY = -1000;
         minPosX=-2000;
         maxPosX=7000;
@@ -54,9 +54,6 @@ public class VentanaMapa extends JFrame {
 		iniciarComponentes();
     }
     private void iniciarComponentes() {
-        JPanel panel = new JPanel();
-        add(panel);
-
         JPanel controlPanel = new JPanel();
         JButton zoomInButton = new JButton("+");
         JButton botonMenu = new JButton("Volver");
@@ -76,7 +73,6 @@ public class VentanaMapa extends JFrame {
                 setVisible(false);
             }
         });
-
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -105,6 +101,7 @@ public class VentanaMapa extends JFrame {
     }
     public void paint(Graphics g){
         super.paint(g);
+        
         //Para poder modificar más propiedades con Graphics 2d
         Graphics2D g2d = (Graphics2D) g;
         g2d.translate(offsetX, offsetY);
@@ -120,20 +117,21 @@ public class VentanaMapa extends JFrame {
         g2d.setStroke(new BasicStroke(1));
         //Línea
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
-            g2d.drawLine(valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getOrigen().getX()*-1),
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getOrigen().getY()*-1),
-                        valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getDestino().getX()*-1),
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1));
+            g2d.drawLine(valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getOrigen().getX()*-1,true),
+                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getOrigen().getY()*-1,false),
+                        valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getDestino().getX()*-1,true),
+                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false));
         }
-        /*
+        /* 
         g2d.setColor(Color.BLUE);
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
-            g2d.fillOval(valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1),
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1),
-                        3, 3);
+            g2d.fillOval(valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true),
+                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false),
+                        1, 1);
         }
         */
     }
+
     private void getLimites(){
         for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
             if(sistema.getGrafo().getNodos().get(i).getX()*-1>mayorX){
@@ -150,27 +148,23 @@ public class VentanaMapa extends JFrame {
             }
         }
     }
-    private int valorNormalizado(double mayor,double menor,double valor){
-        double v = (valor-menor)/(mayor-menor)*4500+50;
+    private int valorNormalizado(double mayor,double menor,double valor,boolean x){
+        double v = 0;
+        if(x){
+            v = (1-(valor-menor)/(mayor-menor))*5000;
+        }
+        else{
+            v = (valor-menor)/(mayor-menor)*5000;
+        }
         return (int)v;
     }
     public void zoomIn() {
-        double newScale = scale * 1.1; // Aumenta la escala en un 10%
-        
-        // Aplica los límites de zoom
-        if (newScale > 0.9 && newScale < 100) {
-            scale = newScale;
-            repaint();
-        }
+        scale *= 1.1; // Aumenta la escala en un 10%
+        repaint();
     }
-    
+
     public void zoomOut() {
-        double newScale = scale / 1.1; // Disminuye la escala en un 10%
-        
-        // Aplica los límites de zoom
-        if (newScale > 0.9 && newScale < 100) {
-            scale = newScale;
-            repaint();
-        }
+        scale /= 1.1; // Disminuye la escala en un 10%
+        repaint();
     }
 }
