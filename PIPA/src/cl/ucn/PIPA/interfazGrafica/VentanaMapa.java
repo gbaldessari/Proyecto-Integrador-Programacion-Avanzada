@@ -8,12 +8,12 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
 import cl.ucn.PIPA.logica.Sistema;
 
 public class VentanaMapa extends JFrame {
@@ -31,6 +31,7 @@ public class VentanaMapa extends JFrame {
     private int minPosY;
     private int maxPosY;
     private Point lastDragPoint;
+    private Point saveLastPos;
     public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema){
         setTitle("Mapa");
         this.administradorDeVentanas = administradorDeVentanas;
@@ -46,6 +47,7 @@ public class VentanaMapa extends JFrame {
         scale = 1;
         offsetX = -2000;
         offsetY = -1000;
+        saveLastPos = new Point(offsetX, offsetY);
         minPosX=-2000;
         maxPosX=7000;
         minPosY=-2000;
@@ -54,18 +56,24 @@ public class VentanaMapa extends JFrame {
 		iniciarComponentes();
     }
     private void iniciarComponentes() {
-        JPanel controlPanel = new JPanel();
-        JButton zoomInButton = new JButton("+");
+        JPanel panel = new JPanel();
         JButton botonMenu = new JButton("Volver");
-        JButton zoomOutButton = new JButton("-");
-        controlPanel.add(zoomInButton);
-        controlPanel.add(botonMenu);
-        controlPanel.add(zoomOutButton);
+        panel.add(botonMenu);
         
-        add(controlPanel, BorderLayout.SOUTH);
+        add(panel,BorderLayout.SOUTH);
 
-        zoomInButton.addActionListener(e -> zoomIn());
-        zoomOutButton.addActionListener(e -> zoomOut());
+        addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                // Manejar el evento de zoom
+                int notches = e.getWheelRotation();
+                if (notches < 0) {
+                    zoomIn();
+                } else {
+                    zoomOut();
+                }
+            }
+        });
 		
 		botonMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -91,8 +99,11 @@ public class VentanaMapa extends JFrame {
                 if (lastDragPoint != null) {
                     int dx = e.getX() - lastDragPoint.x;
                     int dy = e.getY() - lastDragPoint.y;
+                    saveLastPos.x = offsetX;
+                    saveLastPos.y = offsetY;
                     offsetX += dx;
                     offsetY += dy;
+                    
                     lastDragPoint = e.getPoint();
                     repaint();
                 }
@@ -113,6 +124,7 @@ public class VentanaMapa extends JFrame {
         g2d.drawLine(maxPosX,maxPosY,minPosX,maxPosY);
         g2d.drawLine(minPosX,minPosY,minPosX,maxPosY);
         g2d.drawLine(minPosX,minPosY,maxPosX,minPosY);
+
         g2d.setColor(Color.RED);
         g2d.setStroke(new BasicStroke(1));
         //Línea
@@ -160,11 +172,14 @@ public class VentanaMapa extends JFrame {
     }
     public void zoomIn() {
         scale *= 1.1; // Aumenta la escala en un 10%
+        offsetX = saveLastPos.x;
+        offsetY = saveLastPos.y;
         repaint();
     }
-
     public void zoomOut() {
         scale /= 1.1; // Disminuye la escala en un 10%
+        offsetX = saveLastPos.x;
+        offsetY = saveLastPos.y;
         repaint();
     }
 }

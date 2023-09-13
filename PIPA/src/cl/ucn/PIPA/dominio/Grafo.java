@@ -1,6 +1,6 @@
 package cl.ucn.PIPA.dominio;
 import java.util.ArrayList;
-import java.util.Stack;
+//import java.util.Stack;
 
 public class Grafo {
 	private ArrayList<Nodo> nodos;
@@ -43,6 +43,7 @@ public class Grafo {
 		}
 		return null;
 	}
+	/*
 	public boolean existeRuta(String origen, String destino){
 		if (buscarRuta(origen, destino) != null) {
 			return true;
@@ -100,5 +101,5 @@ public class Grafo {
             }
         }
         return false;
-	}	
+	}*/
 }
