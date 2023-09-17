@@ -20,30 +20,30 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		VentanaMenu v = new VentanaMenu(administradorDeVentanas);
-		v.iniciarVentana();
+		VentanaMenu ventana = new VentanaMenu(administradorDeVentanas);
+		ventana.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana de lectura de archivo
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
-		VentanaLectura v = new VentanaLectura(administradorDeVentanas,sistema);
-		v.iniciarVentana();
+		VentanaLectura ventana = new VentanaLectura(administradorDeVentanas,sistema);
+		ventana.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana que muestra el mapa
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
-		VentanaMapa v = new VentanaMapa(administradorDeVentanas,sistema);
-		v.iniciarVentana();
+		VentanaMapa ventana = new VentanaMapa(administradorDeVentanas,sistema);
+		ventana.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana error
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
-	public void mostrarError(String mensaje){
-		JOptionPane.showMessageDialog(null, mensaje,"Error", 0);
+	public void mostrarError(String mensajeError){
+		JOptionPane.showMessageDialog(null, mensajeError,"Error", 0);
 	}
 }

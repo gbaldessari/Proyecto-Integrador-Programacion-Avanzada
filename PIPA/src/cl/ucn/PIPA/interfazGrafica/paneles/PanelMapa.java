@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.interfazGrafica.paneles;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.Point2D;
+
 import cl.ucn.PIPA.logica.Sistema;
 
 public class PanelMapa extends JPanel{
@@ -65,18 +66,18 @@ public class PanelMapa extends JPanel{
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                // Calcula el factor de escala según el movimiento de la rueda del mouse
-                double scaleFactor = e.getWheelRotation() < 0 ? 1.1 : 1 / 1.1;
+                int notches = e.getWheelRotation();
+                double scaleFactor = (notches < 0) ? 1.1 : 0.9;  // Ajusta según la dirección del zoom
 
-                // Calcula la nueva escala
-                double newScale = scale * scaleFactor;
-                boolean canScale = setScale(newScale);
-                if(canScale){
-                    // Ajusta el desplazamiento para que el centro de la ventana permanezca centrado
-                    int deltaX = (int) ((getWidth() / 2) * (1 - 1 / scaleFactor));
-                    int deltaY = (int) ((getHeight() / 2) * (1 - 1 / scaleFactor));
-                    offsetX -= deltaX;
-                    offsetY -= deltaY;
+                // Obtiene la posición del mouse en el sistema de coordenadas no escalado
+                Point mouse = e.getPoint();
+                Point2D.Double mouseScaled = new Point2D.Double((mouse.x - offsetX) / scale, (mouse.y - offsetY) / scale);
+
+                
+                // Ajusta el desplazamiento para que el punto bajo el mouse permanezca fijo
+                if(canScale(scale * scaleFactor)){
+                    offsetX = (int) (mouse.x - mouseScaled.x * scale);
+                    offsetY = (int) (mouse.y - mouseScaled.y * scale);
                     repaint();
                 }
             }
@@ -134,22 +135,21 @@ public class PanelMapa extends JPanel{
         }
     }
     private int valorNormalizado(double mayor,double menor,double valor,boolean x){
-        double v = 0;
+        double valorfinal = 0;
         if(x){
-            v = (1-(valor-menor)/(mayor-menor))*10000;
+            valorfinal = (1-(valor-menor)/(mayor-menor))*10000;
         }
         else{
-            v = (valor-menor)/(mayor-menor)*10000;
+            valorfinal = (valor-menor)/(mayor-menor)*10000;
         }
-        return (int)v;
+        return (int)valorfinal;
     }
-    public boolean setScale(double newScale) {
+    public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
-        double minScale = 0.5;
-        double maxScale = 3.0;
+        double minScale = 0.4;
+        double maxScale = 4.0;
         if (newScale >= minScale && newScale <= maxScale) {
             scale = newScale;
-            repaint();
             return true;
         }
         return false;
