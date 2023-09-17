@@ -1,5 +1,6 @@
-package cl.ucn.PIPA.interfazGrafica;
+package cl.ucn.PIPA.interfazGrafica.ventanas;
 import javax.swing.JOptionPane;
+
 import cl.ucn.PIPA.logica.Sistema;
 
 /*
@@ -20,7 +21,7 @@ public class AdministradorDeVentanas {
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
 		VentanaMenu v = new VentanaMenu(administradorDeVentanas);
-		v.setVisible(true);
+		v.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana de lectura de archivo
@@ -28,7 +29,7 @@ public class AdministradorDeVentanas {
 	*/
 	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
 		VentanaLectura v = new VentanaLectura(administradorDeVentanas,sistema);
-		v.setVisible(true);
+		v.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana que muestra el mapa
@@ -36,7 +37,7 @@ public class AdministradorDeVentanas {
 	*/
 	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
 		VentanaMapa v = new VentanaMapa(administradorDeVentanas,sistema);
-		v.setVisible(true);
+		v.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana error

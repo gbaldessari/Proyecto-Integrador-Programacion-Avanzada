@@ -1,4 +1,4 @@
-package cl.ucn.PIPA.interfazGrafica;
+package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,30 +11,28 @@ import javax.swing.WindowConstants;
 /* 
  * Subclase ventana menu
 */
-public class VentanaMenu extends JFrame {
+public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
+    private JFrame frame;
 
     /**
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
     public VentanaMenu(AdministradorDeVentanas administradorDeVentanas) {
-        setTitle("Menu");
+        frame = new JFrame("Menu");
         this.administradorDeVentanas = administradorDeVentanas;
-        setSize(300,150);
-		setLocationRelativeTo(null);
-		setResizable(false);
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		iniciarComponentes();
+        frame.setSize(300,150);
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(false);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    /**
-     * Inicia la ventana principal
-     */
-    private void iniciarComponentes() {
+    
+    public void iniciarVentana() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
-		getContentPane().add(panel,BorderLayout.CENTER);
+		frame.getContentPane().add(panel,BorderLayout.CENTER);
 		
 		JLabel mensaje = new JLabel("Menú principal");
 		mensaje.setBounds(100, 0, 250, 50);
@@ -47,8 +45,9 @@ public class VentanaMenu extends JFrame {
 		botonMostrarMapa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
-                setVisible(false);
+                frame.setVisible(false);
             }
         });
+        frame.setVisible(true);
     }
 }

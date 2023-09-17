@@ -1,6 +1,6 @@
 package cl.ucn.PIPA.logica;
 import cl.ucn.PIPA.dominio.*;
-import cl.ucn.PIPA.interfazGrafica.AdministradorDeVentanas;
+import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 
 /* 
 * Subclase sistema

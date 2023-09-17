@@ -1,4 +1,4 @@
-package cl.ucn.PIPA.interfazGrafica;
+package cl.ucn.PIPA.interfazGrafica.ventanas;
 import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -19,7 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class VentanaLectura extends JFrame {
+public class VentanaLectura implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private boolean leyendo;
@@ -27,22 +27,23 @@ public class VentanaLectura extends JFrame {
     private JButton botonInicio;
     private JProgressBar barraProgreso;
     private int progreso;
+    private JFrame frame;
     
     public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema){
-        setTitle("Lectura de Archivo");
+        frame = new JFrame("Lectura de Archivo");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         progreso = 0;
-        setSize(300,120);
-        setResizable(false);
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		iniciarComponentes();
+        
+        frame.setSize(300,120);
+        frame.setResizable(false);
+		frame.setLocationRelativeTo(null);
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
-    private void iniciarComponentes() {
+    public void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        getContentPane().add(panel, BorderLayout.CENTER);
+        frame.getContentPane().add(panel, BorderLayout.CENTER);
 
         barraProgreso = new JProgressBar(0, obtenerLineasTotales());
         barraProgreso.setStringPainted(true);
@@ -63,7 +64,7 @@ public class VentanaLectura extends JFrame {
                             leerXML(true);
                             leerXML(false);   
                             administradorDeVentanas.menu(administradorDeVentanas);
-                            setVisible(false);
+                            frame.setVisible(false);
                             
                         }
                     });
@@ -71,6 +72,7 @@ public class VentanaLectura extends JFrame {
                 }
             }
         });
+        frame.setVisible(true);
     }
 
     public void leerXML(boolean nodo){
