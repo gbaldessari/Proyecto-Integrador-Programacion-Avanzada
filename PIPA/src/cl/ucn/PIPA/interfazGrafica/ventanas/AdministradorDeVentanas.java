@@ -61,4 +61,11 @@ public class AdministradorDeVentanas {
     public void limpiarVentana(JFrame ventana) {
 		ventana.getContentPane().removeAll();
     }
+	 //en caso de necesitar guardar algún parámetro de una ventana
+	public boolean buscarPanel(String titulo){
+		for(Panel p:paneles){
+			if(p.getNombre().equals(titulo)) return true;
+		}
+		return false;
+	}
 }
