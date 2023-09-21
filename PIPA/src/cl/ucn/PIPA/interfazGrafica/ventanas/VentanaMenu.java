@@ -2,6 +2,7 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import cl.ucn.PIPA.dominio.Panel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,26 +14,29 @@ import javax.swing.WindowConstants;
 */
 public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
-    private JFrame frame;
+    private Panel panel;
+    private JFrame ventana;
 
     /**
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas) {
-        frame = new JFrame("Menu");
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, JFrame ventana) {
+        this.ventana = ventana;
+        this.panel = new Panel("menu");
+        ventana.setTitle("Menú");
         this.administradorDeVentanas = administradorDeVentanas;
-        frame.setSize(300,150);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        ventana.setSize(300,150);
+		ventana.setLocationRelativeTo(null);
+		ventana.setResizable(false);
+		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
     
     public void iniciarVentana() {
         JPanel panel = new JPanel();
 		panel.setLayout(null);
-		frame.getContentPane().add(panel,BorderLayout.CENTER);
+		ventana.getContentPane().add(panel,BorderLayout.CENTER);
 		
 		JLabel mensaje = new JLabel("Menú principal");
 		mensaje.setBounds(100, 0, 250, 50);
@@ -44,10 +48,16 @@ public class VentanaMenu implements Ventana {
 		
 		botonMostrarMapa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
-                frame.setVisible(false);
+                //ventana.setVisible(false);
             }
         });
-        frame.setVisible(true);
+        this.panel.getPaneles().add(panel);
+        ventana.setVisible(true);
+    }
+
+    public Panel getPanel(){
+        return this.panel;
     }
 }

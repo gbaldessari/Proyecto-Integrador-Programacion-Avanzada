@@ -1,4 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -27,23 +28,26 @@ public class VentanaLectura implements Ventana{
     private JButton botonInicio;
     private JProgressBar barraProgreso;
     private int progreso;
-    private JFrame frame;
+    private JFrame ventana;
+    private Panel panel;
     
-    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema){
-        frame = new JFrame("Lectura de Archivo");
+    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana){
+        this.ventana = ventana;
+        this.ventana.setTitle("Lectura de archivo");
+        this.panel = new Panel("lectura");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         progreso = 0;
         
-        frame.setSize(300,120);
-        frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        ventana.setSize(300,120);
+        ventana.setResizable(false);
+		ventana.setLocationRelativeTo(null);
+		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
     public void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        frame.getContentPane().add(panel, BorderLayout.CENTER);
+        ventana.getContentPane().add(panel, BorderLayout.CENTER);
 
         barraProgreso = new JProgressBar(0, obtenerLineasTotales());
         barraProgreso.setStringPainted(true);
@@ -62,9 +66,10 @@ public class VentanaLectura implements Ventana{
                         @Override
                         public void run() {
                             leerXML(true);
-                            leerXML(false);   
+                            leerXML(false);
+                            administradorDeVentanas.limpiarVentana(ventana);   
                             administradorDeVentanas.menu(administradorDeVentanas);
-                            frame.setVisible(false);
+                            //ventana.setVisible(false);
                             
                         }
                     });
@@ -72,7 +77,8 @@ public class VentanaLectura implements Ventana{
                 }
             }
         });
-        frame.setVisible(true);
+        this.panel.getPaneles().add(panel);
+        ventana.setVisible(true);
     }
 
     public void leerXML(boolean nodo){
@@ -142,5 +148,9 @@ public class VentanaLectura implements Ventana{
             System.exit(0);
         }
         return lineas;
+    }
+
+    public Panel getPanel() {
+        return this.panel;
     }
 }

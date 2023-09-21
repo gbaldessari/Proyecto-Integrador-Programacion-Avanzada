@@ -6,6 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+
+import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -13,31 +15,41 @@ import cl.ucn.PIPA.logica.Sistema;
 public class VentanaMapa implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
-    private JFrame frame;
+    private JFrame ventana;
+    private Panel panel;
 
-    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema){
-        frame = new JFrame("Mapa");
+    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana){
+        this.ventana = ventana;
+        ventana.setTitle("Mapa");
+        this.panel = new Panel("mapa");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
-        frame.setSize(700,700);
-		frame.setLocationRelativeTo(null);
-		frame.setResizable(true);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        ventana.setSize(700,700);
+		ventana.setLocationRelativeTo(null);
+		ventana.setResizable(true);
+		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
     public void iniciarVentana() {
         PanelMapa panelMapa = new PanelMapa(sistema);
-        frame.getContentPane().add(panelMapa,BorderLayout.CENTER);
+        ventana.getContentPane().add(panelMapa,BorderLayout.CENTER);
         
         JPanel panel = new JPanel();
         JButton botonMenu = new JButton("Volver");
         panel.add(botonMenu);
-        frame.getContentPane().add(panel,BorderLayout.SOUTH);
+        ventana.getContentPane().add(panel,BorderLayout.SOUTH);
 		botonMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
-                frame.setVisible(false);
+                //ventana.setVisible(false);
             }
         });
-        frame.setVisible(true);
+        ventana.setVisible(true);
+        this.panel.getPaneles().add(panelMapa);
+        this.panel.getPaneles().add(panel);
+    }
+
+    public Panel getPanel(){
+        return this.panel;
     }
 }
