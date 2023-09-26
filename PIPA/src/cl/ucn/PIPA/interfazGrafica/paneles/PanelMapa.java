@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
 
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -145,7 +144,7 @@ public class PanelMapa extends JPanel{
         if(selectedPoint!=null){
             graphics2d.setColor(Color.BLUE);
             graphics2d.fillOval(selectedPoint.getPoint().x,selectedPoint.getPoint().y,2, 2);
-            JOptionPane.showMessageDialog(null, selectedPoint.getNodo().getId(),"Id Nodo", 1);
+            this.sistema.getAdministradorDeVentanas().mostrarIDNodo(selectedPoint.getNodo().getId());
             selectedPoint = null;
         }
     }

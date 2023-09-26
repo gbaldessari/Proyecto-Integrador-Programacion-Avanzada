@@ -39,7 +39,7 @@ public class VentanaLectura implements Ventana{
         this.sistema = sistema;
         progreso = 0;
         
-        ventana.setSize(300,120);
+        ventana.setSize(300,140);
         ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
 		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -70,7 +70,6 @@ public class VentanaLectura implements Ventana{
                             administradorDeVentanas.limpiarVentana(ventana);   
                             administradorDeVentanas.menu(administradorDeVentanas);
                             //ventana.setVisible(false);
-                            
                         }
                     });
                     hiloArchivo.start();
@@ -79,13 +78,20 @@ public class VentanaLectura implements Ventana{
         });
 
         JButton botonVolver = new JButton("Volver");
-        botonVolver.setBounds(70,60,140,25);
+        botonVolver.setBounds(70,70,140,25);
         panel.add(botonVolver);
         botonVolver.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                leyendo = false;
+                try {
+                    // Esperar a que el hilo termine antes de continuar
+                    hiloArchivo.join();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                administradorDeVentanas.vaciarLista();
                 administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.ventanaPrueba(administradorDeVentanas);
-                //ventana.setVisible(false);
             }
         });
 

@@ -27,4 +27,9 @@ public class SistemaImpl implements Sistema{
     public Grafo getGrafo() {
         return grafo;
     }
+
+    @Override
+    public AdministradorDeVentanas getAdministradorDeVentanas() {
+        return this.administradorDeVentanas;
+    }
 }

@@ -90,4 +90,13 @@ public class AdministradorDeVentanas {
 		}
 		return null;
 	}
+
+	public void mostrarIDNodo(String ID){
+		JOptionPane.showMessageDialog(null,ID,"ID Nodo",JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	public void vaciarLista(){
+		this.sistema.getGrafo().getNodos().clear();
+		this.sistema.getGrafo().getArcos().clear();
+	}
 }

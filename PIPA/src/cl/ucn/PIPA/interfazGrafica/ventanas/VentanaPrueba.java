@@ -47,7 +47,7 @@ public class VentanaPrueba implements Ventana{
         });
 
         JTextField texto = new JTextField();
-        texto.setBounds(30,50,30,50);
+        texto.setBounds(70,20,140,25);
         panel.add(texto);
 
         this.panel.getPaneles().add(panel);
