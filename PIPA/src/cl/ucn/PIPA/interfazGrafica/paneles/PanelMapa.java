@@ -5,11 +5,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
+
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
 
+import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 
 public class PanelMapa extends JPanel{
@@ -27,9 +31,12 @@ public class PanelMapa extends JPanel{
     private int maxPosY;
     private Point lastDragPoint;
     private Graphics2D graphics2d;
+    private LinkedList<Punto> puntos;
+    private Punto selectedPoint = null;
     
     public PanelMapa(Sistema sistema){
         this.sistema = sistema;
+        puntos = new LinkedList<>();
         mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;
         mayorY = Double.MIN_VALUE;
@@ -48,6 +55,24 @@ public class PanelMapa extends JPanel{
             @Override
             public void mouseReleased(MouseEvent e) {
                 lastDragPoint = null;
+            }
+            public void mouseClicked(MouseEvent e) {
+                Point mousePoint = e.getPoint();
+                Point2D.Double mousePointScaled = new Point2D.Double((mousePoint.x - offsetX) / scale, (mousePoint.y - offsetY) / scale);
+
+                // Encuentra el punto más cercano al punto de clic
+                double minDistance = Double.MAX_VALUE;
+                selectedPoint = null;
+
+                for (Punto punto : puntos) {
+                    double distance = calculateDistance(mousePointScaled, punto);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        selectedPoint = punto;
+                    }
+                }
+
+                repaint();
             }
         });
         addMouseMotionListener(new MouseAdapter() {
@@ -72,7 +97,6 @@ public class PanelMapa extends JPanel{
                 // Obtiene la posición del mouse en el sistema de coordenadas no escalado
                 Point mouse = e.getPoint();
                 Point2D.Double mouseScaled = new Point2D.Double((mouse.x - offsetX) / scale, (mouse.y - offsetY) / scale);
-
                 
                 // Ajusta el desplazamiento para que el punto bajo el mouse permanezca fijo
                 if(canScale(scale * scaleFactor)){
@@ -85,6 +109,7 @@ public class PanelMapa extends JPanel{
     }
     public void paint(Graphics g){
         super.paint(g);
+        puntos.clear();
         
         //Para poder modificar más propiedades con Graphics 2d
         graphics2d = (Graphics2D) g;
@@ -98,7 +123,7 @@ public class PanelMapa extends JPanel{
         graphics2d.drawLine(minPosX,minPosY,minPosX,maxPosY);
         graphics2d.drawLine(minPosX,minPosY,maxPosX,minPosY);
 
-        graphics2d.setColor(Color.RED);
+        graphics2d.setColor(Color.BLACK);
         graphics2d.setStroke(new BasicStroke(1));
         
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
@@ -109,12 +134,19 @@ public class PanelMapa extends JPanel{
                         valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false));
         }
         
-        graphics2d.setColor(Color.BLUE);
+        graphics2d.setColor(Color.RED);
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
-            graphics2d.fillOval(
-                        valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-1,
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-1,
-                        2, 2);
+            int x = valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-1;
+            int y = valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-1;
+            graphics2d.fillOval(x,y,2, 2);
+            Punto punto = new Punto( new Point(x,y), sistema.getGrafo().getNodos().get(i));
+            puntos.add(punto);
+        }
+        if(selectedPoint!=null){
+            graphics2d.setColor(Color.BLUE);
+            graphics2d.fillOval(selectedPoint.getPoint().x,selectedPoint.getPoint().y,2, 2);
+            JOptionPane.showMessageDialog(null, selectedPoint.getNodo().getId(),"Id Nodo", 1);
+            selectedPoint = null;
         }
     }
 
@@ -147,11 +179,14 @@ public class PanelMapa extends JPanel{
     public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
         double minScale = 0.4;
-        double maxScale = 4.0;
+        double maxScale = 15.0;
         if (newScale >= minScale && newScale <= maxScale) {
             scale = newScale;
             return true;
         }
         return false;
+    }
+    private double calculateDistance(Point2D.Double p1, Punto p2) {
+        return p1.distance(p2.getPoint().x, p2.getPoint().y);
     }
 }

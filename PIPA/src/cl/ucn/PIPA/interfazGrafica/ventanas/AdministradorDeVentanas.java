@@ -1,10 +1,8 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.util.LinkedList;
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 /*
@@ -23,14 +21,37 @@ public class AdministradorDeVentanas {
 		this.ventana = new JFrame();
 		this.paneles = new LinkedList<>();
 	}
+
+	public void ventanaPrueba(AdministradorDeVentanas administradorDeVentanas){
+		if(buscarPanel("ventana prueba")==null){
+			Ventana ventana = new VentanaPrueba(administradorDeVentanas,this.ventana);
+			paneles.add(ventana.getPanel());
+			ventana.iniciarVentana();
+		}else{
+			Panel encontrado = buscarPanel("ventana prueba");
+			encontrado.setDimensiones(this.ventana);
+			for(int i=0;i<encontrado.getPaneles().size();i++){
+				this.ventana.getContentPane().add(encontrado.getPaneles().get(i));
+			}
+		}
+	}
+
 	/*
 	* Metodo que despliega la ventana menu
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana ventana = new VentanaMenu(administradorDeVentanas,this.ventana);
-		paneles.add(ventana.getPanel());
-		ventana.iniciarVentana();
+		if(buscarPanel("menu")==null){
+			Ventana ventana = new VentanaMenu(administradorDeVentanas,this.ventana);
+			paneles.add(ventana.getPanel());
+			ventana.iniciarVentana();
+		}else{
+			Panel encontrado = buscarPanel("menu");
+			encontrado.setDimensiones(this.ventana);
+			for(int i=0;i<encontrado.getPaneles().size();i++){
+				this.ventana.getContentPane().add(encontrado.getPaneles().get(i));
+			}
+		}
 	}
 	/*
 	* Metodo que despliega la ventana de lectura de archivo
@@ -57,17 +78,16 @@ public class AdministradorDeVentanas {
 	public void mostrarError(String mensajeError){
 		JOptionPane.showMessageDialog(null, mensajeError,"Error", 0);
 	}
-
     public void limpiarVentana(JFrame ventana) {
 		ventana.getContentPane().removeAll();
 		ventana.revalidate();
 		ventana.repaint();
     }
 	 //en caso de necesitar guardar algún parámetro de una ventana
-	public boolean buscarPanel(String titulo){
+	public Panel buscarPanel(String titulo){
 		for(Panel p:paneles){
-			if(p.getNombre().equals(titulo)) return true;
+			if(p.getNombre().equals(titulo)) return p;
 		}
-		return false;
+		return null;
 	}
 }

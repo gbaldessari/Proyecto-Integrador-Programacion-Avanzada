@@ -17,7 +17,7 @@ public class SistemaImpl implements Sistema{
     public void iniciarApp(Sistema sistema) {
         grafo = new Grafo();
         administradorDeVentanas = new AdministradorDeVentanas(sistema);
-        administradorDeVentanas.leerArchivo(administradorDeVentanas);
+        administradorDeVentanas.ventanaPrueba(administradorDeVentanas);
     }
 
     /*  

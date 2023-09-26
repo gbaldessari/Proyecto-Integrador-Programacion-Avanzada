@@ -1,30 +1,24 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+
+import cl.ucn.PIPA.dominio.Panel;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import javax.swing.JPanel;
+import javax.swing.JButton;
 import java.awt.BorderLayout;
+import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import cl.ucn.PIPA.dominio.Panel;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
-/* 
- * Subclase ventana menu
-*/
-public class VentanaMenu implements Ventana {
+public class VentanaPrueba implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Panel panel;
     private JFrame ventana;
 
-    /**
-     * Constructor de la clase
-     * @param administradorDeVentanas, herramienta para inicializar la ventana
-     */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, JFrame ventana) {
+    public VentanaPrueba(AdministradorDeVentanas administradorDeVentanas, JFrame ventana) {
         this.ventana = ventana;
-        this.panel = new Panel("menu");
-        ventana.setTitle("Menú");
+        this.panel = new Panel("ventana prueba");
+        ventana.setTitle("Ventana Prueba");
         this.administradorDeVentanas = administradorDeVentanas;
         ventana.setSize(300,150);
 		ventana.setLocationRelativeTo(null);
@@ -32,30 +26,30 @@ public class VentanaMenu implements Ventana {
 		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.panel.setAlto(300);
         this.panel.setAncho(150);
-        this.panel.setTitulo("Menú");
+        this.panel.setTitulo("Ventana Prueba");
     }
 
-    
-    public void iniciarVentana() {
+    public void iniciarVentana(){
         JPanel panel = new JPanel();
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
-		
-		JLabel mensaje = new JLabel("Menú principal");
-		mensaje.setBounds(100, 0, 250, 50);
-		panel.add(mensaje);
-		
-		JButton botonMostrarMapa = new JButton("Ver mapa");
-		botonMostrarMapa.setBounds(70, 50, 140, 25);
-		panel.add(botonMostrarMapa);
-		
-		botonMostrarMapa.addActionListener(new ActionListener() {
+
+        JButton lectura = new JButton("lectura");
+		lectura.setBounds(70, 50, 140, 25);
+		panel.add(lectura);
+
+        lectura.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.limpiarVentana(ventana);
-                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
+                administradorDeVentanas.leerArchivo(administradorDeVentanas);
                 //ventana.setVisible(false);
             }
         });
+
+        JTextField texto = new JTextField();
+        texto.setBounds(30,50,30,50);
+        panel.add(texto);
+
         this.panel.getPaneles().add(panel);
         ventana.setVisible(true);
     }

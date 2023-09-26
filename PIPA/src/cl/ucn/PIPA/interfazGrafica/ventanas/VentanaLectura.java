@@ -77,6 +77,18 @@ public class VentanaLectura implements Ventana{
                 }
             }
         });
+
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setBounds(70,60,140,25);
+        panel.add(botonVolver);
+        botonVolver.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.limpiarVentana(ventana);
+                administradorDeVentanas.ventanaPrueba(administradorDeVentanas);
+                //ventana.setVisible(false);
+            }
+        });
+
         this.panel.getPaneles().add(panel);
         ventana.setVisible(true);
     }
