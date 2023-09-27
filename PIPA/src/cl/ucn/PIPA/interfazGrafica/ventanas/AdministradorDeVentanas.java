@@ -16,7 +16,6 @@ public class AdministradorDeVentanas {
     private Sistema sistema;
 	private JFrame ventana;
 	private List<Panel> paneles;
-	private LinkedList<Paleta> paletas;
 	private Paleta paletaSeleccionada;
 	/*
 	* Constructor de la clase
@@ -24,7 +23,6 @@ public class AdministradorDeVentanas {
 	*/
 	public AdministradorDeVentanas(Sistema sistema,LinkedList<Paleta> paletas) {
 		this.sistema = sistema;
-		this.paletas = paletas;
 		paletaSeleccionada = paletas.get(0);
 		this.ventana = new JFrame();
 		this.paneles = new LinkedList<>();
@@ -56,7 +54,7 @@ public class AdministradorDeVentanas {
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
 		if(buscarPanel("menu")==null){
-			Ventana ventana = new VentanaMenu(administradorDeVentanas,this.ventana);
+			Ventana ventana = new VentanaMenu(administradorDeVentanas,this.ventana,paletaSeleccionada);
 			paneles.add(ventana.getPanel());
 			ventana.iniciarVentana();
 		}else{
@@ -72,7 +70,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaLectura(administradorDeVentanas,sistema,this.ventana);
+		Ventana ventana = new VentanaLectura(administradorDeVentanas,sistema,this.ventana,paletaSeleccionada);
 		paneles.add(ventana.getPanel());
 		ventana.iniciarVentana();
 	}
@@ -116,7 +114,7 @@ public class AdministradorDeVentanas {
 
 	private void cerrar(JFrame ventana){
 		String [] botones = {"Cerrar", "Cancelar"};
-		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar cierre",
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
 		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
 		if(eleccion==JOptionPane.YES_OPTION){
 			System.exit(0);

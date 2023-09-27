@@ -1,4 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
@@ -29,9 +30,11 @@ public class VentanaLectura implements Ventana{
     private int progreso;
     private JFrame ventana;
     private Panel panel;
+    private Paleta paleta;
     
-    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana){
+    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana, Paleta paleta){
         this.ventana = ventana;
+        this.paleta = paleta;
         this.ventana.setTitle("Lectura de archivo");
         this.panel = new Panel("lectura");
         this.administradorDeVentanas = administradorDeVentanas;
@@ -45,14 +48,19 @@ public class VentanaLectura implements Ventana{
     public void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setLayout(null);
+        panel.setBackground(paleta.getFondo());
         ventana.getContentPane().add(panel, BorderLayout.CENTER);
 
         barraProgreso = new JProgressBar(0, obtenerLineasTotales());
+        barraProgreso.setBackground(paleta.getFondo());
+        barraProgreso.setForeground(paleta.getPuntos());
         barraProgreso.setStringPainted(true);
         barraProgreso.setBounds(0, 0, 300, 25);
         panel.add(barraProgreso);
 
         botonInicio = new JButton("Iniciar Lectura");
+        botonInicio.setBackground(paleta.getBoton());
+        botonInicio.setForeground(paleta.getLetra());
         botonInicio.setBounds(70, 40, 140, 25);
         panel.add(botonInicio);
         botonInicio.addActionListener(new ActionListener() {
@@ -74,7 +82,7 @@ public class VentanaLectura implements Ventana{
                 }
             }
         });
-
+        /* 
         JButton botonVolver = new JButton("Volver");
         botonVolver.setBounds(70,70,140,25);
         panel.add(botonVolver);
@@ -92,7 +100,7 @@ public class VentanaLectura implements Ventana{
                 administradorDeVentanas.ventanaPrueba(administradorDeVentanas);
             }
         });
-
+        */
         this.panel.getPaneles().add(panel);
         ventana.setVisible(true);
     }
