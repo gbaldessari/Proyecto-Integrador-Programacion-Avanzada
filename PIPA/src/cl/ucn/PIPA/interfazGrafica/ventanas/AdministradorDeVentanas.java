@@ -2,7 +2,6 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
 import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.logica.Sistema;
 /*
@@ -70,5 +69,4 @@ public class AdministradorDeVentanas {
 		this.sistema.getGrafo().getNodos().clear();
 		this.sistema.getGrafo().getArcos().clear();
 	}
-	
 }

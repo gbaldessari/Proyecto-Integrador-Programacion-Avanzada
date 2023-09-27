@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.dominio;
-
 import java.awt.Color;
 
 public class Paleta {
@@ -11,7 +10,6 @@ public class Paleta {
     private Color lineas;
     private Color puntos;
     private Color puntoSeleccionado;
-
 
     public Paleta(String nombre,float[] hsbFondo,float[] hsbUI,float[] hsbBoton,float[] hsbLetra,float[] hsbLineas,float[] hsbPuntos,float[] hsbPuntoSeleccionado){
         this.nombre =nombre;

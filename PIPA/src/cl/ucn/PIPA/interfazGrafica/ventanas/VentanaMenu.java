@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import cl.ucn.PIPA.dominio.Paleta;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,7 +40,6 @@ public class VentanaMenu implements Ventana {
 		ventana.setResizable(false);
     }
 
-    
     public void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setBackground(paleta.getFondo());
