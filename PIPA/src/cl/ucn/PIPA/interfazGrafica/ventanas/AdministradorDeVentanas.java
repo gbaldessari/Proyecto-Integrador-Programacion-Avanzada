@@ -25,7 +25,7 @@ public class AdministradorDeVentanas {
 	public AdministradorDeVentanas(Sistema sistema,LinkedList<Paleta> paletas) {
 		this.sistema = sistema;
 		this.paletas = paletas;
-		paletaSeleccionada = paletas.get(1);
+		paletaSeleccionada = paletas.get(0);
 		this.ventana = new JFrame();
 		this.paneles = new LinkedList<>();
 		this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

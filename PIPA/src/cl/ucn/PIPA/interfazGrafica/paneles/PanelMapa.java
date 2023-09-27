@@ -35,9 +35,11 @@ public class PanelMapa extends JPanel{
     private LinkedList<Punto> puntos;
     private Punto selectedPoint = null;
     private ImageIcon imageIcon;
+    private Paleta paleta;
     
     public PanelMapa(Sistema sistema, Paleta paleta){
         this.sistema = sistema;
+        this.paleta = paleta;
         puntos = new LinkedList<>();
         mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;
@@ -130,7 +132,7 @@ public class PanelMapa extends JPanel{
         graphics2d.drawLine(minPosX,minPosY,minPosX,maxPosY);
         graphics2d.drawLine(minPosX,minPosY,maxPosX,minPosY);
 
-        graphics2d.setColor(Color.BLACK);
+        graphics2d.setColor(paleta.getLineas());
         graphics2d.setStroke(new BasicStroke(1));
         
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
@@ -141,7 +143,7 @@ public class PanelMapa extends JPanel{
                         valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false));
         }
         
-        graphics2d.setColor(Color.RED);
+        graphics2d.setColor(paleta.getPuntos());
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
             int x = valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-1;
             int y = valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-1;
@@ -150,7 +152,7 @@ public class PanelMapa extends JPanel{
             puntos.add(punto);
         }
         if(selectedPoint!=null){
-            graphics2d.setColor(Color.BLUE);
+            graphics2d.setColor(paleta.getPuntoSeleccionado());
             graphics2d.fillOval(selectedPoint.getPoint().x,selectedPoint.getPoint().y,2, 2);
             System.out.println(selectedPoint.getNodo().getId());
             selectedPoint = null;

@@ -39,6 +39,7 @@ public class VentanaMapa implements Ventana{
         JPanel panel = new JPanel();
         panel.setBackground(paleta.getUi());
         JButton botonMenu = new JButton("Volver");
+        botonMenu.setForeground(paleta.getLetra());
         botonMenu.setBackground(paleta.getBoton());
         panel.add(botonMenu);
         ventana.getContentPane().add(panel,BorderLayout.SOUTH);
@@ -52,6 +53,7 @@ public class VentanaMapa implements Ventana{
 
         JPanel panelInfo = new JPanel();
         JLabel informacion = new JLabel("Informacion");
+        informacion.setBackground(paleta.getLetra());
         panelInfo.setBackground(paleta.getUi());
         panelInfo.add(informacion);
         panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));

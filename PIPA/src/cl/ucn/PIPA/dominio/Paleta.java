@@ -35,4 +35,16 @@ public class Paleta {
     public Color getUi() {
         return ui;
     }
+    public Color getLetra() {
+        return letra;
+    }
+    public Color getLineas() {
+        return lineas;
+    }
+    public Color getPuntoSeleccionado() {
+        return puntoSeleccionado;
+    }
+    public Color getPuntos() {
+        return puntos;
+    }
 }

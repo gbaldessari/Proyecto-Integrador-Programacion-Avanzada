@@ -41,11 +41,18 @@ public class SistemaImpl implements Sistema{
     }
     
     private void obtenerPaletas(){
-        Paleta claro = new Paleta("Claro",Color.RGBtoHSB(255, 255, 255, null), Color.RGBtoHSB(128, 128, 128, null), Color.RGBtoHSB(191, 191, 191, null));
-        Paleta azul = new Paleta("Azul",Color.RGBtoHSB(0, 94, 191, null), Color.RGBtoHSB(0, 62, 128, null), Color.RGBtoHSB(0, 125, 255, null));
-        Paleta oscuro = new Paleta("Oscuro",Color.RGBtoHSB(64, 64, 64, null), Color.RGBtoHSB(48, 48, 48, null), Color.RGBtoHSB(96, 96, 96, null));
-        paletas.add(azul);
+        Paleta claro = new Paleta("Claro"
+                                ,Color.RGBtoHSB(255, 255, 255, null)
+                                ,Color.RGBtoHSB(128, 128, 128, null)
+                                ,Color.RGBtoHSB(191, 191, 191, null)
+                                ,Color.RGBtoHSB(0, 0, 0, null)
+                                ,Color.RGBtoHSB(0, 0, 0, null)
+                                ,Color.RGBtoHSB(255, 0, 0, null)
+                                ,Color.RGBtoHSB(0, 0, 255, null));
+        //Paleta azul = new Paleta("Azul",Color.RGBtoHSB(0, 94, 191, null), Color.RGBtoHSB(0, 62, 128, null), Color.RGBtoHSB(0, 125, 255, null));
+        //Paleta oscuro = new Paleta("Oscuro",Color.RGBtoHSB(64, 64, 64, null), Color.RGBtoHSB(48, 48, 48, null), Color.RGBtoHSB(96, 96, 96, null));
+        //paletas.add(azul);
+        //paletas.add(oscuro);
         paletas.add(claro);
-        paletas.add(oscuro); 
     }
 }
