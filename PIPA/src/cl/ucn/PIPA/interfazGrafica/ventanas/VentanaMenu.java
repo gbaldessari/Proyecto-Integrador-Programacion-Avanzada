@@ -3,12 +3,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import cl.ucn.PIPA.dominio.Paleta;
-import cl.ucn.PIPA.dominio.Panel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /* 
@@ -16,7 +18,6 @@ import javax.swing.JPanel;
 */
 public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
-    private Panel panel;
     private JFrame ventana;
     private Paleta paleta;
 
@@ -24,19 +25,20 @@ public class VentanaMenu implements Ventana {
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, JFrame ventana, Paleta paleta) {
-        this.ventana = ventana;
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Paleta paleta) {
+        this.ventana = new JFrame("Menú");
+        this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.ventana.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				cerrar(ventana);
+			}
+		});
         this.paleta = paleta;
-        this.panel = new Panel("menu");
-        ventana.setTitle("Menú");
         this.administradorDeVentanas = administradorDeVentanas;
         ventana.setSize(300,150);
         ventana.setMaximumSize(new Dimension(300,150));
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
-        this.panel.setAlto(300);
-        this.panel.setAncho(150);
-        this.panel.setTitulo("Menú");
     }
 
     
@@ -61,14 +63,19 @@ public class VentanaMenu implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
-                //ventana.setVisible(false);
+                ventana.setVisible(false);
             }
         });
-        this.panel.getPaneles().add(panel);
         ventana.setVisible(true);
     }
 
-    public Panel getPanel(){
-        return this.panel;
-    }
+    private void cerrar(JFrame ventana){
+		String [] botones = {"Cerrar", "Cancelar"};
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
+		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
+		if(eleccion==JOptionPane.YES_OPTION){
+			System.exit(0);
+		}
+	}
+
 }

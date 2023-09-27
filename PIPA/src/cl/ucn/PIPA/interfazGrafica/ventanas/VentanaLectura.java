@@ -1,15 +1,17 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
 import cl.ucn.PIPA.dominio.Paleta;
-import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
@@ -29,14 +31,17 @@ public class VentanaLectura implements Ventana{
     private JProgressBar barraProgreso;
     private int progreso;
     private JFrame ventana;
-    private Panel panel;
     private Paleta paleta;
     
-    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana, Paleta paleta){
-        this.ventana = ventana;
+    public VentanaLectura(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Paleta paleta){
+        this.ventana = new JFrame("Lectura de archivos");
+        this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.ventana.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				cerrar(ventana);
+			}
+		});
         this.paleta = paleta;
-        this.ventana.setTitle("Lectura de archivo");
-        this.panel = new Panel("lectura");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         progreso = 0;
@@ -75,7 +80,7 @@ public class VentanaLectura implements Ventana{
                             leerXML(false);
                             administradorDeVentanas.limpiarVentana(ventana);   
                             administradorDeVentanas.menu(administradorDeVentanas);
-                            //ventana.setVisible(false);
+                            ventana.setVisible(false);
                         }
                     });
                     hiloArchivo.start();
@@ -101,7 +106,6 @@ public class VentanaLectura implements Ventana{
             }
         });
         */
-        this.panel.getPaneles().add(panel);
         ventana.setVisible(true);
     }
 
@@ -174,7 +178,12 @@ public class VentanaLectura implements Ventana{
         return lineas;
     }
 
-    public Panel getPanel() {
-        return this.panel;
-    }
+    private void cerrar(JFrame ventana){
+		String [] botones = {"Cerrar", "Cancelar"};
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
+		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
+		if(eleccion==JOptionPane.YES_OPTION){
+			System.exit(0);
+		}
+	}
 }

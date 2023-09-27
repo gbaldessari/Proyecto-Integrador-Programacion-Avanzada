@@ -1,21 +1,15 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.LinkedList;
-import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import cl.ucn.PIPA.dominio.Paleta;
-import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 /*
 * Clase que administra las ventanas
 */
 public class AdministradorDeVentanas {
     private Sistema sistema;
-	private JFrame ventana;
-	private List<Panel> paneles;
 	private Paleta paletaSeleccionada;
 	/*
 	* Constructor de la clase
@@ -24,28 +18,11 @@ public class AdministradorDeVentanas {
 	public AdministradorDeVentanas(Sistema sistema,LinkedList<Paleta> paletas) {
 		this.sistema = sistema;
 		paletaSeleccionada = paletas.get(0);
-		this.ventana = new JFrame();
-		this.paneles = new LinkedList<>();
-		this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.ventana.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent we){
-				cerrar(ventana);
-			}
-		});
 	}
 
 	public void ventanaPrueba(AdministradorDeVentanas administradorDeVentanas){
-		if(buscarPanel("ventana prueba")==null){
-			Ventana ventana = new VentanaPrueba(administradorDeVentanas,this.ventana);
-			paneles.add(ventana.getPanel());
-			ventana.iniciarVentana();
-		}else{
-			Panel encontrado = buscarPanel("ventana prueba");
-			encontrado.setDimensiones(this.ventana);
-			for(int i=0;i<encontrado.getPaneles().size();i++){
-				this.ventana.getContentPane().add(encontrado.getPaneles().get(i));
-			}
-		}
+		Ventana ventana = new VentanaPrueba(administradorDeVentanas);
+		ventana.iniciarVentana();
 	}
 
 	/*
@@ -53,25 +30,15 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		if(buscarPanel("menu")==null){
-			Ventana ventana = new VentanaMenu(administradorDeVentanas,this.ventana,paletaSeleccionada);
-			paneles.add(ventana.getPanel());
-			ventana.iniciarVentana();
-		}else{
-			Panel encontrado = buscarPanel("menu");
-			encontrado.setDimensiones(this.ventana);
-			for(int i=0;i<encontrado.getPaneles().size();i++){
-				this.ventana.getContentPane().add(encontrado.getPaneles().get(i));
-			}
-		}
+		Ventana ventana = new VentanaMenu(administradorDeVentanas,paletaSeleccionada);
+		ventana.iniciarVentana();
 	}
 	/*
 	* Metodo que despliega la ventana de lectura de archivo
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaLectura(administradorDeVentanas,sistema,this.ventana,paletaSeleccionada);
-		paneles.add(ventana.getPanel());
+		Ventana ventana = new VentanaLectura(administradorDeVentanas,sistema,paletaSeleccionada);
 		ventana.iniciarVentana();
 	}
 	/*
@@ -79,8 +46,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,this.ventana,paletaSeleccionada);
-		paneles.add(ventana.getPanel());
+		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,paletaSeleccionada);
 		ventana.iniciarVentana();
 	}
 	/*
@@ -96,12 +62,6 @@ public class AdministradorDeVentanas {
 		ventana.repaint();
     }
 	 //en caso de necesitar guardar algún parámetro de una ventana
-	public Panel buscarPanel(String titulo){
-		for(Panel p:paneles){
-			if(p.getNombre().equals(titulo)) return p;
-		}
-		return null;
-	}
 
 	public void mostrarIDNodo(String ID){
 		JOptionPane.showMessageDialog(null,ID,"ID Nodo",JOptionPane.INFORMATION_MESSAGE);
@@ -110,15 +70,6 @@ public class AdministradorDeVentanas {
 	public void vaciarLista(){
 		this.sistema.getGrafo().getNodos().clear();
 		this.sistema.getGrafo().getArcos().clear();
-	}
-
-	private void cerrar(JFrame ventana){
-		String [] botones = {"Cerrar", "Cancelar"};
-		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
-		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
-		if(eleccion==JOptionPane.YES_OPTION){
-			System.exit(0);
-		}
 	}
 	
 }

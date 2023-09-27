@@ -3,12 +3,15 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import cl.ucn.PIPA.dominio.Paleta;
-import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -17,14 +20,17 @@ public class VentanaMapa implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private JFrame ventana;
-    private Panel panel;
     private Paleta paleta;
 
-    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, JFrame ventana, Paleta paleta){
-        this.ventana = ventana;
+    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Paleta paleta){
+        this.ventana = new JFrame("Mapa");
+        this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.ventana.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				cerrar(ventana);
+			}
+		});
         this.paleta = paleta;
-        ventana.setTitle("Mapa");
-        this.panel = new Panel("mapa");
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         ventana.setSize(1200,700);
@@ -48,6 +54,7 @@ public class VentanaMapa implements Ventana{
                 ventana.setMinimumSize(new Dimension(1,1));
                 administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
+                ventana.setVisible(false);
             }
         });
 
@@ -60,11 +67,14 @@ public class VentanaMapa implements Ventana{
         ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
 
         ventana.setVisible(true);
-        this.panel.getPaneles().add(panelMapa);
-        this.panel.getPaneles().add(panel);
     }
 
-    public Panel getPanel(){
-        return this.panel;
-    }
+    private void cerrar(JFrame ventana){
+		String [] botones = {"Cerrar", "Cancelar"};
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
+		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
+		if(eleccion==JOptionPane.YES_OPTION){
+			System.exit(0);
+		}
+	}
 }
