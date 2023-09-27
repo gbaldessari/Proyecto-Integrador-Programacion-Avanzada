@@ -1,5 +1,9 @@
 package cl.ucn.PIPA.logica;
-import cl.ucn.PIPA.dominio.*;
+import java.awt.Color;
+import java.util.LinkedList;
+
+import cl.ucn.PIPA.dominio.Grafo;
+import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 
 /* 
@@ -8,6 +12,7 @@ import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 public class SistemaImpl implements Sistema{
     private AdministradorDeVentanas administradorDeVentanas;
     private Grafo grafo;
+    private LinkedList<Paleta> paletas;
 
 
     /* Constructor del sistema
@@ -16,8 +21,11 @@ public class SistemaImpl implements Sistema{
      */
     public void iniciarApp(Sistema sistema) {
         grafo = new Grafo();
-        administradorDeVentanas = new AdministradorDeVentanas(sistema);
+        paletas = new LinkedList<>();
+        obtenerPaletas(); 
+        administradorDeVentanas = new AdministradorDeVentanas(sistema,paletas);
         administradorDeVentanas.leerArchivo(administradorDeVentanas);
+
     }
 
     /*  
@@ -28,8 +36,16 @@ public class SistemaImpl implements Sistema{
         return grafo;
     }
 
-    @Override
     public AdministradorDeVentanas getAdministradorDeVentanas() {
         return this.administradorDeVentanas;
+    }
+    
+    private void obtenerPaletas(){
+        Paleta claro = new Paleta("Claro",Color.RGBtoHSB(255, 255, 255, null), Color.RGBtoHSB(128, 128, 128, null), Color.RGBtoHSB(191, 191, 191, null));
+        Paleta azul = new Paleta("Azul",Color.RGBtoHSB(0, 94, 191, null), Color.RGBtoHSB(0, 62, 128, null), Color.RGBtoHSB(0, 125, 255, null));
+        Paleta oscuro = new Paleta("Oscuro",Color.RGBtoHSB(64, 64, 64, null), Color.RGBtoHSB(48, 48, 48, null), Color.RGBtoHSB(96, 96, 96, null));
+        paletas.add(azul);
+        paletas.add(claro);
+        paletas.add(oscuro); 
     }
 }

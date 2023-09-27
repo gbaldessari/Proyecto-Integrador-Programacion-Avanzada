@@ -12,6 +12,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
+
+import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -34,7 +36,7 @@ public class PanelMapa extends JPanel{
     private Punto selectedPoint = null;
     private ImageIcon imageIcon;
     
-    public PanelMapa(Sistema sistema){
+    public PanelMapa(Sistema sistema, Paleta paleta){
         this.sistema = sistema;
         puntos = new LinkedList<>();
         mayorX = Double.MIN_VALUE;
@@ -51,6 +53,7 @@ public class PanelMapa extends JPanel{
         // Carga la imagen desde un archivo (ajusta la ruta de acuerdo a tu imagen)
         imageIcon = new ImageIcon("images.jpeg");
         getLimites();
+        this.setBackground(paleta.getFondo());
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -115,7 +118,6 @@ public class PanelMapa extends JPanel{
     public void paint(Graphics g){
         super.paint(g);
         puntos.clear();
-        
         //Para poder modificar más propiedades con Graphics 2d
         graphics2d = (Graphics2D) g;
         graphics2d.translate(offsetX, offsetY);

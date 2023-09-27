@@ -1,5 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import cl.ucn.PIPA.dominio.Panel;
@@ -26,6 +27,7 @@ public class VentanaMenu implements Ventana {
         ventana.setTitle("Menú");
         this.administradorDeVentanas = administradorDeVentanas;
         ventana.setSize(300,150);
+        ventana.setMaximumSize(new Dimension(300,150));
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
         this.panel.setAlto(300);

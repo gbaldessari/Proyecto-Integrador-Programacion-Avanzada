@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+
+import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.dominio.Panel;
 import cl.ucn.PIPA.logica.Sistema;
 /*
@@ -14,12 +16,16 @@ public class AdministradorDeVentanas {
     private Sistema sistema;
 	private JFrame ventana;
 	private List<Panel> paneles;
+	private LinkedList<Paleta> paletas;
+	private Paleta paletaSeleccionada;
 	/*
 	* Constructor de la clase
 	* @param sistema, la superclase del sistema
 	*/
-	public AdministradorDeVentanas(Sistema sistema) {
+	public AdministradorDeVentanas(Sistema sistema,LinkedList<Paleta> paletas) {
 		this.sistema = sistema;
+		this.paletas = paletas;
+		paletaSeleccionada = paletas.get(1);
 		this.ventana = new JFrame();
 		this.paneles = new LinkedList<>();
 		this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -75,7 +81,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,this.ventana);
+		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,this.ventana,paletaSeleccionada);
 		paneles.add(ventana.getPanel());
 		ventana.iniciarVentana();
 	}
