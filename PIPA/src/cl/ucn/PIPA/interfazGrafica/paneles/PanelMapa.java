@@ -3,15 +3,15 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
-
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
-
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -21,9 +21,9 @@ public class PanelMapa extends JPanel{
     private double menorX;
     private double mayorY;
     private double menorY;
-    private double scale = 1;
-    private int offsetX = -5000;
-    private int offsetY = -50;
+    private double scale;
+    private int offsetX;
+    private int offsetY;
     private int minPosX;
     private int maxPosX;
     private int minPosY;
@@ -32,6 +32,7 @@ public class PanelMapa extends JPanel{
     private Graphics2D graphics2d;
     private LinkedList<Punto> puntos;
     private Punto selectedPoint = null;
+    private ImageIcon imageIcon;
     
     public PanelMapa(Sistema sistema){
         this.sistema = sistema;
@@ -40,10 +41,15 @@ public class PanelMapa extends JPanel{
         menorX = Double.MAX_VALUE;
         mayorY = Double.MIN_VALUE;
         menorY = Double.MAX_VALUE;
+        scale = 1;
+        offsetX = -5000;
+        offsetY = -50;
         minPosX=-2000;
         maxPosX=14000;
         minPosY=-2000;
         maxPosY=14000;
+        // Carga la imagen desde un archivo (ajusta la ruta de acuerdo a tu imagen)
+        imageIcon = new ImageIcon("images.jpeg");
         getLimites();
 
         addMouseListener(new MouseAdapter() {
@@ -144,9 +150,12 @@ public class PanelMapa extends JPanel{
         if(selectedPoint!=null){
             graphics2d.setColor(Color.BLUE);
             graphics2d.fillOval(selectedPoint.getPoint().x,selectedPoint.getPoint().y,2, 2);
-            this.sistema.getAdministradorDeVentanas().mostrarIDNodo(selectedPoint.getNodo().getId());
+            System.out.println(selectedPoint.getNodo().getId());
             selectedPoint = null;
         }
+
+        Image image = imageIcon.getImage();
+        graphics2d.drawImage(image, maxPosX,maxPosY, this);
     }
 
     private void getLimites(){
