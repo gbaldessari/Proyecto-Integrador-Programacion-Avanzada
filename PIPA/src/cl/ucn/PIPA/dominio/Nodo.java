@@ -14,8 +14,8 @@ public class Nodo {
 	/**
 	 * Constructor de la clase nodo
 	 * @param id, id del nodo
-	 * @param posX, posicion X almacenada
-	 * @param posY, posicion Y almacenada 
+	 * @param posX posicion X almacenada
+	 * @param posY posicion Y almacenada 
 	 */
 	public Nodo(String id,double posX,double posY){
         arcos = new ArrayList<>();
@@ -24,14 +24,14 @@ public class Nodo {
     }
 	/**
 	 * Retorna el id de un nodo
-	 * @return el id del nodo
+	 * @return string que contiene el id del nodo
 	 */
 	public String getId() {
 		return id;
 	}
 	/*
 	 * Agrega un arco al nodo
-	 * @param arco, el arco
+	 * @param arco
 	 */
 	public void agregarArco(Arco arco) {
 		arcos.add(arco);

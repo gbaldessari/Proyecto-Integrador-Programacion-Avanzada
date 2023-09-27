@@ -43,8 +43,8 @@ public class SistemaImpl implements Sistema{
     private void obtenerPaletas(){
         Paleta claro = new Paleta("Claro"
                                 ,Color.RGBtoHSB(255, 255, 255, null)
-                                ,Color.RGBtoHSB(128, 128, 128, null)
-                                ,Color.RGBtoHSB(191, 191, 191, null)
+                                ,Color.RGBtoHSB(160, 160, 160, null)
+                                ,Color.RGBtoHSB(200, 200, 200, null)
                                 ,Color.RGBtoHSB(0, 0, 0, null)
                                 ,Color.RGBtoHSB(0, 0, 0, null)
                                 ,Color.RGBtoHSB(255, 0, 0, null)

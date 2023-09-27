@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
-
+import javax.swing.JLabel;
 import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
@@ -33,14 +33,19 @@ public class PanelMapa extends JPanel{
     private Point lastDragPoint;
     private Graphics2D graphics2d;
     private LinkedList<Punto> puntos;
-    private Punto selectedPoint = null;
+    private Punto puntoPartida;
+    private Punto puntoDestino;
     private ImageIcon imageIcon;
     private Paleta paleta;
+    private JLabel c1;
+    private JLabel c2;
     
     public PanelMapa(Sistema sistema, Paleta paleta){
         this.sistema = sistema;
         this.paleta = paleta;
         puntos = new LinkedList<>();
+        puntoPartida = null;
+        puntoDestino = null;
         mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;
         mayorY = Double.MIN_VALUE;
@@ -72,16 +77,30 @@ public class PanelMapa extends JPanel{
 
                 // Encuentra el punto más cercano al punto de clic
                 double minDistance = Double.MAX_VALUE;
-                selectedPoint = null;
+                Punto p = null;
 
                 for (Punto punto : puntos) {
                     double distance = calculateDistance(mousePointScaled, punto);
                     if (distance < minDistance) {
                         minDistance = distance;
-                        selectedPoint = punto;
+                        p = punto;
                     }
                 }
 
+                if(puntoPartida!=null&&p.getNodo().getId().equals(puntoPartida.getNodo().getId())){
+                    puntoPartida = puntoDestino;
+                    puntoDestino = null;
+                    
+                }
+                else if(puntoDestino!=null&&p.getNodo().getId().equals(puntoDestino.getNodo().getId())){
+                    puntoDestino = null;
+                }
+                else if(puntoPartida != null){
+                    puntoDestino = p;
+                }
+                else{
+                    puntoPartida = p;
+                }
                 repaint();
             }
         });
@@ -117,6 +136,10 @@ public class PanelMapa extends JPanel{
             }
         });
     }
+    
+    public void setC1(JLabel c1){this.c1=c1;}
+    public void setC2(JLabel c2){this.c2=c2;}
+
     public void paint(Graphics g){
         super.paint(g);
         puntos.clear();
@@ -151,11 +174,21 @@ public class PanelMapa extends JPanel{
             Punto punto = new Punto( new Point(x,y), sistema.getGrafo().getNodos().get(i));
             puntos.add(punto);
         }
-        if(selectedPoint!=null){
+        if(puntoPartida!=null){
             graphics2d.setColor(paleta.getPuntoSeleccionado());
-            graphics2d.fillOval(selectedPoint.getPoint().x,selectedPoint.getPoint().y,2, 2);
-            System.out.println(selectedPoint.getNodo().getId());
-            selectedPoint = null;
+            graphics2d.fillOval(puntoPartida.getPoint().x,puntoPartida.getPoint().y,2, 2);
+            this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
+        }
+        else{
+            this.c1.setText("");
+        }
+        if(puntoDestino!=null){
+            graphics2d.setColor(paleta.getPuntoSeleccionado());
+            graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,2, 2);
+            this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
+        }
+        else{
+            this.c2.setText("");
         }
 
         Image image = imageIcon.getImage();
@@ -201,4 +234,13 @@ public class PanelMapa extends JPanel{
     private double calculateDistance(Point2D.Double p1, Punto p2) {
         return p1.distance(p2.getPoint().x, p2.getPoint().y);
     }
+    public String[] getDatoNodoOrigen(){
+        String [] datos = new String[3];
+        if(puntoPartida != null){
+            datos[0] = puntoPartida.getNodo().getId();
+            datos[1] = Double.toString(puntoPartida.getNodo().getX());
+            datos[2] = Double.toString(puntoPartida.getNodo().getY());
+        }
+        return datos;
+    } 
 }

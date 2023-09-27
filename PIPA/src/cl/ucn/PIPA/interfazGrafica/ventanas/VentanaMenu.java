@@ -69,7 +69,7 @@ public class VentanaMenu implements Ventana {
 
     private void cerrar(JFrame ventana){
 		String [] botones = {"Cerrar", "Cancelar"};
-		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar cierre",
 		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
 		if(eleccion==JOptionPane.YES_OPTION){
 			System.exit(0);

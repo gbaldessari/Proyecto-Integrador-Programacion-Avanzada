@@ -59,14 +59,40 @@ public class VentanaMapa implements Ventana{
         });
 
         JPanel panelInfo = new JPanel();
+        panelInfo.setLayout(null);
         JLabel informacion = new JLabel("Informacion");
-        JLabel infoNodo = new JLabel("coordenadas");
-        infoNodo.setBackground(paleta.getLetra());
+        informacion.setBounds(65,10, 200, 50);
+        informacion.setFont(informacion.getFont().deriveFont(19f));
+
+        JLabel infoNodo1 = new JLabel("Punto de partida: ");
+        infoNodo1.setBounds(10, 60, 200,50);
+        infoNodo1.setBackground(paleta.getLetra());
+        infoNodo1.setFont(infoNodo1.getFont().deriveFont(14f));
+        JLabel c1 = new JLabel("");
+        c1.setBounds(10, 80, 200,50);
+        c1.setBackground(paleta.getLetra());
+        c1.setFont(c1.getFont().deriveFont(14f));
+
+        JLabel infoNodo2 = new JLabel("Punto de llegada: ");
+        infoNodo2.setBounds(10, 120, 200, 50);
+        infoNodo2.setBackground(paleta.getLetra());
+        infoNodo2.setFont(infoNodo2.getFont().deriveFont(14f));
+        JLabel c2 = new JLabel("");
+        c2.setBounds(10, 140, 200, 50);
+        c2.setBackground(paleta.getLetra());
+        c2.setFont(c2.getFont().deriveFont(14f));
+
+        panelMapa.setC1(c1);
+        panelMapa.setC2(c2);
+
         informacion.setBackground(paleta.getLetra());
         panelInfo.setBackground(paleta.getUi());
 
         panelInfo.add(informacion);
-        panelInfo.add(infoNodo);
+        panelInfo.add(infoNodo1);
+        panelInfo.add(infoNodo2);
+        panelInfo.add(c1);
+        panelInfo.add(c2);
         panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));
         ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
 
@@ -75,7 +101,7 @@ public class VentanaMapa implements Ventana{
 
     private void cerrar(JFrame ventana){
 		String [] botones = {"Cerrar", "Cancelar"};
-		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar  ierre",
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar cierre",
 		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
 		if(eleccion==JOptionPane.YES_OPTION){
 			System.exit(0);
