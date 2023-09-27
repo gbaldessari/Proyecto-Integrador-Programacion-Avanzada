@@ -2,7 +2,6 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 
 import cl.ucn.PIPA.dominio.Panel;
 import javax.swing.JFrame;
-import javax.swing.WindowConstants;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
@@ -23,7 +22,6 @@ public class VentanaPrueba implements Ventana{
         ventana.setSize(300,150);
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
-		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.panel.setAlto(300);
         this.panel.setAncho(150);
         this.panel.setTitulo("Ventana Prueba");

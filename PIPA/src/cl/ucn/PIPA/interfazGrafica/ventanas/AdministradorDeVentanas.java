@@ -1,4 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JFrame;
@@ -20,6 +22,12 @@ public class AdministradorDeVentanas {
 		this.sistema = sistema;
 		this.ventana = new JFrame();
 		this.paneles = new LinkedList<>();
+		this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		this.ventana.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent we){
+				cerrar(ventana);
+			}
+		});
 	}
 
 	public void ventanaPrueba(AdministradorDeVentanas administradorDeVentanas){
@@ -99,4 +107,14 @@ public class AdministradorDeVentanas {
 		this.sistema.getGrafo().getNodos().clear();
 		this.sistema.getGrafo().getArcos().clear();
 	}
+
+	private void cerrar(JFrame ventana){
+		String [] botones = {"Cerrar", "Cancelar"};
+		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar cierre",
+		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
+		if(eleccion==JOptionPane.YES_OPTION){
+			System.exit(0);
+		}
+	}
+	
 }

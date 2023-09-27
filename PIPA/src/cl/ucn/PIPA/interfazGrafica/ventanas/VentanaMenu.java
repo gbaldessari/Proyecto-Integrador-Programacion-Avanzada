@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
 /* 
  * Subclase ventana menu
@@ -29,7 +28,6 @@ public class VentanaMenu implements Ventana {
         ventana.setSize(300,150);
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
-		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.panel.setAlto(300);
         this.panel.setAncho(150);
         this.panel.setTitulo("Menú");

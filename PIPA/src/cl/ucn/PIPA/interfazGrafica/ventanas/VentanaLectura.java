@@ -11,7 +11,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.WindowConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -42,7 +41,6 @@ public class VentanaLectura implements Ventana{
         ventana.setSize(300,140);
         ventana.setResizable(false);
 		ventana.setLocationRelativeTo(null);
-		ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
     public void iniciarVentana() {
         JPanel panel = new JPanel();
