@@ -60,9 +60,13 @@ public class VentanaMapa implements Ventana{
 
         JPanel panelInfo = new JPanel();
         JLabel informacion = new JLabel("Informacion");
+        JLabel infoNodo = new JLabel("coordenadas");
+        infoNodo.setBackground(paleta.getLetra());
         informacion.setBackground(paleta.getLetra());
         panelInfo.setBackground(paleta.getUi());
+
         panelInfo.add(informacion);
+        panelInfo.add(infoNodo);
         panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));
         ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
 

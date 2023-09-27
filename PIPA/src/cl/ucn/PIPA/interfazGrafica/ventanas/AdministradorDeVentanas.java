@@ -61,8 +61,7 @@ public class AdministradorDeVentanas {
 		ventana.revalidate();
 		ventana.repaint();
     }
-	 //en caso de necesitar guardar algún parámetro de una ventana
-
+	
 	public void mostrarIDNodo(String ID){
 		JOptionPane.showMessageDialog(null,ID,"ID Nodo",JOptionPane.INFORMATION_MESSAGE);
 	}
