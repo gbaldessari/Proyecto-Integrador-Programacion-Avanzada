@@ -1,7 +1,6 @@
 package cl.ucn.PIPA.logica;
 import java.awt.Color;
 import java.util.LinkedList;
-
 import cl.ucn.PIPA.dominio.Grafo;
 import cl.ucn.PIPA.dominio.Paleta;
 import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
@@ -24,7 +23,7 @@ public class SistemaImpl implements Sistema{
         paletas = new LinkedList<>();
         obtenerPaletas(); 
         administradorDeVentanas = new AdministradorDeVentanas(sistema,paletas);
-        administradorDeVentanas.leerArchivo(administradorDeVentanas);
+        administradorDeVentanas.menu(administradorDeVentanas);
 
     }
 

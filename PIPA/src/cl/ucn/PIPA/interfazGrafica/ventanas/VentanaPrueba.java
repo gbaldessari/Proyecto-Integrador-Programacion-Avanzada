@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -41,7 +40,7 @@ public class VentanaPrueba implements Ventana{
         lectura.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.limpiarVentana(ventana);
-                administradorDeVentanas.leerArchivo(administradorDeVentanas);
+                administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });

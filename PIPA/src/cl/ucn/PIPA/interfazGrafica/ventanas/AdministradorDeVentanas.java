@@ -29,15 +29,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana ventana = new VentanaMenu(administradorDeVentanas,paletaSeleccionada);
-		ventana.iniciarVentana();
-	}
-	/*
-	* Metodo que despliega la ventana de lectura de archivo
-	* @param administradorDeVentanas, la ventana inicializada
-	*/
-	public void leerArchivo(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaLectura(administradorDeVentanas,sistema,paletaSeleccionada);
+		Ventana ventana = new VentanaMenu(administradorDeVentanas,sistema,paletaSeleccionada);
 		ventana.iniciarVentana();
 	}
 	/*
