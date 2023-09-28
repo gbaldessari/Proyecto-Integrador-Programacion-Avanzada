@@ -63,7 +63,7 @@ public class VentanaMenu implements Ventana {
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
 
-		JLabel mensaje = new JLabel("Menú principal");
+		JLabel mensaje = new JLabel("");
         mensaje.setBackground(paleta.getLetra());
 		mensaje.setBounds(102, 0, 250, 50);
 		panel.add(mensaje);
@@ -96,8 +96,9 @@ public class VentanaMenu implements Ventana {
             hiloArchivo = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    leerXML(true);
-                    leerXML(false);
+                    leerXML(true,mensaje);
+                    leerXML(false,mensaje);
+                    mensaje.setText("Menú principal");
                     botonMostrarMapa.setEnabled(true);
                 }
             });
@@ -106,7 +107,7 @@ public class VentanaMenu implements Ventana {
         ventana.setVisible(true);
     }
 
-    public void leerXML(boolean nodo){
+    public void leerXML(boolean nodo, JLabel texto){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         try { // Excepcion para abrir el documento xml
@@ -124,14 +125,15 @@ public class VentanaMenu implements Ventana {
             Document documento = builder.parse(archivo);
             Element raiz = documento.getDocumentElement();
             NodeList datos = raiz.getElementsByTagName(nombre);
-            if(nodo){guardarNodos(datos);}
-            else{guardarArcos(datos);}
+            if(nodo){guardarNodos(datos,texto);}
+            else{guardarArcos(datos,texto);}
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void guardarNodos(NodeList nodos){
+    public void guardarNodos(NodeList nodos, JLabel texto){
+        texto.setText("Cargando archivos...");
         for (int i = 0;i<nodos.getLength();i++) {
             Element nodo = (Element) nodos.item(i);
             String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
@@ -143,7 +145,8 @@ public class VentanaMenu implements Ventana {
         }
     }
 
-    public void guardarArcos(NodeList arcos){
+    public void guardarArcos(NodeList arcos, JLabel texto){
+        
         for (int i = 0;i<arcos.getLength();i++) {
             Element arco = (Element) arcos.item(i);
             String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
@@ -151,6 +154,7 @@ public class VentanaMenu implements Ventana {
             String origen = arco.getElementsByTagName("u").item(0).getTextContent();
             String destino = arco.getElementsByTagName("v").item(0).getTextContent();
             sistema.getGrafo().addArco(id, nombre, origen, destino);
+            if(i==arcos.getLength()/3){texto.setText("Iniciando aplicación...");}
             progreso++;
             barraProgreso.setValue(progreso);
         }
