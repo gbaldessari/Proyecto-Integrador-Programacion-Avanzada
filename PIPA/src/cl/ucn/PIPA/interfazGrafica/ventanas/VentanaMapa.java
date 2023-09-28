@@ -41,9 +41,9 @@ public class VentanaMapa implements Ventana{
     public void iniciarVentana() {
         PanelMapa panelMapa = new PanelMapa(sistema,paleta);
         ventana.getContentPane().add(panelMapa,BorderLayout.CENTER);
-        
         JPanel panel = new JPanel();
         panel.setBackground(paleta.getUi());
+
         JButton botonMenu = new JButton("Volver");
         botonMenu.setForeground(paleta.getLetra());
         botonMenu.setBackground(paleta.getBoton());
@@ -72,6 +72,7 @@ public class VentanaMapa implements Ventana{
         c1.setBounds(10, 80, 200,50);
         c1.setBackground(paleta.getLetra());
         c1.setFont(c1.getFont().deriveFont(14f));
+        panelMapa.setC1(c1);
 
         JLabel infoNodo2 = new JLabel("Punto de llegada: ");
         infoNodo2.setBounds(10, 120, 200, 50);
@@ -81,13 +82,21 @@ public class VentanaMapa implements Ventana{
         c2.setBounds(10, 140, 200, 50);
         c2.setBackground(paleta.getLetra());
         c2.setFont(c2.getFont().deriveFont(14f));
-
-        panelMapa.setC1(c1);
         panelMapa.setC2(c2);
+
+        JButton botonBorrar = new JButton("Borrar");
+        botonBorrar.setBounds(10, 200, 100, 25);
+        botonMenu.setForeground(paleta.getLetra());
+        botonMenu.setBackground(paleta.getBoton());
+        panelInfo.add(botonBorrar);
+		botonBorrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                panelMapa.borrarOrigenDestino();
+            }
+        });
 
         informacion.setBackground(paleta.getLetra());
         panelInfo.setBackground(paleta.getUi());
-
         panelInfo.add(informacion);
         panelInfo.add(infoNodo1);
         panelInfo.add(infoNodo2);
@@ -95,7 +104,6 @@ public class VentanaMapa implements Ventana{
         panelInfo.add(c2);
         panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));
         ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
-
         ventana.setVisible(true);
     }
 

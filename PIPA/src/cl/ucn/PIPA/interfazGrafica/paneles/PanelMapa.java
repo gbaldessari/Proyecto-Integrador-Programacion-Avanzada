@@ -58,7 +58,6 @@ public class PanelMapa extends JPanel{
         maxPosX=140000;
         minPosY=-20000;
         maxPosY=140000;
-        // Carga la imagen desde un archivo (ajusta la ruta de acuerdo a tu imagen)
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(paleta.getFondo());
 
@@ -90,7 +89,6 @@ public class PanelMapa extends JPanel{
                 if(puntoPartida!=null&&p.getNodo().getId().equals(puntoPartida.getNodo().getId())){
                     puntoPartida = puntoDestino;
                     puntoDestino = null;
-                    
                 }
                 else if(puntoDestino!=null&&p.getNodo().getId().equals(puntoDestino.getNodo().getId())){
                     puntoDestino = null;
@@ -139,6 +137,11 @@ public class PanelMapa extends JPanel{
     
     public void setC1(JLabel c1){this.c1=c1;}
     public void setC2(JLabel c2){this.c2=c2;}
+    public void borrarOrigenDestino(){
+        puntoPartida = null;
+        puntoDestino = null;
+        repaint();
+    }
 
     public void paint(Graphics g){
         super.paint(g);

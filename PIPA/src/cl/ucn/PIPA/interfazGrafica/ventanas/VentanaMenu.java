@@ -63,7 +63,7 @@ public class VentanaMenu implements Ventana {
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
 
-		JLabel mensaje = new JLabel("");
+		JLabel mensaje = new JLabel("Menú Principal");
         mensaje.setBackground(paleta.getLetra());
 		mensaje.setBounds(102, 0, 250, 50);
 		panel.add(mensaje);
