@@ -50,16 +50,16 @@ public class PanelMapa extends JPanel{
         menorX = Double.MAX_VALUE;
         mayorY = Double.MIN_VALUE;
         menorY = Double.MAX_VALUE;
-        scale = 1;
+        getLimites();
+        scale = 0.1;
         offsetX = -5000;
         offsetY = -50;
-        minPosX=-2000;
-        maxPosX=14000;
-        minPosY=-2000;
-        maxPosY=14000;
+        minPosX=-20000;
+        maxPosX=140000;
+        minPosY=-20000;
+        maxPosY=140000;
         // Carga la imagen desde un archivo (ajusta la ruta de acuerdo a tu imagen)
         imageIcon = new ImageIcon("images.jpeg");
-        getLimites();
         this.setBackground(paleta.getFondo());
 
         addMouseListener(new MouseAdapter() {
@@ -214,17 +214,17 @@ public class PanelMapa extends JPanel{
     private int valorNormalizado(double mayor,double menor,double valor,boolean x){
         double valorfinal = 0;
         if(x){
-            valorfinal = (1-(valor-menor)/(mayor-menor))*10000;
+            valorfinal = (1-(valor-menor)/(mayor-menor))*100000;
         }
         else{
-            valorfinal = (valor-menor)/(mayor-menor)*10000;
+            valorfinal = (valor-menor)/(mayor-menor)*100000;
         }
         return (int)valorfinal;
     }
     public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
-        double minScale = 0.4;
-        double maxScale = 15.0;
+        double minScale = 0.025;
+        double maxScale = 15;
         if (newScale >= minScale && newScale <= maxScale) {
             scale = newScale;
             return true;
