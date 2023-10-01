@@ -13,7 +13,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
 import javax.swing.JLabel;
-import cl.ucn.PIPA.dominio.Paleta;
+import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -36,13 +36,13 @@ public class PanelMapa extends JPanel{
     private Punto puntoPartida;
     private Punto puntoDestino;
     private ImageIcon imageIcon;
-    private Paleta paleta;
+    private Tema tema;
     private JLabel c1;
     private JLabel c2;
     
-    public PanelMapa(Sistema sistema, Paleta paleta){
+    public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
-        this.paleta = paleta;
+        this.tema = tema;
         puntos = new LinkedList<>();
         puntoPartida = null;
         puntoDestino = null;
@@ -59,7 +59,7 @@ public class PanelMapa extends JPanel{
         minPosY=-20000;
         maxPosY=140000;
         imageIcon = new ImageIcon("images.jpeg");
-        this.setBackground(paleta.getFondo());
+        this.setBackground(tema.getFondo());
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -158,7 +158,7 @@ public class PanelMapa extends JPanel{
         graphics2d.drawLine(minPosX,minPosY,minPosX,maxPosY);
         graphics2d.drawLine(minPosX,minPosY,maxPosX,minPosY);
 
-        graphics2d.setColor(paleta.getLineas());
+        graphics2d.setColor(tema.getLineas());
         graphics2d.setStroke(new BasicStroke(1));
         
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
@@ -169,7 +169,7 @@ public class PanelMapa extends JPanel{
                         valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false));
         }
         
-        graphics2d.setColor(paleta.getPuntos());
+        graphics2d.setColor(tema.getPuntos());
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
             int x = valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-1;
             int y = valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-1;
@@ -178,7 +178,7 @@ public class PanelMapa extends JPanel{
             puntos.add(punto);
         }
         if(puntoPartida!=null){
-            graphics2d.setColor(paleta.getPuntoSeleccionado());
+            graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval(puntoPartida.getPoint().x,puntoPartida.getPoint().y,2, 2);
             this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
         }
@@ -186,7 +186,7 @@ public class PanelMapa extends JPanel{
             this.c1.setText("");
         }
         if(puntoDestino!=null){
-            graphics2d.setColor(paleta.getPuntoSeleccionado());
+            graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,2, 2);
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
         }
@@ -214,6 +214,7 @@ public class PanelMapa extends JPanel{
             }
         }
     }
+
     private int valorNormalizado(double mayor,double menor,double valor,boolean x){
         double valorfinal = 0;
         if(x){
@@ -224,6 +225,7 @@ public class PanelMapa extends JPanel{
         }
         return (int)valorfinal;
     }
+
     public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
         double minScale = 0.025;
@@ -234,9 +236,11 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
+
     private double calculateDistance(Point2D.Double p1, Punto p2) {
         return p1.distance(p2.getPoint().x, p2.getPoint().y);
     }
+    
     public String[] getDatoNodoOrigen(){
         String [] datos = new String[3];
         if(puntoPartida != null){

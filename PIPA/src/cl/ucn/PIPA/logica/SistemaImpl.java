@@ -2,7 +2,7 @@ package cl.ucn.PIPA.logica;
 import java.awt.Color;
 import java.util.LinkedList;
 import cl.ucn.PIPA.dominio.Grafo;
-import cl.ucn.PIPA.dominio.Paleta;
+import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 
 /* 
@@ -11,7 +11,7 @@ import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 public class SistemaImpl implements Sistema{
     private AdministradorDeVentanas administradorDeVentanas;
     private Grafo grafo;
-    private LinkedList<Paleta> paletas;
+    private LinkedList<Tema> temas;
 
 
     /* Constructor del sistema
@@ -20,9 +20,9 @@ public class SistemaImpl implements Sistema{
      */
     public void iniciarApp(Sistema sistema) {
         grafo = new Grafo();
-        paletas = new LinkedList<>();
-        obtenerPaletas(); 
-        administradorDeVentanas = new AdministradorDeVentanas(sistema,paletas);
+        temas = new LinkedList<>();
+        obtenerTemas(); 
+        administradorDeVentanas = new AdministradorDeVentanas(sistema,temas);
         administradorDeVentanas.menu(administradorDeVentanas);
 
     }
@@ -39,19 +39,37 @@ public class SistemaImpl implements Sistema{
         return this.administradorDeVentanas;
     }
     
-    private void obtenerPaletas(){
-        Paleta claro = new Paleta("Claro"
-                                ,Color.RGBtoHSB(255, 255, 255, null)
-                                ,Color.RGBtoHSB(160, 160, 160, null)
-                                ,Color.RGBtoHSB(200, 200, 200, null)
-                                ,Color.RGBtoHSB(0, 0, 0, null)
-                                ,Color.RGBtoHSB(0, 0, 0, null)
-                                ,Color.RGBtoHSB(255, 0, 0, null)
-                                ,Color.RGBtoHSB(0, 0, 255, null));
-        //Paleta azul = new Paleta("Azul",Color.RGBtoHSB(0, 94, 191, null), Color.RGBtoHSB(0, 62, 128, null), Color.RGBtoHSB(0, 125, 255, null));
-        //Paleta oscuro = new Paleta("Oscuro",Color.RGBtoHSB(64, 64, 64, null), Color.RGBtoHSB(48, 48, 48, null), Color.RGBtoHSB(96, 96, 96, null));
-        //paletas.add(azul);
-        //paletas.add(oscuro);
-        paletas.add(claro);
+    public String[] getListaTemas(AdministradorDeVentanas administradorDeVentanas){
+		String[] lista = new String[temas.size()+1];
+        lista[0] = administradorDeVentanas.getTemaSeleccionado().getNombre();
+		for(int i =1;i<temas.size()+1;i++) {
+			lista[i] = temas.get(i-1).getNombre();
+		}
+		return lista;
+	}
+    private void obtenerTemas(){
+        Tema claro = new Tema("Claro"
+                                ,Color.RGBtoHSB(255, 255, 255, null)//Fondo
+                                ,Color.RGBtoHSB(160, 160, 160, null)//UI
+                                ,Color.RGBtoHSB(200, 200, 200, null)//Botones
+                                ,Color.RGBtoHSB(0, 0, 0, null)//Texto
+                                ,Color.RGBtoHSB(0, 0, 0, null)//Lineas
+                                ,Color.RGBtoHSB(255, 0, 0, null)//Puntos
+                                ,Color.RGBtoHSB(0, 0, 255, null));//Puntos seleccionados
+        temas.add(claro);
+        Tema oscuro = new Tema("Oscuro"
+                                ,Color.RGBtoHSB(44,47,51, null)//Fondo
+                                ,Color.RGBtoHSB(35,39,42, null)//UI
+                                ,Color.RGBtoHSB(153,170,181, null)//Botones
+                                ,Color.RGBtoHSB(255, 255, 255, null)//Texto
+                                ,Color.RGBtoHSB(255, 255, 0, null)//Lineas
+                                ,Color.RGBtoHSB(255, 255, 255, null)//Puntos
+                                ,Color.RGBtoHSB(255, 0, 0, null));//Puntos seleccionados
+        temas.add(oscuro);
+    }
+
+    @Override
+    public LinkedList<Tema> getTemas() {
+        return temas;
     }
 }

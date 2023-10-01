@@ -2,25 +2,25 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.util.LinkedList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import cl.ucn.PIPA.dominio.Paleta;
+import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 /*
 * Clase que administra las ventanas
 */
 public class AdministradorDeVentanas {
     private Sistema sistema;
-	private Paleta paletaSeleccionada;
+	private Tema temaSeleccionado;
 	/*
 	* Constructor de la clase
 	* @param sistema, la superclase del sistema
 	*/
-	public AdministradorDeVentanas(Sistema sistema,LinkedList<Paleta> paletas) {
+	public AdministradorDeVentanas(Sistema sistema,LinkedList<Tema> temas) {
 		this.sistema = sistema;
-		paletaSeleccionada = paletas.get(0);
+		temaSeleccionado = temas.get(0);
 	}
 
-	public void ventanaPrueba(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaPrueba(administradorDeVentanas);
+	public void ventanaTema(AdministradorDeVentanas administradorDeVentanas){
+		Ventana ventana = new VentanaTema(administradorDeVentanas,sistema,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 
@@ -29,7 +29,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana ventana = new VentanaMenu(administradorDeVentanas,sistema,paletaSeleccionada);
+		Ventana ventana = new VentanaMenu(administradorDeVentanas,sistema,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 	/*
@@ -37,7 +37,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
 	public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,paletaSeleccionada);
+		Ventana ventana = new VentanaMapa(administradorDeVentanas,sistema,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 	/*
@@ -57,6 +57,14 @@ public class AdministradorDeVentanas {
 		JOptionPane.showMessageDialog(null,ID,"ID Nodo",JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	public Tema getTemaSeleccionado(){
+		return temaSeleccionado;
+	}
+	public void setTema(int index){
+		if(index>-1){
+			temaSeleccionado = sistema.getTemas().get(index);
+		}
+	}
 	public void vaciarLista(){
 		this.sistema.getGrafo().getNodos().clear();
 		this.sistema.getGrafo().getArcos().clear();

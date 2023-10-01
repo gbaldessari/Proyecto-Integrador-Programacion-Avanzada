@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import cl.ucn.PIPA.dominio.Paleta;
+import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,7 +31,7 @@ public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private JFrame ventana;
-    private Paleta paleta;
+    private Tema tema;
     private Thread hiloArchivo;
     private JProgressBar barraProgreso;
     private int progreso;
@@ -40,7 +40,7 @@ public class VentanaMenu implements Ventana {
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Paleta paleta) {
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema) {
         this.ventana = new JFrame("Menú");
         this.sistema = sistema;
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -49,28 +49,28 @@ public class VentanaMenu implements Ventana {
 				cerrar(ventana);
 			}
 		});
-        this.paleta = paleta;
+        this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
-        ventana.setSize(300,150);
-        ventana.setMaximumSize(new Dimension(300,150));
+        ventana.setSize(300,190);
+        ventana.setMaximumSize(new Dimension(300,190));
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
     }
 
     public void iniciarVentana() {
         JPanel panel = new JPanel();
-        panel.setBackground(paleta.getFondo());
+        panel.setBackground(tema.getFondo());
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
 
 		JLabel mensaje = new JLabel("Menú Principal");
-        mensaje.setBackground(paleta.getLetra());
+        mensaje.setForeground(tema.getLetra());
 		mensaje.setBounds(102, 0, 250, 50);
 		panel.add(mensaje);
 		
 		JButton botonMostrarMapa = new JButton("Ver mapa");
-        botonMostrarMapa.setBackground(paleta.getBoton());
-        botonMostrarMapa.setForeground(paleta.getLetra());
+        botonMostrarMapa.setBackground(tema.getBoton());
+        botonMostrarMapa.setForeground(tema.getLetra());
 		botonMostrarMapa.setBounds(72, 50, 140, 25);
 		panel.add(botonMostrarMapa);
 		
@@ -82,17 +82,32 @@ public class VentanaMenu implements Ventana {
             }
         });
 
+        JButton botonSeleccionTema = new JButton("Cambiar tema");
+        botonSeleccionTema.setBackground(tema.getBoton());
+        botonSeleccionTema.setForeground(tema.getLetra());
+		botonSeleccionTema.setBounds(72, 85, 140, 25);
+		panel.add(botonSeleccionTema);
+		
+		botonSeleccionTema.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.limpiarVentana(ventana);
+                administradorDeVentanas.ventanaTema(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
         if(sistema.getGrafo().getNodos().isEmpty()) {
             JPanel panelB = new JPanel();
-            panelB.setBackground(paleta.getFondo());
+            panelB.setBackground(tema.getFondo());
             ventana.getContentPane().add(panelB,BorderLayout.SOUTH);
             barraProgreso = new JProgressBar(0, obtenerLineasTotales());
-            barraProgreso.setBackground(paleta.getFondo());
-            barraProgreso.setForeground(paleta.getPuntos());
+            barraProgreso.setBackground(tema.getFondo());
+            barraProgreso.setForeground(tema.getPuntos());
             barraProgreso.setStringPainted(true);
             barraProgreso.setBounds(0, 0, 300, 32);
             panelB.add(barraProgreso);
             botonMostrarMapa.setEnabled(false);
+            botonSeleccionTema.setEnabled(false);
             hiloArchivo = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -100,6 +115,7 @@ public class VentanaMenu implements Ventana {
                     leerXML(false,mensaje);
                     mensaje.setText("Menú principal");
                     botonMostrarMapa.setEnabled(true);
+                    botonSeleccionTema.setEnabled(true);
                 }
             });
             hiloArchivo.start();

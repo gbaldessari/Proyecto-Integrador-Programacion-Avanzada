@@ -1,7 +1,7 @@
 package cl.ucn.PIPA.dominio;
 import java.awt.Color;
 
-public class Paleta {
+public class Tema {
     private String nombre;
     private Color fondo;
     private Color ui;
@@ -11,7 +11,7 @@ public class Paleta {
     private Color puntos;
     private Color puntoSeleccionado;
 
-    public Paleta(String nombre,float[] hsbFondo,float[] hsbUI,float[] hsbBoton,float[] hsbLetra,float[] hsbLineas,float[] hsbPuntos,float[] hsbPuntoSeleccionado){
+    public Tema(String nombre,float[] hsbFondo,float[] hsbUI,float[] hsbBoton,float[] hsbLetra,float[] hsbLineas,float[] hsbPuntos,float[] hsbPuntoSeleccionado){
         this.nombre =nombre;
         fondo = Color.getHSBColor(hsbFondo[0],hsbFondo[1],hsbFondo[2]);
         ui = Color.getHSBColor(hsbUI[0],hsbUI[1],hsbUI[2]);

@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import cl.ucn.PIPA.dominio.Paleta;
+import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -20,9 +20,9 @@ public class VentanaMapa implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private JFrame ventana;
-    private Paleta paleta;
+    private Tema tema;
 
-    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Paleta paleta){
+    public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema){
         this.ventana = new JFrame("Mapa");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
@@ -30,7 +30,7 @@ public class VentanaMapa implements Ventana{
 				cerrar(ventana);
 			}
 		});
-        this.paleta = paleta;
+        this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
         ventana.setSize(1200,700);
@@ -39,19 +39,18 @@ public class VentanaMapa implements Ventana{
 		ventana.setResizable(true);
     }
     public void iniciarVentana() {
-        PanelMapa panelMapa = new PanelMapa(sistema,paleta);
+        PanelMapa panelMapa = new PanelMapa(sistema,tema);
         ventana.getContentPane().add(panelMapa,BorderLayout.CENTER);
         JPanel panel = new JPanel();
-        panel.setBackground(paleta.getUi());
+        panel.setBackground(tema.getUi());
 
         JButton botonMenu = new JButton("Volver");
-        botonMenu.setForeground(paleta.getLetra());
-        botonMenu.setBackground(paleta.getBoton());
+        botonMenu.setForeground(tema.getLetra());
+        botonMenu.setBackground(tema.getBoton());
         panel.add(botonMenu);
         ventana.getContentPane().add(panel,BorderLayout.SOUTH);
 		botonMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ventana.setMinimumSize(new Dimension(1,1));
                 administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
@@ -60,50 +59,52 @@ public class VentanaMapa implements Ventana{
 
         JPanel panelInfo = new JPanel();
         panelInfo.setLayout(null);
+        panelInfo.setBackground(tema.getUi());
+        panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));
+        ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
+
         JLabel informacion = new JLabel("Informacion");
+        informacion.setForeground(tema.getLetra());
         informacion.setBounds(65,10, 200, 50);
         informacion.setFont(informacion.getFont().deriveFont(19f));
+        panelInfo.add(informacion);
 
         JLabel infoNodo1 = new JLabel("Punto de partida: ");
         infoNodo1.setBounds(10, 60, 200,50);
-        infoNodo1.setBackground(paleta.getLetra());
+        infoNodo1.setForeground(tema.getLetra());
         infoNodo1.setFont(infoNodo1.getFont().deriveFont(14f));
+        panelInfo.add(infoNodo1);
+
         JLabel c1 = new JLabel("");
         c1.setBounds(10, 80, 200,50);
-        c1.setBackground(paleta.getLetra());
+        c1.setForeground(tema.getLetra());
         c1.setFont(c1.getFont().deriveFont(14f));
         panelMapa.setC1(c1);
+        panelInfo.add(c1);
 
         JLabel infoNodo2 = new JLabel("Punto de llegada: ");
         infoNodo2.setBounds(10, 120, 200, 50);
-        infoNodo2.setBackground(paleta.getLetra());
+        infoNodo2.setForeground(tema.getLetra());
         infoNodo2.setFont(infoNodo2.getFont().deriveFont(14f));
+        panelInfo.add(infoNodo2);
+
         JLabel c2 = new JLabel("");
         c2.setBounds(10, 140, 200, 50);
-        c2.setBackground(paleta.getLetra());
+        c2.setForeground(tema.getLetra());
         c2.setFont(c2.getFont().deriveFont(14f));
         panelMapa.setC2(c2);
+        panelInfo.add(c2);
 
         JButton botonBorrar = new JButton("Borrar");
         botonBorrar.setBounds(10, 200, 100, 25);
-        botonMenu.setForeground(paleta.getLetra());
-        botonMenu.setBackground(paleta.getBoton());
+        botonBorrar.setBackground(tema.getBoton());
+        botonBorrar.setForeground(tema.getLetra());
         panelInfo.add(botonBorrar);
 		botonBorrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 panelMapa.borrarOrigenDestino();
             }
         });
-
-        informacion.setBackground(paleta.getLetra());
-        panelInfo.setBackground(paleta.getUi());
-        panelInfo.add(informacion);
-        panelInfo.add(infoNodo1);
-        panelInfo.add(infoNodo2);
-        panelInfo.add(c1);
-        panelInfo.add(c2);
-        panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth()/5, this.ventana.getHeight()));
-        ventana.getContentPane().add(panelInfo,BorderLayout.EAST);
         ventana.setVisible(true);
     }
 
