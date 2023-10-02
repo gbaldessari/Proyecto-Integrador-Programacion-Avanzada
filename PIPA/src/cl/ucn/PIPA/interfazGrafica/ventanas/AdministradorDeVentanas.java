@@ -47,6 +47,12 @@ public class AdministradorDeVentanas {
 	public void mostrarError(String mensajeError){
 		JOptionPane.showMessageDialog(null, mensajeError,"Error", 0);
 	}
+
+	public void ventanaCierre(JFrame ventanaActiva){
+		Ventana ventana = new VentanaCierre(ventanaActiva);
+		ventana.iniciarVentana();
+	}
+
     public void limpiarVentana(JFrame ventana) {
 		ventana.getContentPane().removeAll();
 		ventana.revalidate();

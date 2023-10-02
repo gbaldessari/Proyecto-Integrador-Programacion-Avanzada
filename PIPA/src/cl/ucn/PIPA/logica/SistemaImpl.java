@@ -24,7 +24,6 @@ public class SistemaImpl implements Sistema{
         obtenerTemas(); 
         administradorDeVentanas = new AdministradorDeVentanas(sistema,temas);
         administradorDeVentanas.menu(administradorDeVentanas);
-
     }
 
     /*  

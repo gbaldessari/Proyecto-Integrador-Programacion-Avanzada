@@ -13,7 +13,6 @@ import cl.ucn.PIPA.logica.Sistema;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
@@ -46,7 +45,8 @@ public class VentanaMenu implements Ventana {
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
-				cerrar(ventana);
+                administradorDeVentanas.ventanaCierre(ventana);
+                ventana.enable(false);
 			}
 		});
         this.tema = tema;
@@ -195,12 +195,4 @@ public class VentanaMenu implements Ventana {
         return lineas;
     }
 
-    private void cerrar(JFrame ventana){
-		String [] botones = {"Cerrar", "Cancelar"};
-		int eleccion = JOptionPane.showOptionDialog(ventana, "¿Desea cerrar la aplicación", "Confirmar cierre",
-		0,JOptionPane.WARNING_MESSAGE,null,botones,ventana);
-		if(eleccion==JOptionPane.YES_OPTION){
-			System.exit(0);
-		}
-	}
 }
