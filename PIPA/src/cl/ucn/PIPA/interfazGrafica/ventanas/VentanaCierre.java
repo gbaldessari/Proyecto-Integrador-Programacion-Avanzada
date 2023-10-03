@@ -19,7 +19,7 @@ public class VentanaCierre implements Ventana{
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
-                ventanaActiva.enable(true);
+                ventanaActiva.setEnabled(true);
 				ventana.setVisible(false);
 			}
 		});
@@ -49,7 +49,7 @@ public class VentanaCierre implements Ventana{
 
         cancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ventanaActiva.enable(true);
+                ventanaActiva.setEnabled(true);
                 ventana.setVisible(false);
             }
         });

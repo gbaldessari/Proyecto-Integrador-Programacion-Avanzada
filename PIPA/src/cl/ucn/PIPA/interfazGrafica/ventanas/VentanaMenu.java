@@ -46,7 +46,7 @@ public class VentanaMenu implements Ventana {
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
                 administradorDeVentanas.ventanaCierre(ventana);
-                ventana.enable(false);
+                ventana.setEnabled(false);
 			}
 		});
         this.tema = tema;

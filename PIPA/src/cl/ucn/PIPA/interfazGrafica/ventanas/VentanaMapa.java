@@ -9,7 +9,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
@@ -28,7 +27,7 @@ public class VentanaMapa implements Ventana{
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
                 administradorDeVentanas.ventanaCierre(ventana);
-                ventana.enable(false);
+                ventana.setEnabled(false);
 			}
 		});
         this.tema = tema;

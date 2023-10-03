@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import cl.ucn.PIPA.dominio.Tema;
@@ -29,7 +28,7 @@ public class VentanaTema implements Ventana{
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
                 administradorDeVentanas.ventanaCierre(ventana);
-                ventana.enable(false);
+                ventana.setEnabled(false);
 			}
 		});
         ventana.setSize(300,175);
