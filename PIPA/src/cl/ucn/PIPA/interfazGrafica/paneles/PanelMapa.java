@@ -1,6 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.paneles;
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -16,6 +15,7 @@ import javax.swing.JLabel;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
+import cl.ucn.PIPA.utils.Haversine;
 
 public class PanelMapa extends JPanel{
     private Sistema sistema;
@@ -26,10 +26,6 @@ public class PanelMapa extends JPanel{
     private double scale;
     private int offsetX;
     private int offsetY;
-    private int minPosX;
-    private int maxPosX;
-    private int minPosY;
-    private int maxPosY;
     private Point lastDragPoint;
     private Graphics2D graphics2d;
     private LinkedList<Punto> puntos;
@@ -39,6 +35,9 @@ public class PanelMapa extends JPanel{
     private Tema tema;
     private JLabel c1;
     private JLabel c2;
+    private JLabel id1;
+    private JLabel id2;
+    private JLabel km;
     
     public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
@@ -54,10 +53,6 @@ public class PanelMapa extends JPanel{
         scale = 0.1;
         offsetX = -5000;
         offsetY = -50;
-        minPosX=-20000;
-        maxPosX=140000;
-        minPosY=-20000;
-        maxPosY=140000;
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
 
@@ -137,6 +132,9 @@ public class PanelMapa extends JPanel{
     
     public void setC1(JLabel c1){this.c1=c1;}
     public void setC2(JLabel c2){this.c2=c2;}
+    public void setid1(JLabel id1){this.id1=id1;}
+    public void setid2(JLabel id2){this.id2=id2;}
+    public void setKm(JLabel km){this.km=km;}
     public void borrarOrigenDestino(){
         puntoPartida = null;
         puntoDestino = null;
@@ -151,13 +149,6 @@ public class PanelMapa extends JPanel{
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
 
-        graphics2d.setColor(Color.BLACK);
-        graphics2d.setStroke(new BasicStroke(5));
-        graphics2d.drawLine(maxPosX,maxPosY,maxPosX,minPosY);
-        graphics2d.drawLine(maxPosX,maxPosY,minPosX,maxPosY);
-        graphics2d.drawLine(minPosX,minPosY,minPosX,maxPosY);
-        graphics2d.drawLine(minPosX,minPosY,maxPosX,minPosY);
-
         graphics2d.setColor(tema.getLineas());
         graphics2d.setStroke(new BasicStroke(1));
         
@@ -171,31 +162,43 @@ public class PanelMapa extends JPanel{
         
         graphics2d.setColor(tema.getPuntos());
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
-            int x = valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-1;
-            int y = valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-1;
-            graphics2d.fillOval(x,y,2, 2);
+            int x = valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-2;
+            int y = valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-2;
+            graphics2d.fillOval(x,y,4, 4);
             Punto punto = new Punto( new Point(x,y), sistema.getGrafo().getNodos().get(i));
             puntos.add(punto);
         }
         if(puntoPartida!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval(puntoPartida.getPoint().x,puntoPartida.getPoint().y,2, 2);
+            graphics2d.fillOval(puntoPartida.getPoint().x,puntoPartida.getPoint().y,4, 4);
+            this.id1.setText("ID: "+puntoPartida.getNodo().getId());
             this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
         }
         else{
             this.c1.setText("");
+            this.id1.setText("");
         }
         if(puntoDestino!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,2, 2);
+            graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,4, 4);
+            this.id2.setText("ID: "+puntoDestino.getNodo().getId());
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
+            double kilometros = Haversine.distancia(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
+            if(kilometros<1){
+                this.km.setText(String.format("%." + 2 + "f",kilometros*1000) + " m");
+            }else{
+                this.km.setText(String.format("%." + 3 + "f",kilometros) + " km");
+            }
         }
         else{
             this.c2.setText("");
+            this.id2.setText("");
+            this.km.setText("");
         }
 
+
         Image image = imageIcon.getImage();
-        graphics2d.drawImage(image, maxPosX,maxPosY, this);
+        graphics2d.drawImage(image, -2000,-2000, this);
     }
 
     private void getLimites(){

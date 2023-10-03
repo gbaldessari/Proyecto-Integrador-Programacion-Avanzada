@@ -2,6 +2,7 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import cl.ucn.PIPA.dominio.Tema;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -12,10 +13,12 @@ import java.awt.event.WindowEvent;
 public class VentanaCierre implements Ventana{
     private JFrame ventana;
     private JFrame ventanaActiva;
+    private Tema tema;
 
-    public VentanaCierre(JFrame ventanaActiva) {
+    public VentanaCierre(JFrame ventanaActiva, Tema tema) {
         this.ventanaActiva = ventanaActiva;
-        this.ventana = new JFrame("Cerra aplicación");
+        this.tema = tema;
+        this.ventana = new JFrame("Cerrar aplicación");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
@@ -30,11 +33,19 @@ public class VentanaCierre implements Ventana{
 
     public void iniciarVentana(){
         JPanel panel = new JPanel();
+        panel.setBackground(tema.getFondo());
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
 
+        JLabel texto = new JLabel("¿Desea cerrar la aplicación?");
+        texto.setBounds(60,20,170,25);
+        texto.setForeground(tema.getLetra());
+        panel.add(texto);
+
         JButton cerrar = new JButton("Cerrar");
 		cerrar.setBounds(30, 50, 100, 25);
+        cerrar.setBackground(tema.getBoton());
+        cerrar.setForeground(tema.getLetra());
 		panel.add(cerrar);
 
         cerrar.addActionListener(new ActionListener() {
@@ -45,6 +56,8 @@ public class VentanaCierre implements Ventana{
 
         JButton cancelar = new JButton("Cancelar");
         cancelar.setBounds(160, 50, 100, 25);
+        cancelar.setBackground(tema.getBoton());
+        cancelar.setForeground(tema.getLetra());
 		panel.add(cancelar);
 
         cancelar.addActionListener(new ActionListener() {
@@ -53,11 +66,7 @@ public class VentanaCierre implements Ventana{
                 ventana.setVisible(false);
             }
         });
-
-        JLabel texto = new JLabel("¿Desea cerrar la aplicación?");
-        texto.setBounds(60,20,170,25);
-        panel.add(texto);
-
+        
         ventana.setVisible(true);
     }
 

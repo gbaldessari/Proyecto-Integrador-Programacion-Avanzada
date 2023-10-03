@@ -61,7 +61,7 @@ public class SistemaImpl implements Sistema{
                                 ,Color.RGBtoHSB(35,39,42, null)//UI
                                 ,Color.RGBtoHSB(153,170,181, null)//Botones
                                 ,Color.RGBtoHSB(255, 255, 255, null)//Texto
-                                ,Color.RGBtoHSB(255, 255, 0, null)//Lineas
+                                ,Color.RGBtoHSB(153,170,181, null)//Lineas
                                 ,Color.RGBtoHSB(255, 255, 255, null)//Puntos
                                 ,Color.RGBtoHSB(255, 0, 0, null));//Puntos seleccionados
         temas.add(oscuro);

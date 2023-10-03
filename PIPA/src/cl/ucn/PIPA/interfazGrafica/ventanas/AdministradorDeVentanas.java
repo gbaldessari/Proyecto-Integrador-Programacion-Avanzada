@@ -49,7 +49,7 @@ public class AdministradorDeVentanas {
 	}
 
 	public void ventanaCierre(JFrame ventanaActiva){
-		Ventana ventana = new VentanaCierre(ventanaActiva);
+		Ventana ventana = new VentanaCierre(ventanaActiva,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 
