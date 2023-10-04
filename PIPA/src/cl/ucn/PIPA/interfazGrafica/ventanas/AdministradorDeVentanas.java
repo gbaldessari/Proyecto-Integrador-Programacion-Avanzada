@@ -58,15 +58,16 @@ public class AdministradorDeVentanas {
 		ventana.iniciarVentana();
 	}
 
+	public void ventanaArchivos(AdministradorDeVentanas administradorDeVentanas){
+		Ventana ventana = new VentanaArchivos(administradorDeVentanas, sistema, temaSeleccionado);
+		ventana.iniciarVentana();
+	}
+
     public void limpiarVentana(JFrame ventana) {
 		ventana.getContentPane().removeAll();
 		ventana.revalidate();
 		ventana.repaint();
     }
-	
-	public void mostrarIDNodo(String ID){
-		JOptionPane.showMessageDialog(null,ID,"ID Nodo",JOptionPane.INFORMATION_MESSAGE);
-	}
 
 	public Tema getTemaSeleccionado(){
 		return temaSeleccionado;

@@ -21,7 +21,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -36,8 +35,6 @@ public class VentanaMenu implements Ventana {
     private Thread hiloArchivo;
     private JProgressBar barraProgreso;
     private int progreso;
-    private int nodos;
-    private int edges;
 
     /**
      * Constructor de la clase
@@ -55,8 +52,8 @@ public class VentanaMenu implements Ventana {
 		});
         this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
-        ventana.setSize(300,190);
-        ventana.setMaximumSize(new Dimension(300,190));
+        ventana.setSize(350,250);
+        ventana.setMaximumSize(new Dimension(350,250));
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
     }
@@ -66,16 +63,16 @@ public class VentanaMenu implements Ventana {
         panel.setBackground(tema.getFondo());
 		panel.setLayout(null);
 		ventana.getContentPane().add(panel,BorderLayout.CENTER);
-
+        
 		JLabel mensaje = new JLabel("Menú Principal");
         mensaje.setForeground(tema.getLetra());
-		mensaje.setBounds(102, 0, 250, 50);
+		mensaje.setBounds(130, 0, 250, 50);
 		panel.add(mensaje);
 		
 		JButton botonMostrarMapa = new JButton("Ver mapa");
         botonMostrarMapa.setBackground(tema.getBoton());
         botonMostrarMapa.setForeground(tema.getLetra());
-		botonMostrarMapa.setBounds(72, 50, 140, 25);
+		botonMostrarMapa.setBounds(85, 50, 165, 25);
 		panel.add(botonMostrarMapa);
 		
 		botonMostrarMapa.addActionListener(new ActionListener() {
@@ -89,13 +86,26 @@ public class VentanaMenu implements Ventana {
         JButton botonSeleccionTema = new JButton("Cambiar tema");
         botonSeleccionTema.setBackground(tema.getBoton());
         botonSeleccionTema.setForeground(tema.getLetra());
-		botonSeleccionTema.setBounds(72, 85, 140, 25);
+		botonSeleccionTema.setBounds(85, 85, 165, 25);
 		panel.add(botonSeleccionTema);
 		
 		botonSeleccionTema.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
+        JButton seleccionArchivos = new JButton("Seleccionar archivos");
+        seleccionArchivos.setBackground(tema.getBoton());
+        seleccionArchivos.setForeground(tema.getLetra());
+		seleccionArchivos.setBounds(85, 120, 165, 25);
+		panel.add(seleccionArchivos);
+        seleccionArchivos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.limpiarVentana(ventana);
+                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });
@@ -153,7 +163,7 @@ public class VentanaMenu implements Ventana {
     }
 
     public void guardarNodos(NodeList nodos, JLabel texto){
-        texto.setText("Cargando archivos...");
+        texto.setText("Cargando...");
         for (int i = 0;i<nodos.getLength();i++) {
             Element nodo = (Element) nodos.item(i);
             String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
@@ -174,7 +184,6 @@ public class VentanaMenu implements Ventana {
             String origen = arco.getElementsByTagName("u").item(0).getTextContent();
             String destino = arco.getElementsByTagName("v").item(0).getTextContent();
             sistema.getGrafo().addArco(id, nombre, origen, destino);
-            if(i==arcos.getLength()/3){texto.setText("Iniciando aplicación...");}
             progreso++;
             barraProgreso.setValue(progreso);
         }
@@ -213,7 +222,7 @@ public class VentanaMenu implements Ventana {
             Document doc = dBuilder.parse(archivoXML);
             Element rootElement = doc.getDocumentElement();
             NodeList nodeList = rootElement.getChildNodes();
-            Element nodo1 = (Element) nodeList.item(0);
+            Element nodo1 = (Element) nodeList.item(1);
             cantidadHijos = nodo1.getChildNodes().getLength();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
