@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
-import cl.ucn.PIPA.utils.Haversine;
+import cl.ucn.PIPA.utils.Utils;
 
 public class PanelMapa extends JPanel{
     private Sistema sistema;
@@ -183,7 +183,7 @@ public class PanelMapa extends JPanel{
             graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,4, 4);
             this.id2.setText("ID: "+puntoDestino.getNodo().getId());
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
-            double kilometros = Haversine.distancia(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
+            double kilometros = Utils.distancia(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
             if(kilometros<1){
                 this.km.setText(String.format("%." + 2 + "f",kilometros*1000) + " m");
             }else{

@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
@@ -20,6 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -34,6 +36,8 @@ public class VentanaMenu implements Ventana {
     private Thread hiloArchivo;
     private JProgressBar barraProgreso;
     private int progreso;
+    private int nodos;
+    private int edges;
 
     /**
      * Constructor de la clase
@@ -180,19 +184,42 @@ public class VentanaMenu implements Ventana {
         int lineas = 0;
         try (LineNumberReader reader = new LineNumberReader(new FileReader("nodes.xml"))) {
             reader.skip(Long.MAX_VALUE); // Saltar al final del archivo
-            lineas = (reader.getLineNumber()-3)/8; // El número de líneas es el número de línea actual más 1
+            lineas = (reader.getLineNumber()-3)/obtenerHijos(true); // El número de líneas es el número de línea actual más 1
         } catch (IOException e) {
             administradorDeVentanas.mostrarError("No se encontro el archivo 'nodes.xml'");
             System.exit(0);
         }
         try (LineNumberReader reader = new LineNumberReader(new FileReader("edges.xml"))) {
             reader.skip(Long.MAX_VALUE); // Saltar al final del archivo
-            lineas += (reader.getLineNumber()-3)/7; // El número de líneas es el número de línea actual más 1
+            lineas += (reader.getLineNumber()-3)/obtenerHijos(false); // El número de líneas es el número de línea actual más 1
         } catch (IOException e) {
             administradorDeVentanas.mostrarError("No se encontro el archivo 'edges.xml'");
             System.exit(0);
         }
         return lineas;
+    }
+
+    private int obtenerHijos(boolean nodo){
+        String nombre;
+        if(nodo){nombre = "nodes.xml";}
+        else{nombre = "edges.xml";}
+        File archivoXML = new File(nombre);
+        int cantidadHijos = 0;
+        // Crea un objeto DocumentBuilderFactory y DocumentBuilder para analizar el archivo XML
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder;
+        try {
+            dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(archivoXML);
+            Element rootElement = doc.getDocumentElement();
+            NodeList nodeList = rootElement.getChildNodes();
+            Element nodo1 = (Element) nodeList.item(0);
+            cantidadHijos = nodo1.getChildNodes().getLength();
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            e.printStackTrace();
+        }
+        // Cuenta la cantidad de nodos hijos (descarta los nodos de texto y espacios en blanco)
+        return cantidadHijos;
     }
 
 }

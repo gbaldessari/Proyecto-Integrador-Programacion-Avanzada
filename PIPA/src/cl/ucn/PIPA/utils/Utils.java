@@ -1,7 +1,6 @@
 package cl.ucn.PIPA.utils;
 
-public class Haversine {
-    private static final int EARTH_RADIUS = 6371; // Approx Earth radius in KM
+public class Utils {
 
     public static double distancia(double startLat, double startLong,
                                   double endLat, double endLong) {
@@ -15,7 +14,7 @@ public class Haversine {
         double a = haversin(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversin(dLong);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return EARTH_RADIUS * c;
+        return 6371 * c;
     }
 
     private static double haversin(double val) {

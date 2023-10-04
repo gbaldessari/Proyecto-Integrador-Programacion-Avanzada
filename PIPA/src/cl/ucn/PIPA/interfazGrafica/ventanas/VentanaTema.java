@@ -10,7 +10,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -82,5 +81,4 @@ public class VentanaTema implements Ventana{
         });
 		ventana.setVisible(true);
     }
-
 }
