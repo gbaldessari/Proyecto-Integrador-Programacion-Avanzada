@@ -122,6 +122,7 @@ public class VentanaMenu implements Ventana {
             panelB.add(barraProgreso);
             botonMostrarMapa.setEnabled(false);
             botonSeleccionTema.setEnabled(false);
+            seleccionArchivos.setEnabled(false);
             hiloArchivo = new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -130,6 +131,7 @@ public class VentanaMenu implements Ventana {
                     mensaje.setText("Menú principal");
                     botonMostrarMapa.setEnabled(true);
                     botonSeleccionTema.setEnabled(true);
+                    seleccionArchivos.setEnabled(true);
                 }
             });
             hiloArchivo.start();
@@ -193,7 +195,7 @@ public class VentanaMenu implements Ventana {
         int lineas = 0;
         try (LineNumberReader reader = new LineNumberReader(new FileReader("nodes.xml"))) {
             reader.skip(Long.MAX_VALUE); // Saltar al final del archivo
-            lineas = (reader.getLineNumber()-3)/obtenerHijos(true); // El número de líneas es el número de línea actual más 1
+            lineas += (reader.getLineNumber()-3)/obtenerHijos(true); // El número de líneas es el número de línea actual más 1
         } catch (IOException e) {
             administradorDeVentanas.mostrarError("No se encontro el archivo 'nodes.xml'");
             System.exit(0);
@@ -205,6 +207,7 @@ public class VentanaMenu implements Ventana {
             administradorDeVentanas.mostrarError("No se encontro el archivo 'edges.xml'");
             System.exit(0);
         }
+        System.out.println(lineas);
         return lineas;
     }
 
@@ -230,5 +233,4 @@ public class VentanaMenu implements Ventana {
         // Cuenta la cantidad de nodos hijos (descarta los nodos de texto y espacios en blanco)
         return cantidadHijos;
     }
-
 }
