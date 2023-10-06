@@ -207,7 +207,6 @@ public class VentanaMenu implements Ventana {
             administradorDeVentanas.mostrarError("No se encontro el archivo 'edges.xml'");
             System.exit(0);
         }
-        System.out.println(lineas);
         return lineas;
     }
 
