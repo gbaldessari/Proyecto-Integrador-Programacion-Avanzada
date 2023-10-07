@@ -53,11 +53,6 @@ public class AdministradorDeVentanas {
 		ventana.iniciarVentana();
 	}
 
-	public void ventanaLectura(AdministradorDeVentanas administradorDeVentanas){
-		Ventana ventana = new VentanaArchivos(administradorDeVentanas,sistema,temaSeleccionado);
-		ventana.iniciarVentana();
-	}
-
 	public void ventanaArchivos(AdministradorDeVentanas administradorDeVentanas){
 		Ventana ventana = new VentanaArchivos(administradorDeVentanas, sistema, temaSeleccionado);
 		ventana.iniciarVentana();

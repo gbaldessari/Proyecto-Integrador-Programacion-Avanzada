@@ -14,4 +14,6 @@ public interface Sistema {
     public String[] getListaTemas(AdministradorDeVentanas administradorDeVentanas);
     public LinkedList<Tema> getTemas();
     AdministradorDeVentanas getAdministradorDeVentanas();
+    public void setDireccion(String direccion);
+    public String getDireccion();
 }

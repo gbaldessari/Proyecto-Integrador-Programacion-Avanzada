@@ -12,13 +12,14 @@ public class SistemaImpl implements Sistema{
     private AdministradorDeVentanas administradorDeVentanas;
     private Grafo grafo;
     private LinkedList<Tema> temas;
-
+    private String direccion;
 
     /* Constructor del sistema
      * Inicializa la estructura de datos y los administradores de ventanas
      * @param sistema, la superclase del sistema
      */
     public void iniciarApp(Sistema sistema) {
+        direccion = "";
         grafo = new Grafo();
         temas = new LinkedList<>();
         obtenerTemas(); 
@@ -70,5 +71,13 @@ public class SistemaImpl implements Sistema{
     @Override
     public LinkedList<Tema> getTemas() {
         return temas;
+    }
+
+    public void setDireccion(String direccion){
+        this.direccion = direccion;
+    }
+
+    public String getDireccion(){
+        return this.direccion;
     }
 }
