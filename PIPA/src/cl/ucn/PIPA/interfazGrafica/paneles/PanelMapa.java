@@ -220,7 +220,7 @@ public class PanelMapa extends JPanel{
             graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,4, 4);
             this.id2.setText("ID: "+puntoDestino.getNodo().getId());
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
-            double kilometros = Utils.distancia(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
+            double kilometros = Utils.haversine(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
             if(kilometros<1){
                 this.km.setText(String.format("%." + 2 + "f",kilometros*1000) + " m");
             }else{
@@ -256,7 +256,7 @@ public class PanelMapa extends JPanel{
     }
 
     private boolean inLimitesPoint(int x, int y){
-        Rectangle2D rect = new Rectangle2D.Double(visibleX, visibleY, visibleWidth, visibleHeight);
+        Rectangle2D rect = new Rectangle2D.Double(visibleX-10, visibleY-10, visibleWidth+20, visibleHeight+20);
         if(rect.contains(x,y)){
             return true;
         }

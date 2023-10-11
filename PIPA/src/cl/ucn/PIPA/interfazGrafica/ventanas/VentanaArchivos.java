@@ -55,7 +55,6 @@ public class VentanaArchivos implements Ventana{
         volver.setForeground(tema.getLetra());
         volver.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }
@@ -68,7 +67,6 @@ public class VentanaArchivos implements Ventana{
         confirmar.setEnabled(false);
         confirmar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }

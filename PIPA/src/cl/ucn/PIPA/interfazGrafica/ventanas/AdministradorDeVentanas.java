@@ -58,12 +58,6 @@ public class AdministradorDeVentanas {
 		ventana.iniciarVentana();
 	}
 
-    public void limpiarVentana(JFrame ventana) {
-		ventana.getContentPane().removeAll();
-		ventana.revalidate();
-		ventana.repaint();
-    }
-
 	public Tema getTemaSeleccionado(){
 		return temaSeleccionado;
 	}

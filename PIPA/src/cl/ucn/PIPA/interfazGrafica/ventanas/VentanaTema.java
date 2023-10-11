@@ -60,7 +60,6 @@ public class VentanaTema implements Ventana{
         panel.add(botonMenu);
 		botonMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }
@@ -74,7 +73,6 @@ public class VentanaTema implements Ventana{
 		botonAplicar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 				administradorDeVentanas.setTema(seleccionTema.getSelectedIndex()-1);
-                administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
             }

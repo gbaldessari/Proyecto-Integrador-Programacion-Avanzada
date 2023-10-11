@@ -51,7 +51,6 @@ public class VentanaMapa implements Ventana{
         ventana.getContentPane().add(panel,BorderLayout.SOUTH);
 		botonMenu.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana); 
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }

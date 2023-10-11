@@ -1,8 +1,8 @@
 package cl.ucn.PIPA.utils;
 
 public class Utils {
-
-    public static double distancia(double startLat, double startLong,
+    
+    public static double haversine(double startLat, double startLong,
                                   double endLat, double endLong) {
 
         double dLat  = Math.toRadians((endLat - startLat));

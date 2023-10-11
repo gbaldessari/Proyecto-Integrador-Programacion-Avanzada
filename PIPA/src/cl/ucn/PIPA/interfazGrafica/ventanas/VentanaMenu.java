@@ -74,12 +74,10 @@ public class VentanaMenu implements Ventana {
         botonMostrarMapa.setBackground(tema.getBoton());
         botonMostrarMapa.setForeground(tema.getLetra());
 		botonMostrarMapa.setBounds(85, 50, 165, 25);
-        if(sistema.getGrafo().getNodos().size()==0||sistema.getGrafo().getArcos().size()==0){botonMostrarMapa.setEnabled(false);}
 		panel.add(botonMostrarMapa);
 		
 		botonMostrarMapa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
                 ventana.setVisible(false);
             }
@@ -93,20 +91,34 @@ public class VentanaMenu implements Ventana {
 		
 		botonSeleccionTema.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana);
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });
 
-        JButton cargarArchivos = new JButton("Cargar archivos");
-        cargarArchivos.setBackground(tema.getBoton());
-        cargarArchivos.setForeground(tema.getLetra());
-		cargarArchivos.setBounds(85, 155, 165, 25);
-        cargarArchivos.setEnabled(false);
-		panel.add(cargarArchivos);
-        cargarArchivos.addActionListener(new ActionListener() {
+        JButton botonSeleccionArchivos = new JButton("Seleccionar archivos");
+        botonSeleccionArchivos.setBackground(tema.getBoton());
+        botonSeleccionArchivos.setForeground(tema.getLetra());
+		botonSeleccionArchivos.setBounds(85, 120, 165, 25);
+		panel.add(botonSeleccionArchivos);
+        botonSeleccionArchivos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
+        JButton botonCargarArchivos = new JButton("Cargar archivos");
+        botonCargarArchivos.setBackground(tema.getBoton());
+        botonCargarArchivos.setForeground(tema.getLetra());
+		botonCargarArchivos.setBounds(85, 155, 165, 25);
+        botonCargarArchivos.setEnabled(false);
+		panel.add(botonCargarArchivos);
+        botonCargarArchivos.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                botonSeleccionTema.setEnabled(false);
+                botonSeleccionArchivos.setEnabled(false);
+                botonCargarArchivos.setEnabled(false);
                 administradorDeVentanas.vaciarLista();
                 JPanel panelB = new JPanel();
                 panelB.setBackground(tema.getFondo());
@@ -127,25 +139,24 @@ public class VentanaMenu implements Ventana {
                         mensaje.setText("Menú principal");
                         botonMostrarMapa.setEnabled(true);
                         botonSeleccionTema.setEnabled(true);
+                        botonSeleccionArchivos.setEnabled(true);
                     }
                 });
                 hiloArchivo.start();
             }
         });
-        if(sistema.getDireccion()!=""){cargarArchivos.setEnabled(true);}
-        JButton seleccionArchivos = new JButton("Seleccionar archivos");
-        seleccionArchivos.setBackground(tema.getBoton());
-        seleccionArchivos.setForeground(tema.getLetra());
-		seleccionArchivos.setBounds(85, 120, 165, 25);
-		panel.add(seleccionArchivos);
-        seleccionArchivos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.limpiarVentana(ventana);
-                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
-                ventana.setVisible(false);
-            }
-        });
+        
+        if(sistema.getGrafo().getNodos().size()==0||sistema.getGrafo().getArcos().size()==0){
+            botonMostrarMapa.setEnabled(false);
+        }
 
+        if(sistema.getDireccion()!=""){
+            botonCargarArchivos.setEnabled(true);
+        
+        }
+        else{
+            botonCargarArchivos.setEnabled(false);
+        }
         ventana.setVisible(true);
     }
 
