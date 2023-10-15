@@ -19,7 +19,6 @@ import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -135,7 +134,6 @@ public class VentanaMenu implements Ventana {
                         mensaje.setText("Cargando...");
                         leerXML(true);
                         leerXML(false);
-                        System.out.println(progreso);
                         mensaje.setText("Menú principal");
                         botonMostrarMapa.setEnabled(true);
                         botonSeleccionTema.setEnabled(true);

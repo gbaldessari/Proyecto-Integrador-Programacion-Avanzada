@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -22,9 +23,8 @@ import cl.ucn.PIPA.utils.Utils;
 
 public class PanelMapa extends JPanel{
     private Sistema sistema;
-    private double mayorX;
+    private double deltaCords;
     private double menorX;
-    private double mayorY;
     private double menorY;
     private double scale;
     private int offsetX;
@@ -47,7 +47,6 @@ public class PanelMapa extends JPanel{
     private JLabel id2;
     private JLabel km;
 
-
     public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
         this.tema = tema;
@@ -55,17 +54,14 @@ public class PanelMapa extends JPanel{
         lineas = new LinkedList<>();
         puntoPartida = null;
         puntoDestino = null;
-        mayorX = Double.MIN_VALUE;
-        menorX = Double.MAX_VALUE;
-        mayorY = Double.MIN_VALUE;
-        menorY = Double.MAX_VALUE;
-        getLimites();
-        scale = 0.1;
-        offsetX = -5000;
-        offsetY = -50;
+        offsetX = 0;
+        offsetY = 0;
+        scale = 0.025;
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
-
+        getLimites();
+        getPuntos();
+        getLineas();
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -138,22 +134,7 @@ public class PanelMapa extends JPanel{
             }
         });
 
-        for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
-            Linea linea = new Linea(new Line2D.Double(
-                        valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getOrigen().getX()*-1,true),
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getOrigen().getY()*-1,false),
-                        valorNormalizado(mayorX,menorX,sistema.getGrafo().getArcos().get(i).getDestino().getX()*-1,true),
-                        valorNormalizado(mayorY,menorY,sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false)), 
-                    sistema.getGrafo().getArcos().get(i));
-            lineas.add(linea);
-        }
         
-        for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
-            Punto punto = new Punto( new Point(valorNormalizado(mayorX,menorX,sistema.getGrafo().getNodos().get(i).getX()*-1,true)-2,
-                                    valorNormalizado(mayorY,menorY,sistema.getGrafo().getNodos().get(i).getY()*-1,false)-2),
-                                    sistema.getGrafo().getNodos().get(i));
-            puntos.add(punto);
-        }
     }
     
     public void setC1(JLabel c1){this.c1=c1;}
@@ -170,15 +151,12 @@ public class PanelMapa extends JPanel{
     public void paint(Graphics g){
         super.paint(g);
         graphics2d = (Graphics2D) g;
-
+        graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
     
-        
-
         int panelWidth = getWidth();
         int panelHeight = getHeight();
-
         visibleWidth = (panelWidth / scale);
         visibleHeight = (panelHeight / scale);
         visibleX = (-offsetX / scale);
@@ -206,7 +184,7 @@ public class PanelMapa extends JPanel{
 
         if(puntoPartida!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval(puntoPartida.getPoint().x,puntoPartida.getPoint().y,4, 4);
+            graphics2d.fillOval((int)puntoPartida.getPoint().getX(),(int)puntoPartida.getPoint().getY(),4, 4);
             this.id1.setText("ID: "+puntoPartida.getNodo().getId());
             this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
         }
@@ -217,10 +195,10 @@ public class PanelMapa extends JPanel{
 
         if(puntoDestino!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval(puntoDestino.getPoint().x,puntoDestino.getPoint().y,4, 4);
+            graphics2d.fillOval((int)puntoDestino.getPoint().getX(),(int)puntoDestino.getPoint().getY(),4, 4);
             this.id2.setText("ID: "+puntoDestino.getNodo().getId());
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
-            double kilometros = Utils.haversine(puntoPartida.getNodo().getX(),puntoPartida.getNodo().getY(),puntoDestino.getNodo().getX(),puntoDestino.getNodo().getY());
+            double kilometros = Utils.haversine(puntoPartida.getNodo().getY(),puntoPartida.getNodo().getX(),puntoDestino.getNodo().getY(),puntoDestino.getNodo().getX());
             if(kilometros<1){
                 this.km.setText(String.format("%." + 2 + "f",kilometros*1000) + " m");
             }else{
@@ -239,6 +217,10 @@ public class PanelMapa extends JPanel{
     }
 
     private void getLimites(){
+        double mayorX = Double.MIN_VALUE;
+        menorX = Double.MAX_VALUE;
+        double mayorY = Double.MIN_VALUE;
+        menorY = Double.MAX_VALUE;
         for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
             if(sistema.getGrafo().getNodos().get(i).getX()*-1>mayorX){
                 mayorX = sistema.getGrafo().getNodos().get(i).getX()*-1;
@@ -252,6 +234,14 @@ public class PanelMapa extends JPanel{
             if(sistema.getGrafo().getNodos().get(i).getY()*-1<menorY){
                 menorY = sistema.getGrafo().getNodos().get(i).getY()*-1;
             }
+        }
+        double deltaX = Math.abs(mayorX-menorX);
+        double deltaY = Math.abs(mayorY-menorY);
+        if(deltaX>deltaY){
+            deltaCords = deltaX;
+        }
+        else{
+            deltaCords = deltaY;
         }
     }
 
@@ -271,13 +261,13 @@ public class PanelMapa extends JPanel{
         return false;
     }
 
-    private int valorNormalizado(double mayor,double menor,double valor,boolean x){
+    private int valorNormalizado(double valor,boolean x){
         double valorfinal = 0;
         if(x){
-            valorfinal = (1-(valor-menor)/(mayor-menor))*100000;
+            valorfinal = (1-(valor-menorX)/(deltaCords))*100000;
         }
         else{
-            valorfinal = (valor-menor)/(mayor-menor)*100000;
+            valorfinal = (valor-menorY)/(deltaCords)*100000;
         }
         return (int)valorfinal;
     }
@@ -294,7 +284,7 @@ public class PanelMapa extends JPanel{
     }
 
     private double calculateDistance(Point2D.Double p1, Punto p2) {
-        return p1.distance(p2.getPoint().x, p2.getPoint().y);
+        return p1.distance(p2.getPoint().getX(), p2.getPoint().getY());
     }
     
     public String[] getDatoNodoOrigen(){
@@ -305,5 +295,45 @@ public class PanelMapa extends JPanel{
             datos[2] = Double.toString(puntoPartida.getNodo().getY());
         }
         return datos;
-    } 
+    }
+
+    private void getPuntos(){
+        double mayX = Double.MIN_VALUE;
+        double menX = Double.MAX_VALUE;
+        double mayY = Double.MIN_VALUE;
+        double menY = Double.MAX_VALUE;
+        for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
+            Punto punto = new Punto( new Point(valorNormalizado(sistema.getGrafo().getNodos().get(i).getX()*-1,true)-2,
+                                    valorNormalizado(sistema.getGrafo().getNodos().get(i).getY()*-1,false)-2),
+                                    sistema.getGrafo().getNodos().get(i));
+            if(punto.getPoint().getX()>mayX){
+                mayX = punto.getPoint().getX();
+            }
+            if(punto.getPoint().getY()>mayY){
+                mayY = punto.getPoint().getY();
+            }
+            if(punto.getPoint().getX()<menX){
+                menX = punto.getPoint().getX();
+            }
+            if(punto.getPoint().getY()<menY){
+                menY = punto.getPoint().getY();
+            }
+            puntos.add(punto);
+        }
+
+        offsetX = (int)((-(mayX+menX)/2)*scale+944/2);
+        offsetY = (int)((-(mayY+menY)/2)*scale+625/2);
+    }
+
+    private void getLineas(){
+        for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
+            Linea linea = new Linea(new Line2D.Double(
+                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getOrigen().getX()*-1,true),
+                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getOrigen().getY()*-1,false),
+                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getDestino().getX()*-1,true),
+                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false)), 
+                    sistema.getGrafo().getArcos().get(i));
+            lineas.add(linea);
+        }
+    }
 }
