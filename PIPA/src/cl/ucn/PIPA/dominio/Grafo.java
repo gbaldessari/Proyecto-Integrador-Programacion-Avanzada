@@ -22,9 +22,31 @@ public class Grafo {
 	 */
 	public void addNodo(String id,double posX,double posY)
 	{
-		Nodo nodo = new Nodo(id,posX,posY); 
-		nodos.add(nodo); 
+		Nodo nodo = new Nodo(id,posX,posY);
+		int insertIndex = binaryAdd(nodo);
+		if(insertIndex!=-1){
+			nodos.add(insertIndex,nodo);
+		}
 	}
+
+    private int binaryAdd(Nodo nodo) {
+        int posIzq = 0;
+        int posDer = nodos.size() - 1;
+
+        while (posIzq <= posDer) {
+            int posMid = posIzq + (posDer - posIzq) / 2;
+            int comparacion = nodo.getId().compareTo(nodos.get(posMid).getId());
+
+            if (comparacion == 0) {
+                return -1;
+            } else if (comparacion < 0) {
+                posDer = posMid - 1;
+            } else {
+                posIzq = posMid + 1;
+            }
+        }
+        return posIzq;
+    }
 	/**
 	 * Agrega un arco a la lista de arcos
 	 * @param id id del arco
@@ -34,8 +56,8 @@ public class Grafo {
 	 */
 	public boolean addArco(String id, String nombre, String origen, String destino) {
 		
-		Nodo nodoOrigen = buscarNodo(origen); 
-		Nodo nodoDestino = buscarNodo(destino);
+		Nodo nodoOrigen = binarySearch(origen); 
+		Nodo nodoDestino = binarySearch(destino);
 		
 		if (nodoOrigen != null&&nodoDestino != null) {  //Si el nodo origen y el nodo destino existen se crea un arco
 			Arco arco = new Arco(id,nombre,nodoOrigen,nodoDestino);
@@ -63,16 +85,24 @@ public class Grafo {
 	 * Busca un nodo dentro del grafo
 	 * @param id string que contiene el id del nodo
 	 */
-	public Nodo buscarNodo(String id) 
-	{
-		for (Nodo nodo: nodos) {
-			if (nodo.getId().equals(id)) {
-				return nodo;
-			}
-		}
-		return null;
-	}
+	private Nodo binarySearch(String id) {
+		int posIzq = 0;
+        int posDer = nodos.size() - 1;
 
+        while (posIzq <= posDer) {
+            int posMid = posIzq + (posDer - posIzq) / 2;
+            int comparacion = id.compareTo(nodos.get(posMid).getId());
+
+            if (comparacion == 0) {
+                return nodos.get(posMid);
+            } else if (comparacion < 0) {
+                posDer = posMid - 1;
+            } else {
+                posIzq = posMid + 1;
+            }
+        }
+        return null;
+	}
 	/**
 	 * Comprueba si existe una ruta dentro del grafo
 	 * @param origen id del nodo de origen
@@ -89,8 +119,8 @@ public class Grafo {
 	 */
 	public ArrayList<Nodo> buscarRuta(String origen, String destino) {
 		
-		Nodo nodoOrigen = buscarNodo(origen);
-		Nodo nodoDestino = buscarNodo(destino);
+		Nodo nodoOrigen = binarySearch(origen);
+		Nodo nodoDestino = binarySearch(destino);
 		ArrayList<Nodo> nodosRuta = new ArrayList<>();
 		
 		if (nodoOrigen != null && nodoDestino != null && buscarRutaDFS(nodosRuta, nodoOrigen, nodoDestino)) {
