@@ -1,11 +1,14 @@
 package cl.ucn.PIPA.dominio;
 
+import java.util.ArrayList;
+
 /**
  * clase que representa la union entre dos nodos.
  */
 public class Arco {
-	private String id;
-	private String nombre;
+	private ArrayList<String> id;
+	private ArrayList<String> nombre;
+	private ArrayList<String> tipo;
 	private Nodo origen;
 	private Nodo destino;
 	/**
@@ -15,9 +18,10 @@ public class Arco {
 	 * @param origen nodo de origen del arco
 	 * @param destino nodo de destino del arco
 	 */
-	public Arco(String id,String nombre,Nodo origen, Nodo destino){
+	public Arco(ArrayList<String> id,ArrayList<String> nombre,ArrayList<String> tipo, Nodo origen, Nodo destino){
 		this.id = id;
 		this.nombre = nombre;
+		this.tipo = tipo;
         this.origen= origen;
         this.destino = destino;
     }
@@ -25,15 +29,18 @@ public class Arco {
 	 * Retorna el id del arco
 	 * @return String que contiene el id del arco
 	 */
-	public String getId(){
+	public ArrayList<String> getId(){
 		return id;
 	}
 	/**
 	 * Retorna el nombre del arco
 	 * @return String que contiene el nombre del arco
 	 */
-	public String getNombre(){
+	public ArrayList<String> getNombre(){
 		return nombre;
+	}
+	public ArrayList<String> getTipo() {
+		return tipo;
 	}
 	/**
 	 * Retorna el Nodo de origen del arco
@@ -49,5 +56,5 @@ public class Arco {
 	public Nodo getDestino() {
 		return destino;
 	}
-
+	
 }

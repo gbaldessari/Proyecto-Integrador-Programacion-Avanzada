@@ -1,5 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import cl.ucn.PIPA.dominio.Tema;
@@ -14,7 +14,7 @@ public class AdministradorDeVentanas {
 	* Constructor de la clase
 	* @param sistema, la superclase del sistema
 	*/
-	public AdministradorDeVentanas(Sistema sistema,LinkedList<Tema> temas) {
+	public AdministradorDeVentanas(Sistema sistema,ArrayList<Tema> temas) {
 		this.sistema = sistema;
 		temaSeleccionado = temas.get(0);
 	}
@@ -29,7 +29,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana ventana = new VentanaMenu(administradorDeVentanas,temaSeleccionado);
+		Ventana ventana = new VentanaMenu(administradorDeVentanas,sistema,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 	/*

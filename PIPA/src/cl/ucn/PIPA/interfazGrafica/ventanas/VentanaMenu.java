@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import cl.ucn.PIPA.dominio.Tema;
+import cl.ucn.PIPA.logica.Sistema;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,13 +20,15 @@ public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
     private JFrame ventana;
     private Tema tema;
+    private Sistema sistema;
     
 
     /**
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Tema tema) {
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas,Sistema sistema, Tema tema) {
+        this.sistema = sistema;
         this.ventana = new JFrame("Menú");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
@@ -56,8 +60,9 @@ public class VentanaMenu implements Ventana {
         botonMostrarMapa.setBackground(tema.getBoton());
         botonMostrarMapa.setForeground(tema.getLetra());
 		botonMostrarMapa.setBounds(85, 50, 165, 25);
+        botonMostrarMapa.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
 		panel.add(botonMostrarMapa);
-		
+
 		botonMostrarMapa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);

@@ -9,7 +9,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -19,12 +21,10 @@ import javax.swing.JProgressBar;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 
@@ -36,6 +36,7 @@ public class VentanaArchivos implements Ventana{
     private Thread hiloArchivo;
     private JProgressBar barraProgreso;
     private int progreso;
+    private String direccion;
 
     public VentanaArchivos(AdministradorDeVentanas administradorDeVentanas,Sistema sistema, Tema tema){
         this.ventana = new JFrame("Seleccionar archivos");
@@ -46,6 +47,7 @@ public class VentanaArchivos implements Ventana{
                 ventana.setEnabled(false);
 			}
 		});
+        direccion = "";
         this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
         this.sistema = sistema;
@@ -112,8 +114,8 @@ public class VentanaArchivos implements Ventana{
                 int valor = seleccion.showOpenDialog(null);
                 if(valor==JFileChooser.APPROVE_OPTION){
                     File carpSelec = seleccion.getSelectedFile();
-                    ciudadSeleccionada.setText(getNombreCarpeta(carpSelec.getAbsolutePath()));
-                    sistema.setDireccion(carpSelec.getAbsolutePath());
+                    ciudadSeleccionada.setText("Ciudad seleccionada: "+getNombreCarpeta(carpSelec.getAbsolutePath()));
+                    direccion = carpSelec.getAbsolutePath();
                     confirmar.setEnabled(true);
                 }
                 System.setProperty("user.dir",directorioWorkspace);
@@ -162,11 +164,11 @@ public class VentanaArchivos implements Ventana{
             String archivo;
             String nombre;
             if(nodo){
-                archivo = sistema.getDireccion()+"/nodes.xml";
+                archivo = direccion+"/nodes.xml";
                 nombre = "row";
             }
             else{
-                archivo = sistema.getDireccion()+"/edges.xml";
+                archivo = direccion+"/edges.xml";
                 nombre = "edge";
             }
             Document documento = builder.parse(new File(archivo));
@@ -192,25 +194,59 @@ public class VentanaArchivos implements Ventana{
     }
 
     private void guardarArcos(NodeList arcos){
+        Set<String> carreteras = new HashSet<>();
         for (int i = 0;i<arcos.getLength();i++) {
             Element arco = (Element) arcos.item(i);
             String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
-            String id = arco.getElementsByTagName("u").item(0).getTextContent();
+            String id = arco.getElementsByTagName("osmid").item(0).getTextContent();
+            String tipo = null;
+            if(arco.getElementsByTagName("highway").item(0)!= null){
+                tipo = arco.getElementsByTagName("highway").item(0).getTextContent();
+            }
             String origen = arco.getElementsByTagName("u").item(0).getTextContent();
             String destino = arco.getElementsByTagName("v").item(0).getTextContent();
-            sistema.getGrafo().addArco(id, nombre, origen, destino);
+            ArrayList<String> listaId= obtenerListaDeLinea(id);
+            ArrayList<String> listaNombre = obtenerListaDeLinea(nombre);
+            ArrayList<String> listaTipo = obtenerListaDeLinea(tipo);
+            sistema.getGrafo().addArco(listaId, listaNombre,listaTipo, origen, destino);
             progreso++;
             barraProgreso.setValue(progreso);
+            if(tipo!=null)guardarTipoCarretera(listaTipo,carreteras);
+        }
+        for (String t : carreteras) {
+            System.out.println(t);
+            sistema.getTiposCarreteras().add(t);
         }
     }
 
+    private static ArrayList<String> obtenerListaDeLinea(String linea) {
+        if(linea != null){
+            int inicio = linea.indexOf("[") + 1;
+            int fin = linea.indexOf("]");
+            if(fin<inicio){
+                fin = linea.length();
+            }
+            String[] elementos = linea.substring(inicio, fin).split(", ");
+            ArrayList<String> lista = new ArrayList<>();
+            for (String elemento : elementos) {
+                lista.add(elemento.replace("'", ""));
+            }
+            return lista;
+        }
+        return null;
+    }
+    private void guardarTipoCarretera(ArrayList<String> tipo,Set<String> carreteras){
+        for (String t : tipo) {
+            carreteras.add(t);
+        }
+    }
     private int obtenerLineasTotales() {
         int lineas = 0;
         try {
             // Contar líneas en el archivo nodes.xml
-            lineas += contarLineas(sistema.getDireccion() + "/nodes.xml");
+            lineas += contarLineas(direccion + "/nodes.xml");
             // Contar líneas en el archivo edges.xml
-            lineas += contarLineas(sistema.getDireccion() + "/edges.xml");
+            lineas += contarLineas(direccion + "/edges.xml");
         } catch (IOException e) {
             administradorDeVentanas.mostrarError("Error al contar líneas en archivos XML.");
         }

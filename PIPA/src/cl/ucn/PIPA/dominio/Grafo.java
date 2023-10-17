@@ -54,13 +54,13 @@ public class Grafo {
 	 * @param origen nombre del nodo de origen del arco
 	 * @param destino nombre del nodo de destino del arco
 	 */
-	public boolean addArco(String id, String nombre, String origen, String destino) {
+	public boolean addArco(ArrayList<String> id, ArrayList<String> nombre, ArrayList<String> tipo, String origen, String destino) {
 		
 		Nodo nodoOrigen = binarySearch(origen); 
 		Nodo nodoDestino = binarySearch(destino);
 		
 		if (nodoOrigen != null&&nodoDestino != null) {  //Si el nodo origen y el nodo destino existen se crea un arco
-			Arco arco = new Arco(id,nombre,nodoOrigen,nodoDestino);
+			Arco arco = new Arco(id,nombre,tipo,nodoOrigen,nodoDestino);
 			arcos.add(arco);
 			nodoOrigen.agregarArco(arco);
 			return true;
