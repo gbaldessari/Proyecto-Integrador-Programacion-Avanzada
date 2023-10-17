@@ -4,7 +4,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.RenderingHints;
+//import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -13,10 +13,12 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import javax.swing.JLabel;
 import cl.ucn.PIPA.dominio.Tema;
+import cl.ucn.PIPA.dominio.Arco;
 import cl.ucn.PIPA.dominio.Linea;
+import cl.ucn.PIPA.dominio.Nodo;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 import cl.ucn.PIPA.utils.Utils;
@@ -35,8 +37,8 @@ public class PanelMapa extends JPanel{
     double visibleY;
     private Point lastDragPoint;
     private Graphics2D graphics2d;
-    private LinkedList<Punto> puntos;
-    private LinkedList<Linea> lineas;
+    private ArrayList<Punto> puntos;
+    private ArrayList<Linea> lineas;
     private Punto puntoPartida;
     private Punto puntoDestino;
     private ImageIcon imageIcon;
@@ -50,8 +52,8 @@ public class PanelMapa extends JPanel{
     public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
         this.tema = tema;
-        puntos = new LinkedList<>();
-        lineas = new LinkedList<>();
+        puntos = new ArrayList<>();
+        lineas = new ArrayList<>();
         puntoPartida = null;
         puntoDestino = null;
         offsetX = 0;
@@ -151,7 +153,7 @@ public class PanelMapa extends JPanel{
     public void paint(Graphics g){
         super.paint(g);
         graphics2d = (Graphics2D) g;
-        graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        //graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
     
@@ -216,35 +218,6 @@ public class PanelMapa extends JPanel{
         graphics2d.dispose();
     }
 
-    private void getLimites(){
-        double mayorX = Double.MIN_VALUE;
-        menorX = Double.MAX_VALUE;
-        double mayorY = Double.MIN_VALUE;
-        menorY = Double.MAX_VALUE;
-        for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
-            if(sistema.getGrafo().getNodos().get(i).getX()*-1>mayorX){
-                mayorX = sistema.getGrafo().getNodos().get(i).getX()*-1;
-            }
-            if(sistema.getGrafo().getNodos().get(i).getY()*-1>mayorY){
-                mayorY = sistema.getGrafo().getNodos().get(i).getY()*-1;
-            }
-            if(sistema.getGrafo().getNodos().get(i).getX()*-1<menorX){
-                menorX = sistema.getGrafo().getNodos().get(i).getX()*-1;
-            }
-            if(sistema.getGrafo().getNodos().get(i).getY()*-1<menorY){
-                menorY = sistema.getGrafo().getNodos().get(i).getY()*-1;
-            }
-        }
-        double deltaX = Math.abs(mayorX-menorX);
-        double deltaY = Math.abs(mayorY-menorY);
-        if(deltaX>deltaY){
-            deltaCords = deltaX;
-        }
-        else{
-            deltaCords = deltaY;
-        }
-    }
-
     private boolean inLimitesPoint(int x, int y){
         Rectangle2D rect = new Rectangle2D.Double(visibleX-10, visibleY-10, visibleWidth+20, visibleHeight+20);
         if(rect.contains(x,y)){
@@ -303,9 +276,10 @@ public class PanelMapa extends JPanel{
         double mayY = Double.MIN_VALUE;
         double menY = Double.MAX_VALUE;
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
-            Punto punto = new Punto( new Point(valorNormalizado(sistema.getGrafo().getNodos().get(i).getX()*-1,true)-2,
-                                    valorNormalizado(sistema.getGrafo().getNodos().get(i).getY()*-1,false)-2),
-                                    sistema.getGrafo().getNodos().get(i));
+            Nodo nodo = sistema.getGrafo().getNodos().get(i);
+            Punto punto = new Punto( new Point(valorNormalizado(nodo.getX()*-1,true)-2,
+                                    valorNormalizado(nodo.getY()*-1,false)-2),
+                                    nodo);
             if(punto.getPoint().getX()>mayX){
                 mayX = punto.getPoint().getX();
             }
@@ -327,13 +301,44 @@ public class PanelMapa extends JPanel{
 
     private void getLineas(){
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
+            Arco arco = sistema.getGrafo().getArcos().get(i);
             Linea linea = new Linea(new Line2D.Double(
-                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getOrigen().getX()*-1,true),
-                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getOrigen().getY()*-1,false),
-                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getDestino().getX()*-1,true),
-                        valorNormalizado(sistema.getGrafo().getArcos().get(i).getDestino().getY()*-1,false)), 
-                    sistema.getGrafo().getArcos().get(i));
+                        valorNormalizado(arco.getOrigen().getX()*-1,true),
+                        valorNormalizado(arco.getOrigen().getY()*-1,false),
+                        valorNormalizado(arco.getDestino().getX()*-1,true),
+                        valorNormalizado(arco.getDestino().getY()*-1,false)), 
+                    arco);
             lineas.add(linea);
+        }
+    }
+
+    private void getLimites(){
+        double mayorX = Double.MIN_VALUE;
+        menorX = Double.MAX_VALUE;
+        double mayorY = Double.MIN_VALUE;
+        menorY = Double.MAX_VALUE;
+        for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
+            Nodo nodo = sistema.getGrafo().getNodos().get(i);
+            if(nodo.getX()*-1>mayorX){
+                mayorX = nodo.getX()*-1;
+            }
+            if(nodo.getY()*-1>mayorY){
+                mayorY = nodo.getY()*-1;
+            }
+            if(nodo.getX()*-1<menorX){
+                menorX = nodo.getX()*-1;
+            }
+            if(nodo.getY()*-1<menorY){
+                menorY = nodo.getY()*-1;
+            }
+        }
+        double deltaX = Math.abs(mayorX-menorX);
+        double deltaY = Math.abs(mayorY-menorY);
+        if(deltaX>deltaY){
+            deltaCords = deltaX;
+        }
+        else{
+            deltaCords = deltaY;
         }
     }
 }

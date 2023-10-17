@@ -5,44 +5,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import cl.ucn.PIPA.dominio.Tema;
-import cl.ucn.PIPA.logica.Sistema;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /* 
  * Subclase ventana menu
 */
 public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
-    private Sistema sistema;
     private JFrame ventana;
     private Tema tema;
-    private Thread hiloArchivo;
-    private JProgressBar barraProgreso;
-    private int progreso;
+    
 
     /**
      * Constructor de la clase
      * @param administradorDeVentanas, herramienta para inicializar la ventana
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema) {
+    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas, Tema tema) {
         this.ventana = new JFrame("Menú");
-        this.sistema = sistema;
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		this.ventana.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent we){
@@ -106,132 +89,6 @@ public class VentanaMenu implements Ventana {
                 ventana.setVisible(false);
             }
         });
-
-        JButton botonCargarArchivos = new JButton("Cargar archivos");
-        botonCargarArchivos.setBackground(tema.getBoton());
-        botonCargarArchivos.setForeground(tema.getLetra());
-		botonCargarArchivos.setBounds(85, 155, 165, 25);
-        botonCargarArchivos.setEnabled(false);
-		panel.add(botonCargarArchivos);
-        botonCargarArchivos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                botonSeleccionTema.setEnabled(false);
-                botonSeleccionArchivos.setEnabled(false);
-                botonCargarArchivos.setEnabled(false);
-                administradorDeVentanas.vaciarLista();
-                JPanel panelB = new JPanel();
-                panelB.setBackground(tema.getFondo());
-                ventana.getContentPane().add(panelB,BorderLayout.SOUTH);
-                barraProgreso = new JProgressBar(0, obtenerLineasTotales());
-                barraProgreso.setBackground(tema.getFondo());
-                barraProgreso.setForeground(tema.getPuntos());
-                barraProgreso.setStringPainted(true);
-                barraProgreso.setBounds(0, 0, 300, 32);
-                panelB.add(barraProgreso);
-                hiloArchivo = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mensaje.setText("Cargando...");
-                        leerXML(true);
-                        leerXML(false);
-                        mensaje.setText("Menú principal");
-                        botonMostrarMapa.setEnabled(true);
-                        botonSeleccionTema.setEnabled(true);
-                        botonSeleccionArchivos.setEnabled(true);
-                    }
-                });
-                hiloArchivo.start();
-            }
-        });
-        
-        if(sistema.getGrafo().getNodos().size()==0||sistema.getGrafo().getArcos().size()==0){
-            botonMostrarMapa.setEnabled(false);
-        }
-
-        if(sistema.getDireccion()!=""){
-            botonCargarArchivos.setEnabled(true);
-        
-        }
-        else{
-            botonCargarArchivos.setEnabled(false);
-        }
         ventana.setVisible(true);
-    }
-
-    public void leerXML(boolean nodo){
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        try { // Excepcion para abrir el documento xml
-            builder = factory.newDocumentBuilder();
-            String archivo;
-            String nombre;
-            if(nodo){
-                archivo = sistema.getDireccion()+"/nodes.xml";
-                nombre = "row";
-            }
-            else{
-                archivo = sistema.getDireccion()+"/edges.xml";
-                nombre = "edge";
-            }
-            Document documento = builder.parse(new File(archivo));
-            Element raiz = documento.getDocumentElement();
-            NodeList datos = raiz.getElementsByTagName(nombre);
-            if(nodo){guardarNodos(datos);}
-            else{guardarArcos(datos);}
-        } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void guardarNodos(NodeList nodos){
-        for (int i = 0;i<nodos.getLength();i++) {
-            Element nodo = (Element) nodos.item(i);
-            String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
-            double posX = Double.parseDouble(nodo.getElementsByTagName("x").item(0).getTextContent());
-            double posY = Double.parseDouble(nodo.getElementsByTagName("y").item(0).getTextContent());
-            sistema.getGrafo().addNodo(id, posX, posY);
-            progreso++;
-            barraProgreso.setValue(progreso);
-        }
-    }
-
-    public void guardarArcos(NodeList arcos){
-        for (int i = 0;i<arcos.getLength();i++) {
-            Element arco = (Element) arcos.item(i);
-            String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
-            String id = arco.getElementsByTagName("u").item(0).getTextContent();
-            String origen = arco.getElementsByTagName("u").item(0).getTextContent();
-            String destino = arco.getElementsByTagName("v").item(0).getTextContent();
-            sistema.getGrafo().addArco(id, nombre, origen, destino);
-            progreso++;
-            barraProgreso.setValue(progreso);
-        }
-    }
-
-    private int obtenerLineasTotales() {
-        int lineas = 0;
-        try {
-            // Contar líneas en el archivo nodes.xml
-            lineas += contarLineas(sistema.getDireccion() + "/nodes.xml");
-            // Contar líneas en el archivo edges.xml
-            lineas += contarLineas(sistema.getDireccion() + "/edges.xml");
-        } catch (IOException e) {
-            administradorDeVentanas.mostrarError("Error al contar líneas en archivos XML.");
-        }
-        return lineas;
-    }
-
-    private int contarLineas(String archivo) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            int lineas = 0;
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                // Verificar si la línea contiene un elemento <edge> o <row>
-                if (linea.contains("<edge>") || linea.contains("<row>")) {
-                    lineas++;
-                }
-            }
-            return lineas;
-        }
     }
 }

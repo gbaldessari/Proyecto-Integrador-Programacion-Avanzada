@@ -29,7 +29,7 @@ public class AdministradorDeVentanas {
 	* @param administradorDeVentanas, la ventana inicializada
 	*/
     public void menu(AdministradorDeVentanas administradorDeVentanas) {
-		Ventana ventana = new VentanaMenu(administradorDeVentanas,sistema,temaSeleccionado);
+		Ventana ventana = new VentanaMenu(administradorDeVentanas,temaSeleccionado);
 		ventana.iniciarVentana();
 	}
 	/*
