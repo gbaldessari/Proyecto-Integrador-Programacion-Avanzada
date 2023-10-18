@@ -61,32 +61,33 @@ public class VentanaArchivos implements Ventana{
         panel.setBackground(tema.getFondo());
         ventana.getContentPane().add(panel,BorderLayout.CENTER);
 
-        JPanel panelB = new JPanel();
-        panelB.setBackground(tema.getFondo());
-        ventana.getContentPane().add(panelB,BorderLayout.NORTH);
+        JPanel panelBarra = new JPanel();
+        panelBarra.setBackground(tema.getFondo());
+        ventana.getContentPane().add(panelBarra,BorderLayout.NORTH);
 
         JPanel panelBotones = new JPanel(null);
         panelBotones.setBackground(tema.getUi());
         panelBotones.setPreferredSize(new Dimension(this.ventana.getWidth(), 30));
         ventana.getContentPane().add(panelBotones,BorderLayout.SOUTH);
 
-        JButton volver = new JButton("Volver");
-        volver.setBounds(30,5,100,20);
-        volver.setBackground(tema.getBoton());
-        volver.setForeground(tema.getLetra());
-        volver.addActionListener(new ActionListener() {
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setBounds(30,5,100,20);
+        botonVolver.setBackground(tema.getBoton());
+        botonVolver.setForeground(tema.getLetra());
+        panelBotones.add(botonVolver);
+        botonVolver.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });
 
-        JButton confirmar = new JButton("Confirmar");
-        confirmar.setBounds(160,5,100,20);
-        confirmar.setBackground(tema.getBoton());
-        confirmar.setForeground(tema.getLetra());
-        confirmar.setEnabled(false);
-        
+        JButton botonConfirmar = new JButton("Confirmar");
+        botonConfirmar.setBounds(160,5,100,20);
+        botonConfirmar.setBackground(tema.getBoton());
+        botonConfirmar.setForeground(tema.getLetra());
+        panelBotones.add(botonConfirmar);
+        botonConfirmar.setEnabled(false);
 
         JLabel carpeta = new JLabel("Seleccione una ciudad: ");
         carpeta.setForeground(tema.getLetra());
@@ -98,12 +99,12 @@ public class VentanaArchivos implements Ventana{
 		ciudadSeleccionada.setBounds(20, 35, 250, 50);
 		panel.add(ciudadSeleccionada);
 		
-        JButton ciudad = new JButton("Seleccionar");
-        ciudad.setBackground(tema.getBoton());
-        ciudad.setForeground(tema.getLetra());
-		ciudad.setBounds(160, 15, 110, 20);
-		panel.add(ciudad);
-        ciudad.addActionListener(new ActionListener() {
+        JButton botonSeleccionar = new JButton("Seleccionar");
+        botonSeleccionar.setBackground(tema.getBoton());
+        botonSeleccionar.setForeground(tema.getLetra());
+		botonSeleccionar.setBounds(160, 15, 110, 20);
+		panel.add(botonSeleccionar);
+        botonSeleccionar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String carpetaInicio = "ciudades";
                 String directorioWorkspace = System.getProperty("user.dir");
@@ -116,7 +117,7 @@ public class VentanaArchivos implements Ventana{
                     File carpSelec = seleccion.getSelectedFile();
                     ciudadSeleccionada.setText("Ciudad seleccionada: "+getNombreCarpeta(carpSelec.getAbsolutePath()));
                     direccion = carpSelec.getAbsolutePath();
-                    confirmar.setEnabled(true);
+                    botonConfirmar.setEnabled(true);
                 }
                 System.setProperty("user.dir",directorioWorkspace);
             }
@@ -125,19 +126,18 @@ public class VentanaArchivos implements Ventana{
                 return lista[lista.length-1];
             }
         });
-        confirmar.addActionListener(new ActionListener() {
+        botonConfirmar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                confirmar.setEnabled(false);
-                volver.setEnabled(false);
-                ciudad.setEnabled(false);
+                botonConfirmar.setEnabled(false);
+                botonVolver.setEnabled(false);
+                botonSeleccionar.setEnabled(false);
                 administradorDeVentanas.vaciarLista();
-                
                 barraProgreso = new JProgressBar(0, obtenerLineasTotales());
                 barraProgreso.setBackground(tema.getFondo());
                 barraProgreso.setForeground(tema.getPuntos());
                 barraProgreso.setStringPainted(true);
                 barraProgreso.setBounds(0, 0, 300, 32);
-                panelB.add(barraProgreso);
+                panelBarra.add(barraProgreso);
                 hiloArchivo = new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -150,12 +150,8 @@ public class VentanaArchivos implements Ventana{
                 hiloArchivo.start();
             }
         });
-        
-        panelBotones.add(volver);
-        panelBotones.add(confirmar);
         ventana.setVisible(true);
     }
-
     private void leerXML(boolean nodo){
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
@@ -180,7 +176,6 @@ public class VentanaArchivos implements Ventana{
             e.printStackTrace();
         }
     }
-    
     private void guardarNodos(NodeList nodos){
         for (int i = 0;i<nodos.getLength();i++) {
             Element nodo = (Element) nodos.item(i);
@@ -192,7 +187,6 @@ public class VentanaArchivos implements Ventana{
             barraProgreso.setValue(progreso);
         }
     }
-
     private void guardarArcos(NodeList arcos){
         Set<String> carreteras = new HashSet<>();
         for (int i = 0;i<arcos.getLength();i++) {
@@ -218,8 +212,7 @@ public class VentanaArchivos implements Ventana{
             sistema.getTiposCarreteras().add(t);
         }
     }
-
-    private static ArrayList<String> obtenerListaDeLinea(String linea) {
+    private ArrayList<String> obtenerListaDeLinea(String linea) {
         if(linea != null){
             int inicio = linea.indexOf("[") + 1;
             int fin = linea.indexOf("]");
@@ -252,7 +245,6 @@ public class VentanaArchivos implements Ventana{
         }
         return lineas;
     }
-
     private int contarLineas(String archivo) throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             int lineas = 0;
@@ -266,5 +258,4 @@ public class VentanaArchivos implements Ventana{
             return lineas;
         }
     }
-
 }

@@ -11,13 +11,7 @@ public class Arco {
 	private ArrayList<String> tipo;
 	private Nodo origen;
 	private Nodo destino;
-	/**
-	 * Constructor de la clase arco
-	 * @param id id del arco
-	 * @param nombre nombre del arco
-	 * @param origen nodo de origen del arco
-	 * @param destino nodo de destino del arco
-	 */
+
 	public Arco(ArrayList<String> id,ArrayList<String> nombre,ArrayList<String> tipo, Nodo origen, Nodo destino){
 		this.id = id;
 		this.nombre = nombre;
@@ -25,17 +19,9 @@ public class Arco {
         this.origen= origen;
         this.destino = destino;
     }
-	/**
-	 * Retorna el id del arco
-	 * @return String que contiene el id del arco
-	 */
 	public ArrayList<String> getId(){
 		return id;
 	}
-	/**
-	 * Retorna el nombre del arco
-	 * @return String que contiene el nombre del arco
-	 */
 	public ArrayList<String> getNombre(){
 		return nombre;
 	}
@@ -56,5 +42,4 @@ public class Arco {
 	public Nodo getDestino() {
 		return destino;
 	}
-	
 }

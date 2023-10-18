@@ -77,8 +77,6 @@ public class PanelMapa extends JPanel{
             public void mouseClicked(MouseEvent e) {
                 Point mousePoint = e.getPoint();
                 Point2D.Double mousePointScaled = new Point2D.Double((mousePoint.x - offsetX) / scale, (mousePoint.y - offsetY) / scale);
-
-                // Encuentra el punto más cercano al punto de clic
                 double minDistance = Double.MAX_VALUE;
                 Punto p = null;
                 for (Punto punto : puntos) {
@@ -88,7 +86,6 @@ public class PanelMapa extends JPanel{
                         p = punto;
                     }
                 }
-
                 if(puntoPartida!=null&&p.getNodo().getId().equals(puntoPartida.getNodo().getId())){
                     puntoPartida = puntoDestino;
                     puntoDestino = null;
@@ -136,10 +133,7 @@ public class PanelMapa extends JPanel{
                 }
             }
         });
-
-        
     }
-    
     public void setC1(JLabel c1){this.c1=c1;}
     public void setC2(JLabel c2){this.c2=c2;}
     public void setid1(JLabel id1){this.id1=id1;}
@@ -150,21 +144,18 @@ public class PanelMapa extends JPanel{
         puntoDestino = null;
         repaint();
     }
-
     public void paint(Graphics g){
         super.paint(g);
         graphics2d = (Graphics2D) g;
         //graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
-    
         int panelWidth = getWidth();
         int panelHeight = getHeight();
         visibleWidth = (panelWidth / scale);
         visibleHeight = (panelHeight / scale);
         visibleX = (-offsetX / scale);
         visibleY = (-offsetY / scale);
-
         for (Linea linea : lineas) {
             if(inLimitesLine(linea.getLine())){
                 Color colorLinea = Color.decode("#606060");
@@ -176,7 +167,6 @@ public class PanelMapa extends JPanel{
                 graphics2d.draw(linea.getLine());
             }
         }
-        
         // Dibuja solo los puntos que están dentro de los límites visibles
         if(scale>0.75){
             for (Punto punto : puntos) {
@@ -188,7 +178,6 @@ public class PanelMapa extends JPanel{
                 }
             }
         }
-
         if(puntoPartida!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int)puntoPartida.getPoint().getX(),(int)puntoPartida.getPoint().getY(),4, 4);
@@ -199,7 +188,6 @@ public class PanelMapa extends JPanel{
             this.c1.setText("");
             this.id1.setText("");
         }
-
         if(puntoDestino!=null){
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int)puntoDestino.getPoint().getX(),(int)puntoDestino.getPoint().getY(),4, 4);
@@ -217,12 +205,10 @@ public class PanelMapa extends JPanel{
             this.id2.setText("");
             this.km.setText("");
         }
-
         Image image = imageIcon.getImage();
         graphics2d.drawImage(image, -2000,-2000, this);
         graphics2d.dispose();
     }
-
     private int getIndexColor(String tipo) {
         int index = 0;
         int numColores = sistema.getTiposCarreteras().size()-1;
@@ -237,7 +223,6 @@ public class PanelMapa extends JPanel{
         }
         return index;
     }
-
     private boolean inLimitesPoint(int x, int y){
         Rectangle2D rect = new Rectangle2D.Double(visibleX-10, visibleY-10, visibleWidth+20, visibleHeight+20);
         if(rect.contains(x,y)){
@@ -245,7 +230,6 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
-
     private boolean inLimitesLine(Line2D linea){
         Rectangle2D rect = new Rectangle2D.Double(visibleX, visibleY, visibleWidth, visibleHeight);
         if(rect.intersectsLine(linea)){
@@ -253,7 +237,6 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
-
     private int valorNormalizado(double valor,boolean x){
         double valorfinal = 0;
         if(x){
@@ -264,7 +247,6 @@ public class PanelMapa extends JPanel{
         }
         return (int)valorfinal;
     }
-
     public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
         double minScale = 0.025;
@@ -275,11 +257,9 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
-
     private double calculateDistance(Point2D.Double p1, Punto p2) {
         return p1.distance(p2.getPoint().getX(), p2.getPoint().getY());
     }
-    
     public String[] getDatoNodoOrigen(){
         String [] datos = new String[3];
         if(puntoPartida != null){
@@ -289,7 +269,6 @@ public class PanelMapa extends JPanel{
         }
         return datos;
     }
-
     private void getPuntos(){
         double mayX = Double.MIN_VALUE;
         double menX = Double.MAX_VALUE;
@@ -314,11 +293,9 @@ public class PanelMapa extends JPanel{
             }
             puntos.add(punto);
         }
-
         offsetX = (int)((-(mayX+menX)/2)*scale+944/2);
         offsetY = (int)((-(mayY+menY)/2)*scale+625/2);
     }
-
     private void getLineas(){
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
             Arco arco = sistema.getGrafo().getArcos().get(i);
@@ -331,7 +308,6 @@ public class PanelMapa extends JPanel{
             lineas.add(linea);
         }
     }
-
     private void getLimites(){
         double mayorX = Double.MIN_VALUE;
         menorX = Double.MAX_VALUE;

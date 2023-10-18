@@ -70,6 +70,7 @@ public class VentanaTema implements Ventana{
         botonAplicar.setBackground(tema.getBoton());
 		botonAplicar.setBounds(160, 100, 100, 25);
         panel.add(botonAplicar);
+        
 		botonAplicar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 				administradorDeVentanas.setTema(seleccionTema.getSelectedIndex()-1);

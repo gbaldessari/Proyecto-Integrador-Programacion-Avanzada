@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -13,7 +12,6 @@ import javax.swing.JPanel;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
 import cl.ucn.PIPA.logica.Sistema;
-
 
 public class VentanaMapa implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
@@ -134,6 +132,4 @@ public class VentanaMapa implements Ventana{
         });
         ventana.setVisible(true);
     }
-
-
 }

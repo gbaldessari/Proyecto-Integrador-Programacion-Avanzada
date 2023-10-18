@@ -5,8 +5,8 @@ import cl.ucn.PIPA.dominio.Grafo;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 
-/* 
-* Subclase sistema
+/**
+* Clase Sistema Implementado
 */
 public class SistemaImpl implements Sistema{
     private AdministradorDeVentanas administradorDeVentanas;

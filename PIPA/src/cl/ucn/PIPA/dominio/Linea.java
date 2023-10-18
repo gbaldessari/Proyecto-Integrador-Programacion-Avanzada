@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.dominio;
-
 import java.awt.geom.Line2D;
 
 public class Linea {

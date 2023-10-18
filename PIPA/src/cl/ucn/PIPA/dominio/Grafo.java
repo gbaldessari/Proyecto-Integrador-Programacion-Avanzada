@@ -28,7 +28,6 @@ public class Grafo {
 			nodos.add(insertIndex,nodo);
 		}
 	}
-
     private int binaryAdd(Nodo nodo) {
         int posIzq = 0;
         int posDer = nodos.size() - 1;
@@ -47,13 +46,6 @@ public class Grafo {
         }
         return posIzq;
     }
-	/**
-	 * Agrega un arco a la lista de arcos
-	 * @param id id del arco
-	 * @param nombre nombre del arco
-	 * @param origen nombre del nodo de origen del arco
-	 * @param destino nombre del nodo de destino del arco
-	 */
 	public boolean addArco(ArrayList<String> id, ArrayList<String> nombre, ArrayList<String> tipo, String origen, String destino) {
 		
 		Nodo nodoOrigen = binarySearch(origen); 
@@ -114,9 +106,6 @@ public class Grafo {
 		}
 		return false;
 	}
-	/**
-	 * 
-	 */
 	public ArrayList<Nodo> buscarRuta(String origen, String destino) {
 		
 		Nodo nodoOrigen = binarySearch(origen);

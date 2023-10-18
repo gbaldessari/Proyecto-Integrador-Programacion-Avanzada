@@ -7,26 +7,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-/* 
- * Subclase ventana menu
-*/
 public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
     private JFrame ventana;
     private Tema tema;
     private Sistema sistema;
-    
 
-    /**
-     * Constructor de la clase
-     * @param administradorDeVentanas, herramienta para inicializar la ventana
-     */
     public VentanaMenu(AdministradorDeVentanas administradorDeVentanas,Sistema sistema, Tema tema) {
         this.sistema = sistema;
         this.ventana = new JFrame("Menú");
@@ -39,8 +30,8 @@ public class VentanaMenu implements Ventana {
 		});
         this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
-        ventana.setSize(350,260);
-        ventana.setMaximumSize(new Dimension(350,260));
+        ventana.setSize(350,200);
+        ventana.setMaximumSize(new Dimension(350,200));
 		ventana.setLocationRelativeTo(null);
 		ventana.setResizable(false);
     }
@@ -53,7 +44,7 @@ public class VentanaMenu implements Ventana {
         
 		JLabel mensaje = new JLabel("Menú Principal");
         mensaje.setForeground(tema.getLetra());
-		mensaje.setBounds(130, 0, 250, 50);
+		mensaje.setBounds(125, 0, 250, 50);
 		panel.add(mensaje);
 		
 		JButton botonMostrarMapa = new JButton("Ver mapa");
