@@ -1,16 +1,37 @@
 package cl.ucn.PIPA.utils;
 
 public class Utils {
+
+    /**
+     * Calcula la distancia en kilómetros entre dos puntos geográficos utilizando la fórmula de Haversine.
+     *
+     * @param startLat   Latitud del punto de inicio en grados.
+     * @param startLong  Longitud del punto de inicio en grados.
+     * @param endLat     Latitud del punto de destino en grados.
+     * @param endLong    Longitud del punto de destino en grados.
+     * @return La distancia en kilómetros entre los dos puntos.
+     */
     public static double haversine(double startLat, double startLong, double endLat, double endLong) {
-        double dLat  = Math.toRadians((endLat - startLat));
+        // Convertir las latitudes y longitudes de grados a radianes
+        double dLat = Math.toRadians((endLat - startLat));
         double dLong = Math.toRadians((endLong - startLong));
         startLat = Math.toRadians(startLat);
-        endLat   = Math.toRadians(endLat);
+        endLat = Math.toRadians(endLat);
+
+        // Calcular la fórmula de Haversine
         double a = haversin(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversin(dLong);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        // Radio de la Tierra en kilometros (aproximado)
+
+        // Radio de la Tierra en kilómetros (aproximado)
         return 6371 * c;
     }
+
+    /**
+     * Calcula la función haversin para un valor dado.
+     *
+     * @param val El valor para el cual se calculará la función haversin.
+     * @return El resultado de la función haversin para el valor dado.
+     */
     private static double haversin(double val) {
         return Math.pow(Math.sin(val / 2), 2);
     }

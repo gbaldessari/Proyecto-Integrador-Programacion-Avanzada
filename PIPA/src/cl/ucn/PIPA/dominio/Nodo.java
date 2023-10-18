@@ -1,65 +1,103 @@
 package cl.ucn.PIPA.dominio;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Clase nodo
+ * Clase que representa un nodo.
  */
 public class Nodo {
-	private String id;
-    private Point.Double coordenadas;
-	private List<Arco> arcos;
-	
-	/**
-	 * Constructor de la clase nodo
-	 * @param id, id del nodo
-	 * @param posX posicion X almacenada
-	 * @param posY posicion Y almacenada 
-	 */
-	public Nodo(String id,double posX,double posY){
+    private String id;  // ID del nodo
+    private Point.Double coordenadas;  // Coordenadas del nodo
+    private List<Arco> arcos;  // Lista de arcos asociados al nodo
+
+    /**
+     * Constructor de la clase Nodo.
+     *
+     * @param id   ID del nodo.
+     * @param posX Posición X almacenada.
+     * @param posY Posición Y almacenada.
+     */
+    public Nodo(String id, double posX, double posY) {
         arcos = new ArrayList<>();
-        coordenadas = new Point.Double(posX,posY);
-		this.id = id;
+        coordenadas = new Point.Double(posX, posY);
+        this.id = id;
     }
-	/**
-	 * Retorna el id de un nodo
-	 * @return string que contiene el id del nodo
-	 */
-	public String getId() {
-		return id;
-	}
-	/*
-	 * Agrega un arco al nodo
-	 * @param arco
-	 */
-	public void agregarArco(Arco arco) {
-		arcos.add(arco);
-	}
-	/**
-	 * Retorna todos los arcos almacenados en el nodo
-	 * @return una lista con los arcos
-	 */
-	public List<Arco> getArcos() {
-		return arcos;
-	}
-    public double getX(){
+
+    /**
+     * Retorna el ID de un nodo.
+     *
+     * @return String que contiene el ID del nodo.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Agrega un arco al nodo.
+     *
+     * @param arco Arco a agregar.
+     */
+    public void agregarArco(Arco arco) {
+        arcos.add(arco);
+    }
+
+    /**
+     * Retorna todos los arcos almacenados en el nodo.
+     *
+     * @return Una lista con los arcos.
+     */
+    public List<Arco> getArcos() {
+        return arcos;
+    }
+
+    /**
+     * Retorna la coordenada X del nodo.
+     *
+     * @return Coordenada X.
+     */
+    public double getX() {
         return coordenadas.x;
     }
-    public double getY(){
+
+    /**
+     * Retorna la coordenada Y del nodo.
+     *
+     * @return Coordenada Y.
+     */
+    public double getY() {
         return coordenadas.y;
     }
-    public void setX(double posX){
+
+    /**
+     * Establece la coordenada X del nodo.
+     *
+     * @param posX Nueva coordenada X.
+     */
+    public void setX(double posX) {
         coordenadas.x = posX;
     }
-    public void setY(double posY){
+
+    /**
+     * Establece la coordenada Y del nodo.
+     *
+     * @param posY Nueva coordenada Y.
+     */
+    public void setY(double posY) {
         coordenadas.y = posY;
     }
-	public List<Nodo> getNodosAdyacentes() {
-		List<Nodo> nodos = new ArrayList<>();
-		for (Arco arco : arcos) {
-			nodos.add(arco.getDestino());
-		}
-		return nodos;
-	}
+
+    /**
+     * Retorna una lista de nodos adyacentes al nodo actual a través de sus arcos.
+     *
+     * @return Lista de nodos adyacentes.
+     */
+    public List<Nodo> getNodosAdyacentes() {
+        List<Nodo> nodos = new ArrayList<>();
+        for (Arco arco : arcos) {
+            nodos.add(arco.getDestino());
+        }
+        return nodos;
+    }
 }

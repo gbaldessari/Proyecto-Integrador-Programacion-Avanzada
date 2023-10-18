@@ -1,4 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,12 +14,22 @@ import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.paneles.PanelMapa;
 import cl.ucn.PIPA.logica.Sistema;
 
+/**
+ * Clase que representa una ventana que muestra un mapa.
+ */
 public class VentanaMapa implements Ventana{
     private AdministradorDeVentanas administradorDeVentanas;
     private Sistema sistema;
     private JFrame ventana;
     private Tema tema;
 
+    /**
+     * Constructor de la clase VentanaMapa.
+     *
+     * @param administradorDeVentanas Administrador de ventanas.
+     * @param sistema                Sistema.
+     * @param tema                   Tema de la ventana.
+     */
     public VentanaMapa(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema){
         this.ventana = new JFrame("Mapa");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

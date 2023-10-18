@@ -1,4 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -13,11 +14,22 @@ import javax.swing.JPanel;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 
+/**
+ * Clase que representa la ventana de selección de tema.
+ */
 public class VentanaTema implements Ventana{
     Sistema sistema;
     AdministradorDeVentanas administradorDeVentanas;
     JFrame ventana;
     Tema tema;
+
+    /**
+     * Constructor de la clase VentanaTema.
+     *
+     * @param administradorDeVentanas Administrador de ventanas.
+     * @param sistema                Sistema.
+     * @param tema                   Tema de la ventana.
+     */
     public VentanaTema(AdministradorDeVentanas administradorDeVentanas,Sistema sistema,Tema tema){
         this.sistema = sistema;
         this.administradorDeVentanas = administradorDeVentanas;

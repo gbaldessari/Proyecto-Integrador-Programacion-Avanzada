@@ -1,4 +1,5 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -12,12 +13,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * Clase que representa la ventana del menú principal.
+ */
 public class VentanaMenu implements Ventana {
     private AdministradorDeVentanas administradorDeVentanas;
     private JFrame ventana;
     private Tema tema;
     private Sistema sistema;
 
+    /**
+     * Constructor de la clase VentanaMenu.
+     *
+     * @param administradorDeVentanas Administrador de ventanas.
+     * @param sistema                Sistema.
+     * @param tema                   Tema de la ventana.
+     */
     public VentanaMenu(AdministradorDeVentanas administradorDeVentanas,Sistema sistema, Tema tema) {
         this.sistema = sistema;
         this.ventana = new JFrame("Menú");

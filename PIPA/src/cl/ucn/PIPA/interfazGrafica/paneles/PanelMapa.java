@@ -1,11 +1,12 @@
 package cl.ucn.PIPA.interfazGrafica.paneles;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-//import java.awt.RenderingHints;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -151,7 +152,7 @@ public class PanelMapa extends JPanel{
     public void paint(Graphics g){
         super.paint(g);
         graphics2d = (Graphics2D) g;
-        //graphics2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        graphics2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
         int panelWidth = getWidth();
