@@ -1,5 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica.paneles;
 import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -166,7 +167,11 @@ public class PanelMapa extends JPanel{
 
         for (Linea linea : lineas) {
             if(inLimitesLine(linea.getLine())){
-                graphics2d.setColor(tema.getLineas());
+                Color colorLinea = Color.decode("#606060");
+                if(linea.getArco().getTipo()!=null){
+                    colorLinea= sistema.getColoresCalles().get(getIndexColor(linea.getArco().getTipo().get(0)));
+                }
+                graphics2d.setColor(colorLinea);
                 graphics2d.setStroke(new BasicStroke(1));
                 graphics2d.draw(linea.getLine());
             }
@@ -216,6 +221,21 @@ public class PanelMapa extends JPanel{
         Image image = imageIcon.getImage();
         graphics2d.drawImage(image, -2000,-2000, this);
         graphics2d.dispose();
+    }
+
+    private int getIndexColor(String tipo) {
+        int index = 0;
+        int numColores = sistema.getTiposCarreteras().size()-1;
+        for (int i = 0; i<=numColores;i++) {
+            if(tipo.equals(sistema.getTiposCarreteras().get(i))){
+                index = i;
+                break;
+            }
+        }
+        while(index>numColores){
+            index-=numColores;
+        }
+        return index;
     }
 
     private boolean inLimitesPoint(int x, int y){

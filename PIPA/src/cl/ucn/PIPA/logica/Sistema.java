@@ -1,5 +1,5 @@
 package cl.ucn.PIPA.logica;
-
+import java.awt.Color;
 import java.util.ArrayList;
 import cl.ucn.PIPA.dominio.Grafo;
 import cl.ucn.PIPA.dominio.Tema;
@@ -23,4 +23,5 @@ public interface Sistema {
     AdministradorDeVentanas getAdministradorDeVentanas();
     public ArrayList<String> getTiposCarreteras();
     public void setTiposCarreteras(ArrayList<String> tiposCarreteras);
+    public ArrayList<Color> getColoresCalles();
 }
