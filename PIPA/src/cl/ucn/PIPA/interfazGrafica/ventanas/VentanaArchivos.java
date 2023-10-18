@@ -188,7 +188,7 @@ public class VentanaArchivos implements Ventana{
         }
     }
     private void guardarArcos(NodeList arcos){
-        Set<String> carreteras = new HashSet<>();
+        Set<String> carreteras = new HashSet<>(0);
         for (int i = 0;i<arcos.getLength();i++) {
             Element arco = (Element) arcos.item(i);
             String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
@@ -207,6 +207,7 @@ public class VentanaArchivos implements Ventana{
             barraProgreso.setValue(progreso);
             if(tipo!=null)guardarTipoCarretera(listaTipo,carreteras);
         }
+        sistema.getTiposCarreteras().clear();
         for (String t : carreteras) {
             System.out.println(t);
             sistema.getTiposCarreteras().add(t);

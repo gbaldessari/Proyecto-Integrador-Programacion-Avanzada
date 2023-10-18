@@ -27,8 +27,10 @@ import cl.ucn.PIPA.utils.Utils;
 public class PanelMapa extends JPanel{
     private Sistema sistema;
     private double deltaCords;
-    private double menorX;
-    private double menorY;
+    private Point2D maxPoint;
+    private Point2D minPoint;
+    private double minX;
+    private double minY;
     private double scale;
     private int offsetX;
     private int offsetY;
@@ -49,6 +51,7 @@ public class PanelMapa extends JPanel{
     private JLabel id1;
     private JLabel id2;
     private JLabel km;
+    private double escalador;
 
     public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
@@ -63,6 +66,7 @@ public class PanelMapa extends JPanel{
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
         getLimites();
+        escalador = Utils.haversine(minPoint.getY(), minPoint.getX(), maxPoint.getY(), maxPoint.getX())*1420;
         getPuntos();
         getLineas();
         addMouseListener(new MouseAdapter() {
@@ -219,7 +223,7 @@ public class PanelMapa extends JPanel{
             }
         }
         while(index>numColores){
-            index-=numColores;
+            index=index-numColores;
         }
         return index;
     }
@@ -240,10 +244,10 @@ public class PanelMapa extends JPanel{
     private int valorNormalizado(double valor,boolean x){
         double valorfinal = 0;
         if(x){
-            valorfinal = (1-(valor-menorX)/(deltaCords))*100000;
+            valorfinal = (1-(valor-minX)/(deltaCords))*escalador;
         }
         else{
-            valorfinal = (valor-menorY)/(deltaCords)*100000;
+            valorfinal = (valor-minY)/(deltaCords)*escalador;
         }
         return (int)valorfinal;
     }
@@ -274,6 +278,7 @@ public class PanelMapa extends JPanel{
         double menX = Double.MAX_VALUE;
         double mayY = Double.MIN_VALUE;
         double menY = Double.MAX_VALUE;
+
         for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
             Nodo nodo = sistema.getGrafo().getNodos().get(i);
             Punto punto = new Punto( new Point(valorNormalizado(nodo.getX()*-1,true)-2,
@@ -309,27 +314,32 @@ public class PanelMapa extends JPanel{
         }
     }
     private void getLimites(){
-        double mayorX = Double.MIN_VALUE;
-        menorX = Double.MAX_VALUE;
-        double mayorY = Double.MIN_VALUE;
-        menorY = Double.MAX_VALUE;
+        double maxX = Double.MIN_VALUE;
+        minX = Double.MAX_VALUE;
+        double maxY = Double.MIN_VALUE;
+        minY = Double.MAX_VALUE;
+
         for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
             Nodo nodo = sistema.getGrafo().getNodos().get(i);
-            if(nodo.getX()*-1>mayorX){
-                mayorX = nodo.getX()*-1;
+            if(nodo.getX()*-1>maxX){
+                maxX = nodo.getX()*-1;
             }
-            if(nodo.getY()*-1>mayorY){
-                mayorY = nodo.getY()*-1;
+            if(nodo.getY()*-1>maxY){
+                maxY = nodo.getY()*-1;
             }
-            if(nodo.getX()*-1<menorX){
-                menorX = nodo.getX()*-1;
+            if(nodo.getX()*-1<minX){
+                minX = nodo.getX()*-1;
             }
-            if(nodo.getY()*-1<menorY){
-                menorY = nodo.getY()*-1;
+            if(nodo.getY()*-1<minY){
+                minY = nodo.getY()*-1;
             }
         }
-        double deltaX = Math.abs(mayorX-menorX);
-        double deltaY = Math.abs(mayorY-menorY);
+        double deltaX = Math.abs(maxX-minX);
+        double deltaY = Math.abs(maxY-minY);
+
+        maxPoint = new Point2D.Double(minX*-1, minY*-1);
+        minPoint = new Point2D.Double(maxX*-1, maxY*-1);
+
         if(deltaX>deltaY){
             deltaCords = deltaX;
         }
