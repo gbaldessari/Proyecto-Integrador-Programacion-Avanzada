@@ -10,14 +10,14 @@ public class Tema {
     private Color puntos;
     private Color puntoSeleccionado;
 
-    public Tema(String nombre,float[] hsbFondo,float[] hsbUI,float[] hsbBoton,float[] hsbLetra,float[] hsbPuntos,float[] hsbPuntoSeleccionado){
+    public Tema(String nombre,String hexFondo,String hexUI,String hexBoton,String hexLetra,String hexPuntos,String hexPuntoSeleccionado){
         this.nombre =nombre;
-        fondo = Color.getHSBColor(hsbFondo[0],hsbFondo[1],hsbFondo[2]);
-        ui = Color.getHSBColor(hsbUI[0],hsbUI[1],hsbUI[2]);
-        boton = Color.getHSBColor(hsbBoton[0],hsbBoton[1],hsbBoton[2]);
-        letra = Color.getHSBColor(hsbLetra[0],hsbLetra[1],hsbLetra[2]);
-        puntos = Color.getHSBColor(hsbPuntos[0],hsbPuntos[1],hsbPuntos[2]);
-        puntoSeleccionado = Color.getHSBColor(hsbPuntoSeleccionado[0],hsbPuntoSeleccionado[1],hsbPuntoSeleccionado[2]);
+        fondo = Color.decode(hexFondo);
+        ui = Color.decode(hexUI);
+        boton = Color.decode(hexBoton);
+        letra = Color.decode(hexLetra);
+        puntos = Color.decode(hexPuntos);
+        puntoSeleccionado = Color.decode(hexPuntoSeleccionado);
     }
     public String getNombre() {
         return nombre;

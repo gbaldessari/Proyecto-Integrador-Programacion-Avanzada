@@ -73,20 +73,20 @@ public class SistemaImpl implements Sistema{
     }
     private void obtenerTemas(){
         Tema claro = new Tema("Claro"
-                                ,Color.RGBtoHSB(255, 255, 255, null)//Fondo
-                                ,Color.RGBtoHSB(160, 160, 160, null)//UI
-                                ,Color.RGBtoHSB(200, 200, 200, null)//Botones
-                                ,Color.RGBtoHSB(0, 0, 0, null)//Texto
-                                ,Color.RGBtoHSB(255, 0, 0, null)//Puntos
-                                ,Color.RGBtoHSB(0, 0, 255, null));//Puntos seleccionados
+                                ,"#FFFFFF"//Fondo
+                                ,"#A0A0A0"//UI
+                                ,"#C8C8C8"//Botones
+                                ,"#000000"//Texto
+                                ,"#FF0000"//Puntos
+                                ,"#0000FF");//Puntos seleccionados
         temas.add(claro);
         Tema oscuro = new Tema("Oscuro"
-                                ,Color.RGBtoHSB(44,47,51, null)//Fondo
-                                ,Color.RGBtoHSB(35,39,42, null)//UI
-                                ,Color.RGBtoHSB(153,170,181, null)//Botones
-                                ,Color.RGBtoHSB(255, 255, 255, null)//Texto
-                                ,Color.RGBtoHSB(255, 255, 255, null)//Puntos
-                                ,Color.RGBtoHSB(255, 0, 0, null));//Puntos seleccionados
+                                ,"#2C2F33"//Fondo
+                                ,"#23272A"//UI
+                                ,"#99AAB5"//Botones
+                                ,"#FFFFFF"//Texto
+                                ,"#A0A0A0"//Puntos
+                                ,"#FF0000");//Puntos seleccionados
         temas.add(oscuro);
     }
     public void setTiposCarreteras(ArrayList<String> tiposCarreteras){
