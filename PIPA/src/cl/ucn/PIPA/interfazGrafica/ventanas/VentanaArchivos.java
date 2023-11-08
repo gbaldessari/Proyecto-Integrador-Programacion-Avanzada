@@ -159,10 +159,14 @@ public class VentanaArchivos implements Ventana {
                 hiloArchivo = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        leerXML(true);
-                        leerXML(false);
-                        administradorDeVentanas.menu(administradorDeVentanas);
-                        ventana.setVisible(false);
+                        if(direccion.equals("")){
+                            administradorDeVentanas.mostrarError("Carpeta no encontrada");
+                        }else{
+                            leerXML(true);
+                            leerXML(false);
+                            administradorDeVentanas.menu(administradorDeVentanas);
+                            ventana.setVisible(false);
+                        }
                     }
                 });
                 hiloArchivo.start();
@@ -203,7 +207,7 @@ public class VentanaArchivos implements Ventana {
                 guardarArcos(datos);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
     }
 

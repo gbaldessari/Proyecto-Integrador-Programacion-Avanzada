@@ -52,7 +52,7 @@ public class VentanaMenu implements Ventana {
         panelPestanas.setBackground(tema.getFondo());
         panelPestanas.setForeground(tema.getLetra());
         
-        //-------------------------------------------------------------------------------------------------
+        //Local -------------------------------------------------------------------------------------------------
         JPanel panelLocal = new JPanel();
         panelLocal.setBackground(tema.getFondo());
 		panelLocal.setLayout(null);
@@ -88,8 +88,45 @@ public class VentanaMenu implements Ventana {
                 ventana.setVisible(false);
             }
         });
+        //----------------------------------------------------
+        
+        JPanel panelOnline = new JPanel();
+        panelOnline.setBackground(tema.getFondo());
+		panelOnline.setLayout(null);
+        panelPestanas.addTab("Online", panelOnline);
+        
+		JLabel tituloOnline = new JLabel("Online");
+        tituloOnline.setForeground(tema.getLetra());
+		tituloOnline.setBounds(150, 0, 250, 50);
+		panelOnline.add(tituloOnline);
+		
+		JButton botonMostrarMapaOnline = new JButton("Ver mapa");
+        botonMostrarMapaOnline.setBackground(tema.getBoton());
+        botonMostrarMapaOnline.setForeground(tema.getLetra());
+		botonMostrarMapaOnline.setBounds(85, 50, 165, 25);
+        botonMostrarMapaOnline.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
+		panelOnline.add(botonMostrarMapaOnline);
 
-        //-------------------------------------------------------------------------------------------------
+		botonMostrarMapaOnline.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
+        JButton botonSeleccionArchivosOnline = new JButton("Seleccionar archivos");
+        botonSeleccionArchivosOnline.setBackground(tema.getBoton());
+        botonSeleccionArchivosOnline.setForeground(tema.getLetra());
+		botonSeleccionArchivosOnline.setBounds(85, 85, 165, 25);
+		panelOnline.add(botonSeleccionArchivosOnline);
+        botonSeleccionArchivosOnline.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
+        //Config-------------------------------------------------------------------------------------------------
 
         JPanel panelConfig = new JPanel();
         panelConfig.setBackground(tema.getFondo());
@@ -113,6 +150,9 @@ public class VentanaMenu implements Ventana {
                 ventana.setVisible(false);
             }
         });
+
+        //-------------------------------------------------------------------------------------------------
+
         ventana.add(panelPestanas);
         ventana.setVisible(true);
     }
