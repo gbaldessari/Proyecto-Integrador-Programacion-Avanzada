@@ -4,10 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-//import java.net.URLConnection;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
@@ -46,10 +44,9 @@ public class CiudadesProvider
         return theInstance;
     }
 
-    /* 
-    private String getURLContents(String enlace) throws IOException, URISyntaxException
+    private String getURLContents(String enlace) throws IOException
     {
-        URL url = new URI(enlace).toURL();
+        URL url = new URL(enlace);
         URLConnection connection = url.openConnection();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -65,13 +62,12 @@ public class CiudadesProvider
         String urlString = content.toString();
         return urlString;
     }
-    */
 
-    private String getURLContentsZIP(String enlace) throws IOException, URISyntaxException
+    private String getURLContentsZIP(String enlace) throws IOException
     {
         System.out.println("Downloading " + enlace);
         
-        URL url = new URI(enlace).toURL();
+        URL url = new URL(enlace);
         GZIPInputStream gzipInputStream = new GZIPInputStream(url.openStream());
         BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream, "UTF-8"));
 
@@ -85,9 +81,9 @@ public class CiudadesProvider
         return content.toString();
     }
 
-    public Ciudad ciudad(String nombre) throws IOException, URISyntaxException
+    public Ciudad ciudad(String nombre) throws IOException
     {
-        URL url = new URI("https://losvilos.ucn.cl/eross/ciudades/get.php?d=" + nombre).toURL();
+        URL url = new URL("https://losvilos.ucn.cl/eross/ciudades/get.php?d=" + nombre);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
@@ -109,9 +105,9 @@ public class CiudadesProvider
         return new Ciudad(getURLContentsZIP(nodes), getURLContentsZIP(edges));
     }
 
-    public List<String> list() throws IOException, URISyntaxException
+    public List<String> list() throws IOException
     {
-        URL url = new URI("https://losvilos.ucn.cl/eross/ciudades/list.php").toURL();
+        URL url = new URL("https://losvilos.ucn.cl/eross/ciudades/list.php");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
@@ -154,38 +150,6 @@ public class CiudadesProvider
         public String getXmlEdges()
         {
             return xmlEdges;
-        }
-    }
-    
-    public static void main(String[] args) throws URISyntaxException
-    {
-        System.out.println("Testing----------------");
-
-        CiudadesProvider p = CiudadesProvider.instance();
-        String last = "";
-
-        try {
-            System.out.println("Lista de ciudades disponibles:");
-            for (String ciudad : p.list()) {
-                System.out.println(ciudad);
-                last = ciudad;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println();
-        System.out.println("Detalle de la última ciudad:");
-        try {
-            Ciudad ciudad = p.ciudad(last);
-            
-            System.out.println("XML EDGES tiene tamaño " + ciudad.getXmlEdges().length());
-            System.out.println("XML EDGES tiene tamaño " + ciudad.getXmlNodes().length());
-            
-            // A partir de ahora, se puede usar ciudad.getXmlEdges() y ciudad.getXmlNodes()
-            // para lo que sea que se requiera.
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
