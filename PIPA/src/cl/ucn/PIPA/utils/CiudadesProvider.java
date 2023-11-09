@@ -16,16 +16,6 @@ import org.json.JSONObject;
 /**
  * Esta clase se encarga de listar y descargar archivos de datos NODE y EDGE
  * para ciudades. El origen de los datos es un servidor "en la nube".
- * 
- * Para ver cómo se usa esta clase, busque el "main" que está al final de 
- * este archivo.
- * 
- * Nótese: para que esta clase funcione, debe descargar el archivo jar
- * https://search.maven.org/remotecontent?filepath=org/json/json/20231013/json-20231013.jar
- * 
- * y agregarlo a las "biblotecas referenciadas" en su proyecto.
- * 
- * @see https://github.com/stleary/JSON-java
  */
 public class CiudadesProvider{
     private static CiudadesProvider theInstance = null;
