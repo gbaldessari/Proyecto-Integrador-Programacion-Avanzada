@@ -1,0 +1,334 @@
+package cl.ucn.PIPA.interfazGrafica.ventanas;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import cl.ucn.PIPA.dominio.Tema;
+import cl.ucn.PIPA.logica.Sistema;
+
+/**
+ * Clase que representa la ventana para seleccionar archivos y cargar datos desde XML.
+ */
+public class VentanaArchivosOnline implements Ventana{
+    // Atributos de la clase
+    private AdministradorDeVentanas administradorDeVentanas;  // Administrador de ventanas
+    private Sistema sistema;  // Sistema
+    private Tema tema;  // Tema para la interfaz gráfica
+    private JFrame ventana;  // Ventana principal
+    private Thread hiloArchivo;  // Hilo para cargar datos desde archivos XML
+    private JProgressBar barraProgreso;  // Barra de progreso para mostrar el progreso de la carga
+    private int progreso;  // Progreso de la carga
+    private String direccion;  // Dirección de la carpeta seleccionada
+
+     /**
+     * Constructor de la clase VentanaArchivosOnline.
+     *
+     * @param administradorDeVentanas Instancia de AdministradorDeVentanas.
+     * @param sistema                Instancia del sistema.
+     * @param tema                   Tema para la interfaz gráfica.
+     */
+    public VentanaArchivosOnline(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema){
+        // Inicialización de atributos
+        this.ventana = new JFrame("Seleccionar archivos");
+        this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.ventana.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                administradorDeVentanas.ventanaCierre(ventana);
+                ventana.setEnabled(false);
+            }
+        });
+        direccion = "";
+        this.tema = tema;
+        this.administradorDeVentanas = administradorDeVentanas;
+        this.sistema = sistema;
+        ventana.setSize(300, 150);
+        ventana.setMaximumSize(new Dimension(300, 150));
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
+    }
+
+    /**
+     * Método para iniciar la ventana y mostrarla al usuario.
+     */
+    public void iniciarVentana() {
+        // Creación y configuración de paneles y componentes de la ventana
+        JPanel panel = new JPanel(null);
+        panel.setBackground(tema.getFondo());
+        ventana.getContentPane().add(panel, BorderLayout.CENTER);
+
+        JPanel panelBarra = new JPanel();
+        panelBarra.setBackground(tema.getFondo());
+        ventana.getContentPane().add(panelBarra, BorderLayout.NORTH);
+
+        JPanel panelBotones = new JPanel(null);
+        panelBotones.setBackground(tema.getUi());
+        panelBotones.setPreferredSize(new Dimension(this.ventana.getWidth(), 30));
+        ventana.getContentPane().add(panelBotones, BorderLayout.SOUTH);
+
+        JButton botonVolver = new JButton("Volver");
+        botonVolver.setBounds(30, 5, 100, 20);
+        botonVolver.setBackground(tema.getBoton());
+        botonVolver.setForeground(tema.getLetra());
+        panelBotones.add(botonVolver);
+        botonVolver.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.menu(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+
+        JButton botonConfirmar = new JButton("Confirmar");
+        botonConfirmar.setBounds(160, 5, 100, 20);
+        botonConfirmar.setBackground(tema.getBoton());
+        botonConfirmar.setForeground(tema.getLetra());
+        panelBotones.add(botonConfirmar);
+        botonConfirmar.setEnabled(false);
+
+        JLabel carpeta = new JLabel("Seleccione una ciudad: ");
+        carpeta.setForeground(tema.getLetra());
+        carpeta.setBounds(20, 0, 250, 50);
+        panel.add(carpeta);
+
+        JLabel ciudadSeleccionada = new JLabel("");
+        ciudadSeleccionada.setForeground(tema.getLetra());
+        ciudadSeleccionada.setBounds(20, 35, 250, 50);
+        panel.add(ciudadSeleccionada);
+
+        JButton botonSeleccionar = new JButton("Seleccionar");
+        botonSeleccionar.setBackground(tema.getBoton());
+        botonSeleccionar.setForeground(tema.getLetra());
+        botonSeleccionar.setBounds(160, 15, 110, 20);
+        panel.add(botonSeleccionar);
+        botonSeleccionar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String carpetaInicio = "ciudades";
+                String directorioWorkspace = System.getProperty("user.dir");
+                String rutaCarpetaInicio = directorioWorkspace + File.separator + carpetaInicio;
+                System.setProperty("user.dir", rutaCarpetaInicio);
+                JFileChooser seleccion = new JFileChooser(System.getProperty("user.dir"));
+                seleccion.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int valor = seleccion.showOpenDialog(null);
+                if (valor == JFileChooser.APPROVE_OPTION) {
+                    File carpSelec = seleccion.getSelectedFile();
+                    ciudadSeleccionada.setText("Ciudad seleccionada: " + getNombreCarpeta(carpSelec.getAbsolutePath()));
+                    direccion = carpSelec.getAbsolutePath();
+                    botonConfirmar.setEnabled(true);
+                }
+                System.setProperty("user.dir", directorioWorkspace);
+            }
+
+            private String getNombreCarpeta(String ruta) {
+                String[] lista = ruta.split("\\\\");
+                return lista[lista.length - 1];
+            }
+        });
+        botonConfirmar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                botonConfirmar.setEnabled(false);
+                botonVolver.setEnabled(false);
+                botonSeleccionar.setEnabled(false);
+                administradorDeVentanas.vaciarLista();
+                barraProgreso = new JProgressBar(0, obtenerLineasTotales());
+                barraProgreso.setBackground(tema.getFondo());
+                barraProgreso.setForeground(tema.getPuntos());
+                barraProgreso.setStringPainted(true);
+                barraProgreso.setBounds(0, 0, 300, 32);
+                panelBarra.add(barraProgreso);
+                hiloArchivo = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(direccion.equals("")){
+                            administradorDeVentanas.mostrarError("Carpeta no encontrada");
+                        }else{
+                            leerXML(true);
+                            leerXML(false);
+                            administradorDeVentanas.menu(administradorDeVentanas);
+                            ventana.setVisible(false);
+                        }
+                    }
+                });
+                hiloArchivo.start();
+            }
+        });
+        ventana.setVisible(true);
+    }
+/**
+     * Método para leer los datos desde un archivo XML (nodos o arcos).
+     *
+     * @param nodo Verdadero si se están leyendo nodos, falso si se están leyendo arcos.
+     */
+    private void leerXML(boolean nodo) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+
+        try {
+            builder = factory.newDocumentBuilder();
+
+            String archivo;
+            String nombre;
+
+            if (nodo) {
+                archivo = direccion + "/nodes.xml";
+                nombre = "row";
+            } else {
+                archivo = direccion + "/edges.xml";
+                nombre = "edge";
+            }
+
+            Document documento = builder.parse(new File(archivo));
+            Element raiz = documento.getDocumentElement();
+            NodeList datos = raiz.getElementsByTagName(nombre);
+
+            if (nodo) {
+                guardarNodos(datos);
+            } else {
+                guardarArcos(datos);
+            }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            //e.printStackTrace();
+        }
+    }
+
+    /**
+     * Método para guardar nodos a partir de los datos del archivo XML.
+     *
+     * @param nodos NodeList con los nodos del archivo XML.
+     */
+    private void guardarNodos(NodeList nodos) {
+        for (int i = 0; i < nodos.getLength(); i++) {
+            Element nodo = (Element) nodos.item(i);
+            String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
+            double posX = Double.parseDouble(nodo.getElementsByTagName("x").item(0).getTextContent());
+            double posY = Double.parseDouble(nodo.getElementsByTagName("y").item(0).getTextContent());
+            sistema.getGrafo().addNodo(id, posX, posY);
+            progreso++;
+            barraProgreso.setValue(progreso);
+        }
+    }
+
+    /**
+     * Método para guardar arcos a partir de los datos del archivo XML.
+     *
+     * @param arcos NodeList con los arcos del archivo XML.
+     */
+    private void guardarArcos(NodeList arcos) {
+        Set<String> carreteras = new HashSet<>(0);
+        for (int i = 0; i < arcos.getLength(); i++) {
+            Element arco = (Element) arcos.item(i);
+            String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
+            String id = arco.getElementsByTagName("osmid").item(0).getTextContent();
+            String tipo = null;
+            if (arco.getElementsByTagName("highway").item(0) != null) {
+                tipo = arco.getElementsByTagName("highway").item(0).getTextContent();
+            }
+            String origen = arco.getElementsByTagName("u").item(0).getTextContent();
+            String destino = arco.getElementsByTagName("v").item(0).getTextContent();
+            ArrayList<String> listaId = obtenerListaDeLinea(id);
+            ArrayList<String> listaNombre = obtenerListaDeLinea(nombre);
+            ArrayList<String> listaTipo = obtenerListaDeLinea(tipo);
+            sistema.getGrafo().addArco(listaId, listaNombre, listaTipo, origen, destino);
+            progreso++;
+            barraProgreso.setValue(progreso);
+            if (tipo != null) guardarTipoCarretera(listaTipo, carreteras);
+        }
+        sistema.getTiposCarreteras().clear();
+        for (String t : carreteras) {
+            sistema.getTiposCarreteras().add(t);
+        }
+    }
+
+    /**
+     * Método para obtener el número total de líneas en los archivos XML a cargar.
+     *
+     * @return Número total de líneas.
+     */
+    private int obtenerLineasTotales() {
+        int lineas = 0;
+        try {
+            lineas += contarLineas(direccion + "/nodes.xml");
+            lineas += contarLineas(direccion + "/edges.xml");
+        } catch (IOException e) {
+            administradorDeVentanas.mostrarError("Error al contar líneas en archivos XML.");
+        }
+        return lineas;
+    }
+
+    /**
+     * Método para contar el número de líneas en un archivo.
+     *
+     * @param archivo Ruta del archivo a contar líneas.
+     * @return Número de líneas en el archivo.
+     * @throws IOException Si ocurre un error al leer el archivo.
+     */
+    private int contarLineas(String archivo) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            int lineas = 0;
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                // Verificar si la línea contiene un elemento <edge> o <row>
+                if (linea.contains("<edge>") || linea.contains("<row>")) {
+                    lineas++;
+                }
+            }
+            return lineas;
+        }
+    }
+
+
+    /**
+     * Método para obtener una lista de elementos a partir de una línea de texto.
+     *
+     * @param linea Línea de texto que contiene los elementos.
+     * @return Lista de elementos obtenidos.
+     */
+    private ArrayList<String> obtenerListaDeLinea(String linea) {
+        if (linea != null) {
+            int inicio = linea.indexOf("[") + 1;
+            int fin = linea.indexOf("]");
+            if (fin < inicio) {
+                fin = linea.length();
+            }
+            String[] elementos = linea.substring(inicio, fin).split(", ");
+            ArrayList<String> lista = new ArrayList<>();
+            for (String elemento : elementos) {
+                lista.add(elemento.replace("'", ""));
+            }
+            return lista;
+        }
+        return null;
+    }
+
+    /**
+     * Método para guardar los tipos de carreteras en un conjunto.
+     *
+     * @param tipo       Lista de tipos de carretera.
+     * @param carreteras Conjunto para almacenar los tipos de carretera únicos.
+     */
+    private void guardarTipoCarretera(ArrayList<String> tipo, Set<String> carreteras) {
+        for (String t : tipo) {
+            carreteras.add(t);
+        }
+    }
+}

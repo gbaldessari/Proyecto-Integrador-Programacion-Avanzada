@@ -31,7 +31,7 @@ import cl.ucn.PIPA.logica.Sistema;
 /**
  * Clase que representa la ventana para seleccionar archivos y cargar datos desde XML.
  */
-public class VentanaArchivos implements Ventana {
+public class VentanaArchivosLocal implements Ventana {
     // Atributos de la clase
     private AdministradorDeVentanas administradorDeVentanas;  // Administrador de ventanas
     private Sistema sistema;  // Sistema
@@ -43,13 +43,13 @@ public class VentanaArchivos implements Ventana {
     private String direccion;  // Dirección de la carpeta seleccionada
 
     /**
-     * Constructor de la clase VentanaArchivos.
+     * Constructor de la clase VentanaArchivosLocal.
      *
      * @param administradorDeVentanas Instancia de AdministradorDeVentanas.
      * @param sistema                Instancia del sistema.
      * @param tema                   Tema para la interfaz gráfica.
      */
-    public VentanaArchivos(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema) {
+    public VentanaArchivosLocal(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema) {
         // Inicialización de atributos
         this.ventana = new JFrame("Seleccionar archivos");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

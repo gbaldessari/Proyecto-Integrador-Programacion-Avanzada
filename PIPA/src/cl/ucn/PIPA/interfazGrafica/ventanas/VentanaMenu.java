@@ -1,5 +1,6 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,33 +63,19 @@ public class VentanaMenu implements Ventana {
         tituloLocal.setForeground(tema.getLetra());
 		tituloLocal.setBounds(150, 0, 250, 50);
 		panelLocal.add(tituloLocal);
-		
-		JButton botonMostrarMapa = new JButton("Ver mapa");
-        botonMostrarMapa.setBackground(tema.getBoton());
-        botonMostrarMapa.setForeground(tema.getLetra());
-		botonMostrarMapa.setBounds(85, 50, 165, 25);
-        botonMostrarMapa.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
-		panelLocal.add(botonMostrarMapa);
-
-		botonMostrarMapa.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
-                ventana.setVisible(false);
-            }
-        });
 
         JButton botonSeleccionArchivos = new JButton("Seleccionar archivos");
         botonSeleccionArchivos.setBackground(tema.getBoton());
         botonSeleccionArchivos.setForeground(tema.getLetra());
-		botonSeleccionArchivos.setBounds(85, 85, 165, 25);
+		botonSeleccionArchivos.setBounds(85, 50, 165, 25);
 		panelLocal.add(botonSeleccionArchivos);
         botonSeleccionArchivos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
+                administradorDeVentanas.ventanaArchivosLocales(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });
-        //----------------------------------------------------
+        //Online----------------------------------------------------
         
         JPanel panelOnline = new JPanel();
         panelOnline.setBackground(tema.getFondo());
@@ -99,29 +86,15 @@ public class VentanaMenu implements Ventana {
         tituloOnline.setForeground(tema.getLetra());
 		tituloOnline.setBounds(150, 0, 250, 50);
 		panelOnline.add(tituloOnline);
-		
-		JButton botonMostrarMapaOnline = new JButton("Ver mapa");
-        botonMostrarMapaOnline.setBackground(tema.getBoton());
-        botonMostrarMapaOnline.setForeground(tema.getLetra());
-		botonMostrarMapaOnline.setBounds(85, 50, 165, 25);
-        botonMostrarMapaOnline.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
-		panelOnline.add(botonMostrarMapaOnline);
-
-		botonMostrarMapaOnline.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
-                ventana.setVisible(false);
-            }
-        });
 
         JButton botonSeleccionArchivosOnline = new JButton("Seleccionar archivos");
         botonSeleccionArchivosOnline.setBackground(tema.getBoton());
         botonSeleccionArchivosOnline.setForeground(tema.getLetra());
-		botonSeleccionArchivosOnline.setBounds(85, 85, 165, 25);
+		botonSeleccionArchivosOnline.setBounds(85, 50, 165, 25);
 		panelOnline.add(botonSeleccionArchivosOnline);
         botonSeleccionArchivosOnline.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                administradorDeVentanas.ventanaArchivos(administradorDeVentanas);
+                administradorDeVentanas.ventanaArchivosOnline(administradorDeVentanas);
                 ventana.setVisible(false);
             }
         });
@@ -152,8 +125,25 @@ public class VentanaMenu implements Ventana {
         });
 
         //-------------------------------------------------------------------------------------------------
+        JPanel panel = new JPanel();
+        panel.setBackground(tema.getUi());
 
-        ventana.add(panelPestanas);
+        JButton botonMostrarMapa = new JButton("Ver mapa");
+        botonMostrarMapa.setBackground(tema.getBoton());
+        botonMostrarMapa.setForeground(tema.getLetra());
+		botonMostrarMapa.setBounds(85, 0, 165, 25);
+        botonMostrarMapa.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
+		panel.add(botonMostrarMapa);
+
+		botonMostrarMapa.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                administradorDeVentanas.mostrarMapa(administradorDeVentanas);
+                ventana.setVisible(false);
+            }
+        });
+        
+        ventana.add(panelPestanas,BorderLayout.CENTER);
+        ventana.add(panel, BorderLayout.SOUTH);
         ventana.setVisible(true);
     }
 }

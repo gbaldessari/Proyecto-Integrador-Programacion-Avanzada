@@ -78,12 +78,22 @@ public class AdministradorDeVentanas {
     }
 
     /**
-     * Abre la ventana de gestión de archivos.
+     * Abre la ventana de gestión de archivos locales.
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaArchivos(AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaArchivos(administradorDeVentanas, sistema, temaSeleccionado);
+    public void ventanaArchivosLocales(AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaArchivosLocal(administradorDeVentanas, sistema, temaSeleccionado);
+        ventana.iniciarVentana();
+    }
+
+    /**
+     * Abre la ventana de gestión de archivos online.
+     *
+     * @param administradorDeVentanas Instancia del administrador de ventanas.
+     */
+    public void ventanaArchivosOnline(AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaArchivosOnline(administradorDeVentanas, sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
 
