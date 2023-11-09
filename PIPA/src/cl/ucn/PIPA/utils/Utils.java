@@ -1,5 +1,13 @@
 package cl.ucn.PIPA.utils;
 
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 public class Utils {
 
     /**
@@ -34,5 +42,28 @@ public class Utils {
      */
     private static double haversin(double val) {
         return Math.pow(Math.sin(val / 2), 2);
+    }
+
+    public static Document convertStringBuilderToDocument(StringBuilder stringBuilder) {
+        Document document = null;
+        try {
+            // Crear un DocumentBuilderFactory
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
+            // Crear un DocumentBuilder
+            DocumentBuilder builder = factory.newDocumentBuilder();
+
+            // Convertir el contenido del StringBuilder en una cadena
+            String xmlString = stringBuilder.toString();
+
+            // Crear un InputSource desde la cadena
+            InputSource inputSource = new InputSource(new StringReader(xmlString));
+
+            // Parsear el InputSource en un Document
+            document = builder.parse(inputSource);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return document;
     }
 }

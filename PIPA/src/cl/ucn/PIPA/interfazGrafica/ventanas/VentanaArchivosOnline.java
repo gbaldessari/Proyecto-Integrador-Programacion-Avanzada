@@ -14,16 +14,13 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 import cl.ucn.PIPA.utils.CiudadesProvider;
+import cl.ucn.PIPA.utils.Utils;
 import cl.ucn.PIPA.utils.CiudadesProvider.Ciudad;
 
 /**
@@ -67,7 +64,6 @@ public class VentanaArchivosOnline implements Ventana{
         provider = CiudadesProvider.instance();
         ArrayList<String> listaCiudades = new ArrayList<>();
         try {
-            System.out.println("Lista de ciudades disponibles:");
             for (String ciudad : provider.list()) {
                 listaCiudades.add(ciudad);
             }
@@ -152,24 +148,20 @@ public class VentanaArchivosOnline implements Ventana{
      * Método para leer los datos desde un archivo XML (nodos y arcos).
      */
     private void leerXML(String ciudadSeleccionada) {
-        System.out.println("ass");
         try {
-            System.out.println("ass");
             Ciudad ciudad = provider.ciudad(ciudadSeleccionada);
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
             
-            Document documento = builder.parse(ciudad.getXmlNodes());
+            Document documento = Utils.convertStringBuilderToDocument(ciudad.getXmlNodes());
             Element raiz = documento.getDocumentElement();
             NodeList datos = raiz.getElementsByTagName("row");
             guardarNodos(datos);
 
-            documento = builder.parse(ciudad.getXmlEdges());
+            documento = Utils.convertStringBuilderToDocument(ciudad.getXmlEdges());
             raiz = documento.getDocumentElement();
             datos = raiz.getElementsByTagName("edge");
             guardarArcos(datos);
 
-        } catch (ParserConfigurationException | SAXException | IOException e){
+        } catch (IOException e){
             e.printStackTrace();
         }
     }

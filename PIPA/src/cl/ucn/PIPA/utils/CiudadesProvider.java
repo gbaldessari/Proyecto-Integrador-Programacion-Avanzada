@@ -63,7 +63,7 @@ public class CiudadesProvider
         return urlString;
     }
 
-    private String getURLContentsZIP(String enlace) throws IOException
+    private StringBuilder getURLContentsZIP(String enlace) throws IOException
     {
         System.out.println("Downloading " + enlace);
         
@@ -78,7 +78,7 @@ public class CiudadesProvider
         }
         reader.close();
         
-        return content.toString();
+        return content;
     }
 
     public Ciudad ciudad(String nombre) throws IOException
@@ -133,21 +133,21 @@ public class CiudadesProvider
 
     public class Ciudad
     {
-        private String xmlNodes;
-        private String xmlEdges;
+        private StringBuilder xmlNodes;
+        private StringBuilder xmlEdges;
 
-        public Ciudad(String xmlNodes, String xmlEdges)
+        public Ciudad(StringBuilder xmlNodes, StringBuilder xmlEdges)
         {
             this.xmlNodes = xmlNodes;
             this.xmlEdges = xmlEdges;
         }
 
-        public String getXmlNodes()
+        public StringBuilder getXmlNodes()
         {
             return xmlNodes;
         }
 
-        public String getXmlEdges()
+        public StringBuilder getXmlEdges()
         {
             return xmlEdges;
         }
