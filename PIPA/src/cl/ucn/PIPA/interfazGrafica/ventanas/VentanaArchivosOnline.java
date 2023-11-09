@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,7 +62,9 @@ public class VentanaArchivosOnline implements Ventana{
 
         provider = CiudadesProvider.instance();
         ArrayList<String> listaCiudades = new ArrayList<>();
-        try {
+
+        if(provider.list()!=null){
+            administradorDeVentanas.setConexionInternet(true);
             for (String ciudad : provider.list()) {
                 listaCiudades.add(ciudad);
             }
@@ -71,7 +72,9 @@ public class VentanaArchivosOnline implements Ventana{
             for (int i = 0;i< listaCiudades.size();i++) {
                 ciudades[i] = listaCiudades.get(i);
             }
-        } catch (IOException e) {
+        }
+        else{
+            administradorDeVentanas.mostrarError("No hay conexion a internet");
             administradorDeVentanas.menu(administradorDeVentanas);
             ventana.setVisible(false);
         }
@@ -148,22 +151,17 @@ public class VentanaArchivosOnline implements Ventana{
      * Método para leer los datos desde un archivo XML (nodos y arcos).
      */
     private void leerXML(String ciudadSeleccionada) {
-        try {
-            Ciudad ciudad = provider.ciudad(ciudadSeleccionada);
+        Ciudad ciudad = provider.ciudad(ciudadSeleccionada);
             
-            Document documento = Utils.convertStringBuilderToDocument(ciudad.getXmlNodes());
-            Element raiz = documento.getDocumentElement();
-            NodeList datos = raiz.getElementsByTagName("row");
-            guardarNodos(datos);
+        Document documento = Utils.convertStringBuilderToDocument(ciudad.getXmlNodes());
+        Element raiz = documento.getDocumentElement();
+        NodeList datos = raiz.getElementsByTagName("row");
+        guardarNodos(datos);
 
-            documento = Utils.convertStringBuilderToDocument(ciudad.getXmlEdges());
-            raiz = documento.getDocumentElement();
-            datos = raiz.getElementsByTagName("edge");
-            guardarArcos(datos);
-
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        documento = Utils.convertStringBuilderToDocument(ciudad.getXmlEdges());
+        raiz = documento.getDocumentElement();
+        datos = raiz.getElementsByTagName("edge");
+        guardarArcos(datos);
     }
 
     /**

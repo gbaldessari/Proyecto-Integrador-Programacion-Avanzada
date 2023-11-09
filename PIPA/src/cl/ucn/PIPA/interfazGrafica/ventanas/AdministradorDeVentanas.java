@@ -12,6 +12,7 @@ import cl.ucn.PIPA.logica.Sistema;
 public class AdministradorDeVentanas {
     private Sistema sistema;  // Instancia del sistema
     private Tema temaSeleccionado;  // Tema seleccionado para la interfaz
+    private boolean conexionInternet;
 
     /**
      * Constructor de la clase AdministradorDeVentanas.
@@ -22,6 +23,7 @@ public class AdministradorDeVentanas {
     public AdministradorDeVentanas(Sistema sistema, ArrayList<Tema> temas) {
         this.sistema = sistema;
         temaSeleccionado = temas.get(0);
+        conexionInternet = false;
     }
 
     // Métodos para abrir diferentes ventanas
@@ -94,7 +96,11 @@ public class AdministradorDeVentanas {
      */
     public void ventanaArchivosOnline(AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaArchivosOnline(administradorDeVentanas, sistema, temaSeleccionado);
-        ventana.iniciarVentana();
+        if(conexionInternet){
+            ventana.iniciarVentana();
+            conexionInternet = false;
+        }
+        
     }
 
     // Métodos para gestionar el tema seleccionado
@@ -125,5 +131,9 @@ public class AdministradorDeVentanas {
     public void vaciarLista() {
         this.sistema.getGrafo().getNodos().clear();
         this.sistema.getGrafo().getArcos().clear();
+    }
+
+    public void setConexionInternet(boolean conexionInternet) {
+        this.conexionInternet = conexionInternet;
     }
 }
