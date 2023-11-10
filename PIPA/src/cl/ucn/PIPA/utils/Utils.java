@@ -1,10 +1,7 @@
 package cl.ucn.PIPA.utils;
-
 import java.io.StringReader;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -66,4 +63,10 @@ public class Utils {
         }
         return document;
     }
+
+    // Método para escapar caracteres especiales en XML
+    public static String escapeXML(String input) {
+        return input.replaceAll("&", "&amp;");
+    }
+
 }

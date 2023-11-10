@@ -6,9 +6,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +32,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
+import cl.ucn.PIPA.utils.Utils;
 
 /**
  * Clase que representa la ventana para seleccionar archivos y cargar datos desde XML.
@@ -197,7 +203,17 @@ public class VentanaArchivosLocal implements Ventana {
                 nombre = "edge";
             }
 
-            Document documento = builder.parse(new File(archivo));
+            // Leer el contenido del archivo como cadena
+            String xmlContent = new String(Files.readAllBytes(Paths.get(archivo)));
+
+            // Corregir las entidades problemáticas
+            xmlContent = Utils.escapeXML(xmlContent);
+
+            // Crear un nuevo InputStream con el contenido corregido
+            InputStream inputStream = new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8));
+
+            // Parsear el documento
+            Document documento = builder.parse(inputStream);
             Element raiz = documento.getDocumentElement();
             NodeList datos = raiz.getElementsByTagName(nombre);
 
@@ -207,7 +223,7 @@ public class VentanaArchivosLocal implements Ventana {
                 guardarArcos(datos);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 

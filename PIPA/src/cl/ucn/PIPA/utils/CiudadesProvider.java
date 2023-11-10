@@ -86,7 +86,7 @@ public class CiudadesProvider{
             String line;
             StringBuilder content = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                content.append(line);
+                content.append(Utils.escapeXML(line));
             }
             reader.close();
             return content;
