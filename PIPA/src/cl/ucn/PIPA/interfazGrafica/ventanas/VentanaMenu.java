@@ -73,6 +73,7 @@ public class VentanaMenu implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.ventanaArchivosLocales(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
         //Online----------------------------------------------------
@@ -96,6 +97,7 @@ public class VentanaMenu implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.ventanaArchivosOnline(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 
@@ -121,6 +123,7 @@ public class VentanaMenu implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 
@@ -139,6 +142,7 @@ public class VentanaMenu implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
         

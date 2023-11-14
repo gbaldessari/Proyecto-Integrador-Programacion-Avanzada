@@ -6,7 +6,7 @@ package cl.ucn.PIPA.logica;
  *  @author Giacomo Baldessari
  *  @author Eduardo Miranda
  *  @author David Rodriguez
- *  @Version 17/10/23
+ *  @Version 14/11/23
  */
 public class App {
     public static void main(String[] args) {

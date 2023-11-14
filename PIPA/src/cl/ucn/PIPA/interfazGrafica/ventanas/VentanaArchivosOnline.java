@@ -77,6 +77,7 @@ public class VentanaArchivosOnline implements Ventana{
             administradorDeVentanas.mostrarError("No hay conexion a internet");
             administradorDeVentanas.menu(administradorDeVentanas);
             ventana.setVisible(false);
+            ventana.dispose();
         }
     }
 
@@ -118,6 +119,7 @@ public class VentanaArchivosOnline implements Ventana{
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 
@@ -139,6 +141,7 @@ public class VentanaArchivosOnline implements Ventana{
                         leerXML(ciudades[seleccionArchivo.getSelectedIndex()]);
                         administradorDeVentanas.menu(administradorDeVentanas);
                         ventana.setVisible(false);
+                        ventana.dispose();
                     }
                 });
                 hiloArchivo.start();

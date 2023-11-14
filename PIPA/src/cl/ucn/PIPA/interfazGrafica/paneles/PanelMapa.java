@@ -24,6 +24,9 @@ import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
 import cl.ucn.PIPA.utils.Utils;
 
+/**
+ * Panel gráfico que muestra un mapa con nodos y arcos geográficos.
+ */
 public class PanelMapa extends JPanel{
     private Sistema sistema;
     private double deltaCords;
@@ -53,6 +56,12 @@ public class PanelMapa extends JPanel{
     private JLabel km;
     private double escalador;
 
+    /**
+     * Constructor del panel de mapa.
+     *
+     * @param sistema El sistema que contiene el grafo.
+     * @param tema    El tema de apariencia para el panel.
+     */
     public PanelMapa(Sistema sistema, Tema tema){
         this.sistema = sistema;
         this.tema = tema;
@@ -138,16 +147,49 @@ public class PanelMapa extends JPanel{
             }
         });
     }
+    /**
+     * Establece la etiqueta para mostrar la coordenada 1.
+     *
+     * @param c1 La etiqueta para la coordenada 1.
+     */
     public void setC1(JLabel c1){this.c1=c1;}
+    /**
+     * Establece la etiqueta para mostrar la coordenada 2.
+     *
+     * @param c2 La etiqueta para la coordenada 1.
+     */
     public void setC2(JLabel c2){this.c2=c2;}
+    /**
+     * Establece la etiqueta para mostrar el id 1.
+     *
+     * @param id1 La etiqueta para el id 1.
+     */
     public void setid1(JLabel id1){this.id1=id1;}
+    /**
+     * Establece la etiqueta para mostrar el id 2.
+     *
+     * @param id2 La etiqueta para el id 2.
+     */
     public void setid2(JLabel id2){this.id2=id2;}
+    /**
+     * Establece la etiqueta para mostrar los kilometros.
+     *
+     * @param km La etiqueta para los kilometros.
+     */
     public void setKm(JLabel km){this.km=km;}
+    /**
+     * Borra los puntos de origen y destino.
+     */
     public void borrarOrigenDestino(){
         puntoPartida = null;
         puntoDestino = null;
         repaint();
     }
+    /**
+     * Método de dibujo principal que representa el contenido del panel.
+     *
+     * @param g El objeto Graphics para dibujar.
+     */
     public void paint(Graphics g){
         super.paint(g);
         graphics2d = (Graphics2D) g;
@@ -212,6 +254,12 @@ public class PanelMapa extends JPanel{
         graphics2d.drawImage(image, -2000,-2000, this);
         graphics2d.dispose();
     }
+    /**
+     * Obtiene el índice del color asociado a un tipo de carretera.
+     *
+     * @param tipo El tipo de carretera.
+     * @return El índice del color asociado.
+     */
     private int getIndexColor(String tipo) {
         int index = 0;
         int numColores = sistema.getTiposCarreteras().size()-1;
@@ -226,6 +274,13 @@ public class PanelMapa extends JPanel{
         }
         return index;
     }
+    /**
+     * Verifica si un punto está dentro de los límites visibles.
+     *
+     * @param x La coordenada x del punto.
+     * @param y La coordenada y del punto.
+     * @return true si el punto está dentro de los límites visibles, false de lo contrario.
+     */
     private boolean inLimitesPoint(int x, int y){
         Rectangle2D rect = new Rectangle2D.Double(visibleX-10, visibleY-10, visibleWidth+20, visibleHeight+20);
         if(rect.contains(x,y)){
@@ -233,6 +288,12 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
+    /**
+     * Verifica si una línea está dentro de los límites visibles.
+     *
+     * @param linea La línea a verificar.
+     * @return true si la línea está dentro de los límites visibles, false de lo contrario.
+     */
     private boolean inLimitesLine(Line2D linea){
         Rectangle2D rect = new Rectangle2D.Double(visibleX, visibleY, visibleWidth, visibleHeight);
         if(rect.intersectsLine(linea)){
@@ -240,6 +301,13 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
+    /**
+     * Normaliza un valor según el rango de coordenadas y la escala.
+     *
+     * @param valor El valor a normalizar.
+     * @param x     true si se está normalizando la coordenada x, false para la coordenada y.
+     * @return El valor normalizado.
+     */
     private int valorNormalizado(double valor,boolean x){
         double valorfinal = 0;
         if(x){
@@ -250,6 +318,12 @@ public class PanelMapa extends JPanel{
         }
         return (int)valorfinal;
     }
+    /**
+     * Limita el zoom dentro de ciertos rangos.
+     *
+     * @param newScale La nueva escala propuesta.
+     * @return true si el zoom es válido y se ha aplicado, false si no es válido.
+     */
     public boolean canScale(double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
         double minScale = 0.025;
@@ -260,9 +334,21 @@ public class PanelMapa extends JPanel{
         }
         return false;
     }
+    /**
+     * Calcula la distancia entre dos puntos.
+     *
+     * @param p1 El primer punto.
+     * @param p2 El segundo punto.
+     * @return La distancia entre los dos puntos.
+     */
     private double calculateDistance(Point2D.Double p1, Punto p2) {
         return p1.distance(p2.getPoint().getX(), p2.getPoint().getY());
     }
+    /**
+     * Obtiene información del nodo de origen.
+     *
+     * @return Un array de Strings con información del nodo de origen.
+     */
     public String[] getDatoNodoOrigen(){
         String [] datos = new String[3];
         if(puntoPartida != null){
@@ -272,6 +358,9 @@ public class PanelMapa extends JPanel{
         }
         return datos;
     }
+    /**
+     * Obtiene y normaliza los puntos del grafo.
+     */
     private void getPuntos(){
         double mayX = Double.MIN_VALUE;
         double menX = Double.MAX_VALUE;
@@ -300,6 +389,9 @@ public class PanelMapa extends JPanel{
         offsetX = (int)((-(mayX+menX)/2)*scale+944/2);
         offsetY = (int)((-(mayY+menY)/2)*scale+625/2);
     }
+    /**
+     * Obtiene las líneas del grafo.
+     */
     private void getLineas(){
         for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
             Arco arco = sistema.getGrafo().getArcos().get(i);
@@ -312,6 +404,9 @@ public class PanelMapa extends JPanel{
             lineas.add(linea);
         }
     }
+    /**
+     * Calcula los límites del mapa basándose en las coordenadas de los nodos.
+     */
     private void getLimites(){
         double maxX = Double.MIN_VALUE;
         minX = Double.MAX_VALUE;

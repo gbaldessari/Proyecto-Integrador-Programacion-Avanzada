@@ -74,6 +74,7 @@ public class VentanaTema implements Ventana{
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 
@@ -88,6 +89,7 @@ public class VentanaTema implements Ventana{
 				administradorDeVentanas.setTema(seleccionTema.getSelectedIndex()-1);
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 		ventana.setVisible(true);

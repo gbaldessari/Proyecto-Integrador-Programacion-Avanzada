@@ -35,6 +35,7 @@ public class VentanaCierre implements Ventana {
             public void windowClosing(WindowEvent we) {
                 ventanaActiva.setEnabled(true);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
         ventana.setSize(300, 150);
@@ -75,6 +76,7 @@ public class VentanaCierre implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 ventanaActiva.setEnabled(true);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 

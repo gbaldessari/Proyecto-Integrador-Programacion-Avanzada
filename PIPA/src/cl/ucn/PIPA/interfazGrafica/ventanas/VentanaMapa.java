@@ -62,6 +62,7 @@ public class VentanaMapa implements Ventana{
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 

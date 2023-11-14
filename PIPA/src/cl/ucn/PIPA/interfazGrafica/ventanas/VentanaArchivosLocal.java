@@ -102,6 +102,7 @@ public class VentanaArchivosLocal implements Ventana {
             public void actionPerformed(ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
+                ventana.dispose();
             }
         });
 
@@ -172,6 +173,7 @@ public class VentanaArchivosLocal implements Ventana {
                             leerXML(false);
                             administradorDeVentanas.menu(administradorDeVentanas);
                             ventana.setVisible(false);
+                            ventana.dispose();
                         }
                     }
                 });
@@ -222,6 +224,7 @@ public class VentanaArchivosLocal implements Ventana {
             } else {
                 guardarArcos(datos);
             }
+            inputStream.close();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
