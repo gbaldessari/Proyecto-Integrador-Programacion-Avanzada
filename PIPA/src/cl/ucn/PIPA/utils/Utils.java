@@ -6,6 +6,26 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
 public class Utils {
+    private static final double RADIO_TIERRA = 6371000;
+
+    public static double Vincenty(double latitud1, double longitud1, double latitud2, double longitud2) {
+        double latRad1 = Math.toRadians(latitud1);
+        double lonRad1 = Math.toRadians(longitud1);
+        double latRad2 = Math.toRadians(latitud2);
+        double lonRad2 = Math.toRadians(longitud2);
+
+        double lonDiff = lonRad2 - lonRad1;
+
+        double num1 = Math.cos(latRad2) * Math.sin(lonDiff);
+        double num2 = Math.cos(latRad1) * Math.sin(latRad2) - Math.sin(latRad1) * Math.cos(latRad2) * Math.cos(lonDiff);
+        double numerator = Math.sqrt(num1 * num1 + num2 * num2);
+
+        double denominator = Math.sin(latRad1) * Math.sin(latRad2) + Math.cos(latRad1) * Math.cos(latRad2) * Math.cos(lonDiff);
+
+        double angle = Math.atan2(numerator, denominator);
+
+        return angle * RADIO_TIERRA;
+    }
 
     /**
      * Calcula la distancia en kilómetros entre dos puntos geográficos utilizando la fórmula de Haversine.

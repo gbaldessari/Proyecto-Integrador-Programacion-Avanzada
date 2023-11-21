@@ -149,7 +149,7 @@ public class Grafo {
         Map<Nodo, Double> costoAcumulado = new HashMap<>();
         Map<Nodo, Nodo> padre = new HashMap<>();
         PriorityQueue<Nodo> listaAbierta = new PriorityQueue<>(Comparator.comparingDouble(
-                nodo -> costoAcumulado.get(nodo) + Utils.haversine(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
+                nodo -> costoAcumulado.get(nodo) + Utils.Vincenty(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
 
         Set<Nodo> listaCerrada = new HashSet<>();
 
