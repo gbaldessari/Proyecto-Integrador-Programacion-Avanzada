@@ -37,16 +37,18 @@ public class PanelMapa extends JPanel{
     private double scale;
     private int offsetX;
     private int offsetY;
-    double visibleWidth;
-    double visibleHeight;
-    double visibleX;
-    double visibleY;
+    private double visibleWidth;
+    private double visibleHeight;
+    private double visibleX;
+    private double visibleY;
     private Point lastDragPoint;
     private Graphics2D graphics2d;
     private ArrayList<Punto> puntos;
     private ArrayList<Linea> lineas;
+    private ArrayList<Line2D> ruta;
     private Punto puntoPartida;
     private Punto puntoDestino;
+    private double distanciaRecorrida;
     private ImageIcon imageIcon;
     private Tema tema;
     private JLabel c1;
@@ -73,6 +75,7 @@ public class PanelMapa extends JPanel{
         puntoDestino = null;
         offsetX = 0;
         offsetY = 0;
+        distanciaRecorrida = 0;
         scale = 0.025;
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
@@ -186,6 +189,8 @@ public class PanelMapa extends JPanel{
     public void borrarOrigenDestino(){
         puntoPartida = null;
         puntoDestino = null;
+        ruta = null;
+        distanciaRecorrida = 0;
         repaint();
     }
     public String getIdentificador1() {
@@ -210,6 +215,7 @@ public class PanelMapa extends JPanel{
         visibleHeight = (panelHeight / scale);
         visibleX = (-offsetX / scale);
         visibleY = (-offsetY / scale);
+
         for (Linea linea : lineas) {
             if(inLimitesLine(linea.getLine())){
                 Color colorLinea = Color.decode("#606060");
@@ -219,6 +225,20 @@ public class PanelMapa extends JPanel{
                 graphics2d.setColor(colorLinea);
                 graphics2d.setStroke(new BasicStroke(1));
                 graphics2d.draw(linea.getLine());
+            }
+        }
+        if(ruta != null){
+            if(distanciaRecorrida<1){
+                this.km.setText(String.format("%." + 2 + "f",distanciaRecorrida*1000) + " m");
+            }else{
+                this.km.setText(String.format("%." + 3 + "f",distanciaRecorrida) + " km");
+            }
+            for (Line2D linea : ruta) {
+                if(inLimitesLine(linea)){
+                    graphics2d.setColor(Color.decode("#FF0000"));
+                    graphics2d.setStroke(new BasicStroke((int)(8/scale)));
+                    graphics2d.draw(linea);
+                }
             }
         }
         // Dibuja solo los puntos que están dentro de los límites visibles
@@ -249,12 +269,6 @@ public class PanelMapa extends JPanel{
             this.id2.setText("ID: "+puntoDestino.getNodo().getId());
             identificador2 = puntoDestino.getNodo().getId();
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
-            double kilometros = Utils.haversine(puntoPartida.getNodo().getY(),puntoPartida.getNodo().getX(),puntoDestino.getNodo().getY(),puntoDestino.getNodo().getX());
-            if(kilometros<1){
-                this.km.setText(String.format("%." + 2 + "f",kilometros*1000) + " m");
-            }else{
-                this.km.setText(String.format("%." + 3 + "f",kilometros) + " km");
-            }
         }
         else{
             this.c2.setText("");
@@ -451,5 +465,20 @@ public class PanelMapa extends JPanel{
         else{
             deltaCords = deltaY;
         }
+    }
+
+    public void caminoMasCorto(){
+        ArrayList<Nodo> lista = sistema.getGrafo().encontrarCaminoMasCorto(identificador1,identificador2);
+        ruta = new ArrayList<>();
+        for (int i = 0;i<lista.size()-1;i++) {
+            Line2D linea = new Line2D.Double(
+                        valorNormalizado(lista.get(i).getX()*-1,true),
+                        valorNormalizado(lista.get(i).getY()*-1,false),
+                        valorNormalizado(lista.get(i+1).getX()*-1,true),
+                        valorNormalizado(lista.get(i+1).getY()*-1,false));
+            ruta.add(linea);
+            distanciaRecorrida+=Utils.haversine(lista.get(i).getY(),lista.get(i).getX(),lista.get(i+1).getY(),lista.get(i+1).getX());
+        }
+        repaint();
     }
 }

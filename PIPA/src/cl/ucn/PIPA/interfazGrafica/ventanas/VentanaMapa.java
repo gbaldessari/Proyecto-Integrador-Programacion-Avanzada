@@ -129,19 +129,17 @@ public class VentanaMapa implements Ventana{
         km.setForeground(tema.getLetra());
         km.setFont(km.getFont().deriveFont(14f));
         panelInfo.add(km);
-
         panelMapa.setKm(km);
 
         JButton botonAlgoritmo = new JButton("Calcular ruta");
-        botonAlgoritmo.setBounds(10, 350, 100, 25);
+        botonAlgoritmo.setBounds(10, 350, 125, 25);
         botonAlgoritmo.setBackground(tema.getBoton());
         botonAlgoritmo.setForeground(tema.getLetra());
         panelInfo.add(botonAlgoritmo);
         botonAlgoritmo.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){
-                System.out.println(id1.getText());
-                if(!id1.getText().equals("")){
-                    sistema.getGrafo().encontrarCaminoMasCorto(panelMapa.getIdentificador1(),panelMapa.getIdentificador2());
+                if(!id2.getText().equals("")){
+                    panelMapa.caminoMasCorto();
                 }
             } 
         });
@@ -153,7 +151,9 @@ public class VentanaMapa implements Ventana{
         panelInfo.add(botonBorrar);
 		botonBorrar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                km.setText("");
                 panelMapa.borrarOrigenDestino();
+
             }
         });
         ventana.setVisible(true);

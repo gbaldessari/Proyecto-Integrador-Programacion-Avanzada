@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Stack;
 
 /**
  * Clase que contiene la estructura de datos de un grafo.
@@ -134,87 +132,14 @@ public class Grafo {
         return null;  // Nodo no encontrado
     }
 
-    /**
-     * Comprueba si existe una ruta entre dos nodos en el grafo.
-     *
-     * @param origen  ID del nodo de origen.
-     * @param destino ID del nodo de destino.
-     * @return true si existe una ruta, false si no.
-     */
-    public boolean existeRuta(String origen, String destino) {
-        return buscarRuta(origen, destino) != null;
+    public ArrayList<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
+        return encontrarCaminoMasCorto(binarySearch(inicio), binarySearch(destino));
     }
 
-    /**
-     * Busca una ruta entre dos nodos utilizando el algoritmo de búsqueda en profundidad (DFS).
-     *
-     * @param origen  ID del nodo de origen.
-     * @param destino ID del nodo de destino.
-     * @return Lista de nodos que forman la ruta si existe, null si no se encontró una ruta.
-     */
-    public ArrayList<Nodo> buscarRuta(String origen, String destino) {
-        Nodo nodoOrigen = binarySearch(origen);
-        Nodo nodoDestino = binarySearch(destino);
-        ArrayList<Nodo> nodosRuta = new ArrayList<>();
-
-        if (nodoOrigen != null && nodoDestino != null && buscarRutaDFS(nodosRuta, nodoOrigen, nodoDestino)) {
-            return nodosRuta;
-        } else {
+    public ArrayList<Nodo> encontrarCaminoMasCorto(Nodo inicio, Nodo destino) {
+        if(inicio == null||destino == null){
             return null;
         }
-    }
-
-    /**
-     * Realiza una búsqueda de ruta utilizando el algoritmo DFS (Depth-First Search).
-     *
-     * @param nodosRuta   Lista donde se almacenarán los nodos de la ruta.
-     * @param nodoOrigen  Nodo de origen.
-     * @param nodoDestino Nodo de destino.
-     * @return true si se encontró una ruta, false si no.
-     */
-    private boolean buscarRutaDFS(ArrayList<Nodo> nodosRuta, Nodo nodoOrigen, Nodo nodoDestino) {
-        nodosRuta.add(nodoOrigen);  // Agrega el nodo de origen
-
-        // Si el origen y destino son el mismo
-        if (nodoOrigen.getId().equals(nodoDestino.getId())) {
-            return true;
-        }
-
-        // Si no son el mismo, revise las rutas usando una pila
-        Stack<Nodo> pilaDeNodos = new Stack<>();
-        ArrayList<Nodo> nodosVisitados = new ArrayList<>();
-
-        pilaDeNodos.add(nodoOrigen);
-
-        while (!pilaDeNodos.isEmpty()) {
-            Nodo actual = pilaDeNodos.pop();
-
-            // Ignora los nodos ya visitados
-            if (nodosVisitados.contains(actual))
-                continue;
-
-            // ¿Es el nodo que estamos buscando?
-            if (actual.equals(nodoDestino)) {
-                nodosRuta.addAll(pilaDeNodos);
-                nodosRuta.add(nodoDestino);
-                return true;
-            } else {
-                // Sigue buscando en las rutas no visitadas
-                nodosVisitados.add(actual);
-                for (Nodo nodo : actual.getNodosAdyacentes()) {
-                    if (!pilaDeNodos.contains(nodo))
-                        pilaDeNodos.add(nodo);
-                }
-            }
-        }
-        return false;  // No se encontró una ruta
-
-    }
-    public List<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
-        return encontrarCaminoMasCorto(binarySearch(inicio), binarySearch(destino));
-
-    }
-    public List<Nodo> encontrarCaminoMasCorto(Nodo inicio, Nodo destino) {
         // Inicializar estructuras de datos necesarias
         Map<Nodo, Double> distancia = new HashMap<>();
         Map<Nodo, Nodo> padre = new HashMap<>();
@@ -246,18 +171,11 @@ public class Grafo {
         }
 
         // Reconstruir el camino desde el nodo de destino hasta el nodo de inicio
-        List<Nodo> camino = new ArrayList<>();
+        ArrayList<Nodo> camino = new ArrayList<>();
         for (Nodo nodo = destino; nodo != null; nodo = padre.get(nodo)) {
             camino.add(nodo);
         }
         Collections.reverse(camino);
-        verCamino(camino);
         return camino;
-    }
-    public void verCamino(List<Nodo> camino){
-        for(Nodo i: camino){
-            System.out.println(i.getId() + "-");
-
-        }
     }
 }
