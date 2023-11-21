@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
+import cl.ucn.PIPA.utils.Utils;
 
 /**
  * Clase que contiene la estructura de datos de un grafo.
@@ -133,39 +136,62 @@ public class Grafo {
     }
 
     public ArrayList<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
-        return encontrarCaminoMasCorto(binarySearch(inicio), binarySearch(destino));
+        return encontrarMejorCaminoAStar(binarySearch(inicio), binarySearch(destino));
     }
 
-    public ArrayList<Nodo> encontrarCaminoMasCorto(Nodo inicio, Nodo destino) {
-        if(inicio == null||destino == null){
+    // Método para encontrar el mejor camino entre dos nodos utilizando el algoritmo A*
+    public ArrayList<Nodo> encontrarMejorCaminoAStar(Nodo inicio, Nodo destino) {
+        if (inicio == null || destino == null) {
             return null;
         }
-        // Inicializar estructuras de datos necesarias
-        Map<Nodo, Double> distancia = new HashMap<>();
-        Map<Nodo, Nodo> padre = new HashMap<>();
-        PriorityQueue<Nodo> colaPrioridad = new PriorityQueue<>(Comparator.comparingDouble(distancia::get));
 
-        // Inicializar distancias a infinito, excepto para el nodo de inicio
+        // Estructuras de datos necesarias
+        Map<Nodo, Double> costoAcumulado = new HashMap<>();
+        Map<Nodo, Nodo> padre = new HashMap<>();
+        PriorityQueue<Nodo> listaAbierta = new PriorityQueue<>(Comparator.comparingDouble(
+                nodo -> costoAcumulado.get(nodo) + Utils.haversine(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
+
+        Set<Nodo> listaCerrada = new HashSet<>();
+
+        // Inicializar costos a infinito, excepto para el nodo de inicio
         for (Nodo nodo : nodos) {
-            distancia.put(nodo, Double.MAX_VALUE);
+            costoAcumulado.put(nodo, Double.MAX_VALUE);
             padre.put(nodo, null);
         }
-        distancia.put(inicio, 0.0);
+        costoAcumulado.put(inicio, 0.0);
 
-        colaPrioridad.add(inicio);
+        listaAbierta.add(inicio);
 
-        // Aplicar el algoritmo de Dijkstra
-        while (!colaPrioridad.isEmpty()) {
-            Nodo nodoActual = colaPrioridad.poll();
+        // Aplicar el algoritmo A*
+        while (!listaAbierta.isEmpty()) {
+            Nodo nodoActual = listaAbierta.poll();
+
+            // Mover el nodo actual a la lista cerrada
+            listaCerrada.add(nodoActual);
+
+            // Verificar si hemos llegado al nodo de destino
+            if (nodoActual.equals(destino)) {
+                break;
+            }
 
             for (Arco arco : nodoActual.getArcos()) {
                 Nodo vecino = arco.getDestino();
-                double nuevaDistancia = distancia.get(nodoActual) + arco.getPeso();
 
-                if (nuevaDistancia < distancia.get(vecino)) {
-                    distancia.put(vecino, nuevaDistancia);
+                // Ignorar nodos en la lista cerrada
+                if (listaCerrada.contains(vecino)) {
+                    continue;
+                }
+
+                double nuevoCosto = costoAcumulado.get(nodoActual) + arco.getPeso();
+
+                if (!listaAbierta.contains(vecino) || nuevoCosto < costoAcumulado.get(vecino)) {
+                    costoAcumulado.put(vecino, nuevoCosto);
                     padre.put(vecino, nodoActual);
-                    colaPrioridad.add(vecino);
+
+                    // Si el vecino no está en la lista abierta, agrégalo
+                    if (!listaAbierta.contains(vecino)) {
+                        listaAbierta.add(vecino);
+                    }
                 }
             }
         }
@@ -176,6 +202,8 @@ public class Grafo {
             camino.add(nodo);
         }
         Collections.reverse(camino);
+
         return camino;
     }
+
 }

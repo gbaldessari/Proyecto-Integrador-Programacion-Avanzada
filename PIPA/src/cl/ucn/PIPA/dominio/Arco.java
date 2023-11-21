@@ -86,4 +86,10 @@ public class Arco {
     public Nodo getDestino() {
         return destino;
     }
+    public double heuristicaAStar(Nodo destino, Nodo siguiente) {
+        double distanciaHastaDestino = Utils.haversine(origen.getY(), origen.getX(), destino.getY(), destino.getY());
+        double distanciaHastaSiguiente = Utils.haversine(origen.getY(), origen.getX(), siguiente.getY(), siguiente.getX());
+        return distanciaHastaDestino + distanciaHastaSiguiente;
+    }
+    
 }
