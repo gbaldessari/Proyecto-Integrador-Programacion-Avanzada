@@ -52,7 +52,9 @@ public class PanelMapa extends JPanel{
     private JLabel c1;
     private JLabel c2;
     private JLabel id1;
+    private String identificador1;
     private JLabel id2;
+    private String identificador2;
     private JLabel km;
     private double escalador;
 
@@ -153,6 +155,7 @@ public class PanelMapa extends JPanel{
      * @param c1 La etiqueta para la coordenada 1.
      */
     public void setC1(JLabel c1){this.c1=c1;}
+    
     /**
      * Establece la etiqueta para mostrar la coordenada 2.
      *
@@ -184,6 +187,12 @@ public class PanelMapa extends JPanel{
         puntoPartida = null;
         puntoDestino = null;
         repaint();
+    }
+    public String getIdentificador1() {
+        return identificador1;
+    }
+    public String getIdentificador2() {
+        return identificador2;
     }
     /**
      * Método de dibujo principal que representa el contenido del panel.
@@ -227,6 +236,7 @@ public class PanelMapa extends JPanel{
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int)puntoPartida.getPoint().getX(),(int)puntoPartida.getPoint().getY(),4, 4);
             this.id1.setText("ID: "+puntoPartida.getNodo().getId());
+            identificador1 = puntoPartida.getNodo().getId();
             this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
         }
         else{
@@ -237,6 +247,7 @@ public class PanelMapa extends JPanel{
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int)puntoDestino.getPoint().getX(),(int)puntoDestino.getPoint().getY(),4, 4);
             this.id2.setText("ID: "+puntoDestino.getNodo().getId());
+            identificador2 = puntoDestino.getNodo().getId();
             this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
             double kilometros = Utils.haversine(puntoPartida.getNodo().getY(),puntoPartida.getNodo().getX(),puntoDestino.getNodo().getY(),puntoDestino.getNodo().getX());
             if(kilometros<1){

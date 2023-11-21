@@ -132,6 +132,20 @@ public class VentanaMapa implements Ventana{
 
         panelMapa.setKm(km);
 
+        JButton botonAlgoritmo = new JButton("Calcular ruta");
+        botonAlgoritmo.setBounds(10, 350, 100, 25);
+        botonAlgoritmo.setBackground(tema.getBoton());
+        botonAlgoritmo.setForeground(tema.getLetra());
+        panelInfo.add(botonAlgoritmo);
+        botonAlgoritmo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                System.out.println(id1.getText());
+                if(!id1.getText().equals("")){
+                    sistema.getGrafo().encontrarCaminoMasCorto(panelMapa.getIdentificador1(),panelMapa.getIdentificador2());
+                }
+            } 
+        });
+
         JButton botonBorrar = new JButton("Limpiar");
         botonBorrar.setBounds(10, 290, 100, 25);
         botonBorrar.setBackground(tema.getBoton());

@@ -2,6 +2,8 @@ package cl.ucn.PIPA.dominio;
 
 import java.util.ArrayList;
 
+import cl.ucn.PIPA.utils.Utils;
+
 /**
  * Clase que representa la conexión entre dos nodos.
  */
@@ -11,6 +13,7 @@ public class Arco {
     private ArrayList<String> tipo;  // Lista de tipos (puede contener múltiples tipos)
     private Nodo origen;  // Nodo de origen
     private Nodo destino;  // Nodo de destino
+    private double peso;
 
     /**
      * Constructor de la clase Arco.
@@ -37,6 +40,16 @@ public class Arco {
     public ArrayList<String> getId() {
         return id;
     }
+    public double getPeso() {
+        return peso;
+    }
+    public void setPeso(double peso) {
+        this.peso = peso;
+    }
+    public void setPeso(){
+        peso = Utils.haversine(origen.getY(),origen.getX(),destino.getY(),destino.getX());
+    }
+
 
     /**
      * Retorna la lista de nombres del arco.

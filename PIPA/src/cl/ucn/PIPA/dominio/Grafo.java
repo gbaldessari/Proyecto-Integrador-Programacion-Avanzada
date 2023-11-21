@@ -1,6 +1,12 @@
 package cl.ucn.PIPA.dominio;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 /**
@@ -202,5 +208,56 @@ public class Grafo {
             }
         }
         return false;  // No se encontró una ruta
+
+    }
+    public List<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
+        return encontrarCaminoMasCorto(binarySearch(inicio), binarySearch(destino));
+
+    }
+    public List<Nodo> encontrarCaminoMasCorto(Nodo inicio, Nodo destino) {
+        // Inicializar estructuras de datos necesarias
+        Map<Nodo, Double> distancia = new HashMap<>();
+        Map<Nodo, Nodo> padre = new HashMap<>();
+        PriorityQueue<Nodo> colaPrioridad = new PriorityQueue<>(Comparator.comparingDouble(distancia::get));
+
+        // Inicializar distancias a infinito, excepto para el nodo de inicio
+        for (Nodo nodo : nodos) {
+            distancia.put(nodo, Double.MAX_VALUE);
+            padre.put(nodo, null);
+        }
+        distancia.put(inicio, 0.0);
+
+        colaPrioridad.add(inicio);
+
+        // Aplicar el algoritmo de Dijkstra
+        while (!colaPrioridad.isEmpty()) {
+            Nodo nodoActual = colaPrioridad.poll();
+
+            for (Arco arco : nodoActual.getArcos()) {
+                Nodo vecino = arco.getDestino();
+                double nuevaDistancia = distancia.get(nodoActual) + arco.getPeso();
+
+                if (nuevaDistancia < distancia.get(vecino)) {
+                    distancia.put(vecino, nuevaDistancia);
+                    padre.put(vecino, nodoActual);
+                    colaPrioridad.add(vecino);
+                }
+            }
+        }
+
+        // Reconstruir el camino desde el nodo de destino hasta el nodo de inicio
+        List<Nodo> camino = new ArrayList<>();
+        for (Nodo nodo = destino; nodo != null; nodo = padre.get(nodo)) {
+            camino.add(nodo);
+        }
+        Collections.reverse(camino);
+        verCamino(camino);
+        return camino;
+    }
+    public void verCamino(List<Nodo> camino){
+        for(Nodo i: camino){
+            System.out.println(i.getId() + "-");
+
+        }
     }
 }
