@@ -275,8 +275,10 @@ public class PanelMapa extends JPanel{
             this.id2.setText("");
             this.km.setText("");
         }
+
         Image image = imageIcon.getImage();
-        graphics2d.drawImage(image, -2000,-2000, this);
+        graphics2d.drawImage(image, -5000,-5000, this);
+
         graphics2d.dispose();
     }
     /**
