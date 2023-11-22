@@ -150,7 +150,7 @@ public class Grafo {
         Map<Nodo, Nodo> padre = new HashMap<>();
         /* Funcion lambda que toma un nodo y calcula un valor que se utilizará para comparar nodos en la cola de prioridad. */
         PriorityQueue<Nodo> listaAbierta = new PriorityQueue<>(Comparator.comparingDouble(
-                nodo -> costoAcumulado.get(nodo) + Utils.Vincenty(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
+                nodo -> costoAcumulado.get(nodo) + Utils.haversine(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
 
         Set<Nodo> listaCerrada = new HashSet<>();
 

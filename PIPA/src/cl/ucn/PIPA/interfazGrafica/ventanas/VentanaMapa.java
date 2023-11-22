@@ -132,7 +132,7 @@ public class VentanaMapa implements Ventana{
         panelMapa.setKm(km);
 
         JButton botonAlgoritmo = new JButton("Calcular ruta");
-        botonAlgoritmo.setBounds(10, 350, 125, 25);
+        botonAlgoritmo.setBounds(10, 290, 125, 25);
         botonAlgoritmo.setBackground(tema.getBoton());
         botonAlgoritmo.setForeground(tema.getLetra());
         panelInfo.add(botonAlgoritmo);
@@ -145,7 +145,7 @@ public class VentanaMapa implements Ventana{
         });
 
         JButton botonBorrar = new JButton("Limpiar");
-        botonBorrar.setBounds(10, 290, 100, 25);
+        botonBorrar.setBounds(10, 320, 100, 25);
         botonBorrar.setBackground(tema.getBoton());
         botonBorrar.setForeground(tema.getLetra());
         panelInfo.add(botonBorrar);

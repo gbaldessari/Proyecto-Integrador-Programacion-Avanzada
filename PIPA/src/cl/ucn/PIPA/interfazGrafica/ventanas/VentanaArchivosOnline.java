@@ -96,13 +96,13 @@ public class VentanaArchivosOnline implements Ventana{
 
         JLabel titulo = new JLabel("Seleccione una ciudad");
         titulo.setForeground(tema.getLetra());
-        titulo.setBounds(30, 0, 250, 50);
+        titulo.setBounds(80, 0, 250, 50);
         panel.add(titulo);
 
         JComboBox<String> seleccionArchivo = new JComboBox<>(ciudades);
         seleccionArchivo.setBackground(tema.getBoton());
         seleccionArchivo.setForeground(tema.getLetra());
-		seleccionArchivo.setBounds(40, 50, 140, 25);
+		seleccionArchivo.setBounds(75, 50, 140, 25);
 		panel.add(seleccionArchivo);
 
         JPanel panelBotones = new JPanel(null);

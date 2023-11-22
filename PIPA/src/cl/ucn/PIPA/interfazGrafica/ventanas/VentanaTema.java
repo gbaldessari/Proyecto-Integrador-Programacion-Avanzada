@@ -56,7 +56,7 @@ public class VentanaTema implements Ventana{
 
 		JLabel mensaje = new JLabel("Seleccion de tema");
         mensaje.setForeground(tema.getLetra());
-		mensaje.setBounds(102, 0, 250, 50);
+		mensaje.setBounds(85, 0, 250, 50);
 		panel.add(mensaje);
 		
 		JComboBox<String> seleccionTema = new JComboBox<>(sistema.getListaTemas(administradorDeVentanas));
