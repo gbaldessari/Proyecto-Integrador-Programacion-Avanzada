@@ -30,6 +30,7 @@ public class Arco {
         this.tipo = tipo;
         this.origen = origen;
         this.destino = destino;
+        peso = Utils.haversine(origen.getY(),origen.getX(),destino.getY(),destino.getX());
     }
 
     /**
@@ -43,14 +44,6 @@ public class Arco {
     public double getPeso() {
         return peso;
     }
-    public void setPeso(double peso) {
-        this.peso = peso;
-    }
-    public void setPeso(){
-        peso = Utils.haversine(origen.getY(),origen.getX(),destino.getY(),destino.getX());
-    }
-
-
     /**
      * Retorna la lista de nombres del arco.
      *

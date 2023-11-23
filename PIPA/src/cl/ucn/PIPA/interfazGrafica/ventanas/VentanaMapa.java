@@ -147,7 +147,6 @@ public class VentanaMapa implements Ventana{
             public void actionPerformed(ActionEvent e){
                 if(!id2.getText().equals("")){
                     panelMapa.caminoMasCorto();
-                    panelMapa.setDistancia(distanciaRecorrida);
                 }
             } 
         });

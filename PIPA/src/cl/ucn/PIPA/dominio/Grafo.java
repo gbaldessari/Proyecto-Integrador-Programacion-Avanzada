@@ -16,7 +16,6 @@ import cl.ucn.PIPA.utils.Utils;
 public class Grafo {
     private ArrayList<Nodo> nodos;  // Lista de nodos en el grafo
     private ArrayList<Arco> arcos;  // Lista de arcos en el grafo
-    private int distanciaRecorrida;
 
     /**
      * Constructor de la clase Grafo.
@@ -25,7 +24,6 @@ public class Grafo {
     public Grafo() {
         nodos = new ArrayList<>();
         arcos = new ArrayList<>();
-        distanciaRecorrida = 0;
     }
 
     /**
@@ -89,7 +87,6 @@ public class Grafo {
             
             arcos.add(arco);
             nodoOrigen.agregarArco(arco);
-            arco.setPeso();
             return true;
         }
         return false;
@@ -171,7 +168,6 @@ public class Grafo {
         while (!listaAbierta.isEmpty()) {
             Nodo nodoActual = listaAbierta.poll();
 
-
             // Mover el nodo actual a la lista cerrada
             listaCerrada.add(nodoActual);
 
@@ -179,7 +175,6 @@ public class Grafo {
             if (nodoActual.equals(destino)) {
                 break;
             }
-
             for (Arco arco : nodoActual.getArcos()) {
                 Nodo vecino = arco.getDestino();
 
@@ -193,7 +188,6 @@ public class Grafo {
                 if (!listaAbierta.contains(vecino) || nuevoCosto < costoAcumulado.get(vecino)) {
                     costoAcumulado.put(vecino, nuevoCosto);
                     padre.put(vecino, nodoActual);
-                    distanciaRecorrida += arco.getPeso();
 
                     // Si el vecino no está en la lista abierta, agrégalo
                     if (!listaAbierta.contains(vecino)) {
@@ -207,14 +201,9 @@ public class Grafo {
         ArrayList<Nodo> camino = new ArrayList<>();
         for (Nodo nodo = destino; nodo != null; nodo = padre.get(nodo)) {
             camino.add(nodo);
-            
         }
         Collections.reverse(camino);
 
         return camino;
-    }
-
-    public int getDistanciaRecorrida() {
-        return distanciaRecorrida;
     }
 }
