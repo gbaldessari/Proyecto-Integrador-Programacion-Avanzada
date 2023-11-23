@@ -16,6 +16,7 @@ import cl.ucn.PIPA.utils.Utils;
 public class Grafo {
     private ArrayList<Nodo> nodos;  // Lista de nodos en el grafo
     private ArrayList<Arco> arcos;  // Lista de arcos en el grafo
+    private int distanciaRecorrida;
 
     /**
      * Constructor de la clase Grafo.
@@ -24,6 +25,7 @@ public class Grafo {
     public Grafo() {
         nodos = new ArrayList<>();
         arcos = new ArrayList<>();
+        distanciaRecorrida = 0;
     }
 
     /**
@@ -84,8 +86,10 @@ public class Grafo {
         if (nodoOrigen != null && nodoDestino != null) {
             // Si el nodo origen y destino existen, se crea un arco
             Arco arco = new Arco(id, nombre, tipo, nodoOrigen, nodoDestino);
+            
             arcos.add(arco);
             nodoOrigen.agregarArco(arco);
+            arco.setPeso();
             return true;
         }
         return false;
@@ -136,7 +140,8 @@ public class Grafo {
     }
 
     public ArrayList<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
-        return encontrarMejorCaminoBidireccional(binarySearch(inicio), binarySearch(destino));
+        return encontrarMejorCaminoAStar(binarySearch(inicio), binarySearch(destino));
+        //return encontrarMejorCaminoBidireccional(binarySearch(inicio), binarySearch(destino));
     }
 
     /* 
@@ -295,7 +300,7 @@ public class Grafo {
         return camino; // Devolver el camino reconstruido
     }
 
-    /* 
+    
     // Método para encontrar el mejor camino entre dos nodos utilizando el algoritmo A*
     public ArrayList<Nodo> encontrarMejorCaminoAStar(Nodo inicio, Nodo destino) {
         if (inicio == null || destino == null) {
@@ -305,7 +310,7 @@ public class Grafo {
         // Estructuras de datos necesarias
         Map<Nodo, Double> costoAcumulado = new HashMap<>();
         Map<Nodo, Nodo> padre = new HashMap<>();
-        /* Funcion lambda que toma un nodo y calcula un valor que se utilizará para comparar nodos en la cola de prioridad. 
+        /* Funcion lambda que toma un nodo y calcula un valor que se utilizará para comparar nodos en la cola de prioridad. */
         PriorityQueue<Nodo> listaAbierta = new PriorityQueue<>(Comparator.comparingDouble(
                 nodo -> costoAcumulado.get(nodo) + Utils.haversine(nodo.getY(),nodo.getX(), destino.getY(),destino.getX())));
 
@@ -323,6 +328,7 @@ public class Grafo {
         // Aplicar el algoritmo A*
         while (!listaAbierta.isEmpty()) {
             Nodo nodoActual = listaAbierta.poll();
+
 
             // Mover el nodo actual a la lista cerrada
             listaCerrada.add(nodoActual);
@@ -345,6 +351,7 @@ public class Grafo {
                 if (!listaAbierta.contains(vecino) || nuevoCosto < costoAcumulado.get(vecino)) {
                     costoAcumulado.put(vecino, nuevoCosto);
                     padre.put(vecino, nodoActual);
+                    distanciaRecorrida += arco.getPeso();
 
                     // Si el vecino no está en la lista abierta, agrégalo
                     if (!listaAbierta.contains(vecino)) {
@@ -358,11 +365,16 @@ public class Grafo {
         ArrayList<Nodo> camino = new ArrayList<>();
         for (Nodo nodo = destino; nodo != null; nodo = padre.get(nodo)) {
             camino.add(nodo);
+            
         }
+
         Collections.reverse(camino);
 
         return camino;
     }
-    */
+    public int getDistanciaRecorrida() {
+        return distanciaRecorrida;
+    }
+    
 
 }

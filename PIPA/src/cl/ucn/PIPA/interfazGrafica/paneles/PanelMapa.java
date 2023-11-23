@@ -58,6 +58,7 @@ public class PanelMapa extends JPanel{
     private JLabel id2;
     private String identificador2;
     private JLabel km;
+    private JLabel distancia;
     private double escalador;
 
     /**
@@ -183,6 +184,10 @@ public class PanelMapa extends JPanel{
      * @param km La etiqueta para los kilometros.
      */
     public void setKm(JLabel km){this.km=km;}
+
+    public void setDistancia(JLabel distancia) {
+        this.distancia = distancia;
+    }
     /**
      * Borra los puntos de origen y destino.
      */
@@ -482,5 +487,8 @@ public class PanelMapa extends JPanel{
             distanciaRecorrida+=Utils.haversine(lista.get(i).getY(),lista.get(i).getX(),lista.get(i+1).getY(),lista.get(i+1).getX());
         }
         repaint();
+    }
+    public int getDistanciaRecorrida(){
+        return sistema.getGrafo().getDistanciaRecorrida();
     }
 }

@@ -131,6 +131,13 @@ public class VentanaMapa implements Ventana{
         panelInfo.add(km);
         panelMapa.setKm(km);
 
+        JLabel distanciaRecorrida = new JLabel("");
+        distanciaRecorrida.setBounds(10,250,200,50);
+        distanciaRecorrida.setForeground(tema.getLetra());
+        distanciaRecorrida.setFont(distanciaRecorrida.getFont().deriveFont(14f));
+        panelInfo.add(distanciaRecorrida);
+        
+
         JButton botonAlgoritmo = new JButton("Calcular ruta");
         botonAlgoritmo.setBounds(10, 290, 125, 25);
         botonAlgoritmo.setBackground(tema.getBoton());
@@ -140,6 +147,7 @@ public class VentanaMapa implements Ventana{
             public void actionPerformed(ActionEvent e){
                 if(!id2.getText().equals("")){
                     panelMapa.caminoMasCorto();
+                    panelMapa.setDistancia(distanciaRecorrida);
                 }
             } 
         });
