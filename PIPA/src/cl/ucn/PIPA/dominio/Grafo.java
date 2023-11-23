@@ -141,166 +141,8 @@ public class Grafo {
 
     public ArrayList<Nodo> encontrarCaminoMasCorto(String inicio,String destino){
         return encontrarMejorCaminoAStar(binarySearch(inicio), binarySearch(destino));
-        //return encontrarMejorCaminoBidireccional(binarySearch(inicio), binarySearch(destino));
+        
     }
-
-    /* 
-    Se crean dos estructuras de datos para cada dirección de búsqueda (inicio y destino). 
-    Estas estructuras incluyen un mapa de costos acumulados, un mapa de padres, una cola de prioridad (lista abierta) y un conjunto de nodos evaluados (lista cerrada). 
-    Además, se inicializan los costos acumulados para los nodos de inicio y destino.
-
-    Se realiza un bucle mientras ambas listas abiertas no estén vacías. 
-    En cada iteración, se extraen los nodos con el menor costo acumulado desde la lista abierta correspondiente y se marcan como evaluados.
-
-    Se expanden los nodos vecinos del nodo actual en ambas direcciones (inicio y destino). 
-    Para cada nodo vecino, se actualizan los costos acumulados y se verifica si ya se ha evaluado. 
-    Si el nodo vecino no ha sido evaluado, se agrega a la lista abierta correspondiente.
-
-    Después de expandir los nodos desde el inicio y el destino en una iteración, 
-    se verifica si ha habido una intersección. Esto se hace comprobando si el nodo actual desde el inicio está en la lista cerrada del destino y viceversa.
-
-    Si hay una intersección, se reconstruye el camino bidireccional desde el nodo de inicio hasta 
-    el nodo de destino utilizando la información almacenada en los mapas de padres y se devuelve como resultado.
-
-    Si no hay intersección y ambas listas abiertas están vacías, el algoritmo concluye y devuelve null para indicar que no se encontró un camino.
-    
-    */
-    // Método para encontrar el mejor camino entre dos nodos utilizando búsqueda bidireccional
-    public ArrayList<Nodo> encontrarMejorCaminoBidireccional(Nodo inicio, Nodo destino) {
-        // Verificar si los nodos de inicio y destino son válidos
-        if (inicio == null || destino == null) {
-            return null;
-        }
-
-        // Estructuras de datos necesarias desde el inicio
-        Map<Nodo, Double> costoAcumuladoInicio = new HashMap<>();  // Almacena el costo acumulado desde el inicio hasta cada nodo
-        Map<Nodo, Nodo> padreInicio = new HashMap<>();  // Almacena el nodo padre de cada nodo en el camino desde el inicio
-        /* Funcion lambda que toma un nodo y calcula un valor que se utilizará para comparar nodos en la cola de prioridad. */
-        PriorityQueue<Nodo> listaAbiertaInicio = new PriorityQueue<>(Comparator.comparingDouble(
-                nodo -> costoAcumuladoInicio.get(nodo) + Utils.haversine(nodo.getY(), nodo.getX(), destino.getY(), destino.getX())));
-        // Cola de prioridad para nodos desde el inicio, ordenada por el costo acumulado hasta el destino
-
-        Set<Nodo> listaCerradaInicio = new HashSet<>();  // Conjunto de nodos ya evaluados desde el inicio
-
-        // Estructuras de datos necesarias desde el destino
-        Map<Nodo, Double> costoAcumuladoDestino = new HashMap<>();  // Almacena el costo acumulado desde el destino hasta cada nodo
-        Map<Nodo, Nodo> padreDestino = new HashMap<>();  // Almacena el nodo padre de cada nodo en el camino desde el destino
-        /* Funcion lambda que toma un nodo y calcula un valor que se utilizará para comparar nodos en la cola de prioridad. */
-        PriorityQueue<Nodo> listaAbiertaDestino = new PriorityQueue<>(Comparator.comparingDouble(
-                nodo -> costoAcumuladoDestino.get(nodo) + Utils.haversine(nodo.getY(), nodo.getX(), inicio.getY(), inicio.getX())));
-        // Cola de prioridad para nodos desde el destino, ordenada por el costo acumulado hasta el inicio
-
-        Set<Nodo> listaCerradaDestino = new HashSet<>();  // Conjunto de nodos ya evaluados desde el destino
-
-        // Inicializar costos a infinito, excepto para los nodos de inicio y destino
-        for (Nodo nodo : nodos) {
-            costoAcumuladoInicio.put(nodo, Double.MAX_VALUE);
-            costoAcumuladoDestino.put(nodo, Double.MAX_VALUE);
-            padreInicio.put(nodo, null);
-            padreDestino.put(nodo, null);
-        }
-        costoAcumuladoInicio.put(inicio, 0.0);
-        costoAcumuladoDestino.put(destino, 0.0);
-
-        listaAbiertaInicio.add(inicio);
-        listaAbiertaDestino.add(destino);
-
-        // Aplicar la búsqueda bidireccional
-        while (!listaAbiertaInicio.isEmpty() && !listaAbiertaDestino.isEmpty()) {
-            // Búsqueda desde el inicio
-            Nodo nodoActualInicio = listaAbiertaInicio.poll();  // Obtener el nodo con menor costo acumulado desde el inicio
-            listaCerradaInicio.add(nodoActualInicio);  // Marcar el nodo como evaluado
-
-            expandirNodos(nodoActualInicio, listaAbiertaInicio, listaCerradaInicio, costoAcumuladoInicio, padreInicio, destino);
-
-            // Verificar intersección
-            if (listaCerradaDestino.contains(nodoActualInicio)) {
-                // Si hay intersección, reconstruir el camino bidireccional y retornarlo
-                return reconstruirCaminoBidireccional(inicio, destino, nodoActualInicio, padreInicio, padreDestino);
-            }
-
-            // Búsqueda desde el destino
-            Nodo nodoActualDestino = listaAbiertaDestino.poll();  // Obtener el nodo con menor costo acumulado desde el destino
-            listaCerradaDestino.add(nodoActualDestino);  // Marcar el nodo como evaluado
-
-            expandirNodos(nodoActualDestino, listaAbiertaDestino, listaCerradaDestino, costoAcumuladoDestino, padreDestino, inicio);
-
-            // Verificar intersección
-            if (listaCerradaInicio.contains(nodoActualDestino)) {
-                // Si hay intersección, reconstruir el camino bidireccional y retornarlo
-                return reconstruirCaminoBidireccional(inicio, destino, nodoActualDestino, padreInicio, padreDestino);
-            }
-        }
-
-        return null; // No se encontró un camino
-    }
-
-    // Método para expandir los nodos vecinos de un nodo actual en la búsqueda A* bidireccional
-    private void expandirNodos(Nodo nodoActual, PriorityQueue<Nodo> listaAbierta, Set<Nodo> listaCerrada,
-                               Map<Nodo, Double> costoAcumulado, Map<Nodo, Nodo> padre, Nodo objetivo) {
-        // Iterar sobre los arcos del nodo actual
-        for (Arco arco : nodoActual.getArcos()) {
-            Nodo vecino = arco.getDestino(); // Obtener el nodo vecino a través del arco
-
-        // Ignorar nodos que ya han sido evaluados
-        if (listaCerrada.contains(vecino)) {
-            continue;
-        }
-
-        // Calcular el nuevo costo acumulado hasta el nodo vecino
-        double nuevoCosto = costoAcumulado.get(nodoActual) + arco.getPeso();
-
-        // Verificar si el nodo vecino no está en la lista abierta o si el nuevo costo es menor
-        if (!listaAbierta.contains(vecino) || nuevoCosto < costoAcumulado.get(vecino)) {
-            costoAcumulado.put(vecino, nuevoCosto); // Actualizar el costo acumulado
-            padre.put(vecino, nodoActual); // Establecer al nodo actual como el padre del nodo vecino
-        // Si el nodo vecino no está en la lista abierta, agregarlo
-            if (!listaAbierta.contains(vecino)) {
-                listaAbierta.add(vecino);
-                }
-            }
-        }
-    }
-    
-
-    // Método para reconstruir el camino bidireccional combinando los caminos desde el inicio y el destino hasta la intersección
-    private ArrayList<Nodo> reconstruirCaminoBidireccional(Nodo inicio, Nodo destino, Nodo interseccion,
-        Map<Nodo, Nodo> padreInicio, Map<Nodo, Nodo> padreDestino) {
-        // Reconstruir el camino desde el inicio hasta la intersección
-        ArrayList<Nodo> caminoInicio = reconstruirCamino(inicio, interseccion, padreInicio);
-
-        // Reconstruir el camino desde el destino hasta la intersección
-        ArrayList<Nodo> caminoDestino = reconstruirCamino(destino, interseccion, padreDestino);
-
-        Collections.reverse(caminoDestino); // Revertir el camino desde el destino
-
-        // Crear el camino final combinando los caminos desde el inicio y el destino
-        ArrayList<Nodo> caminoFinal = new ArrayList<>();
-        caminoFinal.addAll(caminoInicio);
-        caminoFinal.addAll(caminoDestino.subList(1, caminoDestino.size())); // Excluir el nodo de intersección duplicado
-
-        return caminoFinal;
-    }
-
-    // Método para reconstruir el camino desde el destino hasta el inicio utilizando el mapa de padres
-    private ArrayList<Nodo> reconstruirCamino(Nodo inicio, Nodo destino, Map<Nodo, Nodo> padre) {
-        ArrayList<Nodo> camino = new ArrayList<>();
-
-        // Iniciar un bucle para reconstruir el camino
-        for (Nodo nodo = destino; nodo != null; nodo = padre.get(nodo)) {
-            camino.add(nodo); // Agregar el nodo actual al camino
-
-            // Verificar si hemos llegado al nodo de inicio
-            if (nodo.equals(inicio)) {
-                break;
-            }
-        }
-
-        Collections.reverse(camino); // Revertir el camino para que esté en el orden correcto
-        return camino; // Devolver el camino reconstruido
-    }
-
-    
     // Método para encontrar el mejor camino entre dos nodos utilizando el algoritmo A*
     public ArrayList<Nodo> encontrarMejorCaminoAStar(Nodo inicio, Nodo destino) {
         if (inicio == null || destino == null) {
@@ -367,14 +209,12 @@ public class Grafo {
             camino.add(nodo);
             
         }
-
         Collections.reverse(camino);
 
         return camino;
     }
+
     public int getDistanciaRecorrida() {
         return distanciaRecorrida;
     }
-    
-
 }
