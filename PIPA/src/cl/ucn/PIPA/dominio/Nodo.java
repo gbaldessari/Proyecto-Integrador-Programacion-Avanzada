@@ -8,9 +8,18 @@ import java.util.List;
  * Clase que representa un nodo.
  */
 public class Nodo {
-    private String id;  // ID del nodo
-    private Point.Double coordenadas;  // Coordenadas del nodo
-    private List<Arco> arcos;  // Lista de arcos asociados al nodo
+    /**
+     * ID del nodo.
+     */
+    private String identificador;
+    /**
+     * Coordenadas del nodo.
+     */
+    private Point.Double coordenadas;
+    /**
+     * Lista de arcos asociados al nodo.
+     */
+    private List<Arco> arcos;
 
     /**
      * Constructor de la clase Nodo.
@@ -19,10 +28,10 @@ public class Nodo {
      * @param posX Posición X almacenada.
      * @param posY Posición Y almacenada.
      */
-    public Nodo(String id, double posX, double posY) {
+    public Nodo(final String id, final double posX, final double posY) {
         arcos = new ArrayList<>();
         coordenadas = new Point.Double(posX, posY);
-        this.id = id;
+        identificador = id;
     }
 
     /**
@@ -31,7 +40,7 @@ public class Nodo {
      * @return String que contiene el ID del nodo.
      */
     public String getId() {
-        return id;
+        return identificador;
     }
 
     /**
@@ -39,7 +48,7 @@ public class Nodo {
      *
      * @param arco Arco a agregar.
      */
-    public void agregarArco(Arco arco) {
+    public void agregarArco(final Arco arco) {
         arcos.add(arco);
     }
 
@@ -75,7 +84,7 @@ public class Nodo {
      *
      * @param posX Nueva coordenada X.
      */
-    public void setX(double posX) {
+    public void setX(final double posX) {
         coordenadas.x = posX;
     }
 
@@ -84,12 +93,13 @@ public class Nodo {
      *
      * @param posY Nueva coordenada Y.
      */
-    public void setY(double posY) {
+    public void setY(final double posY) {
         coordenadas.y = posY;
     }
 
     /**
-     * Retorna una lista de nodos adyacentes al nodo actual a través de sus arcos.
+     * Retorna una lista de nodos adyacentes
+     * al nodo actual a través de sus arcos.
      *
      * @return Lista de nodos adyacentes.
      */

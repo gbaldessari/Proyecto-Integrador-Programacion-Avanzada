@@ -1,0 +1,4 @@
+{
+    "java.checkstyle.configuration": "${workspaceFolder}\\Proyecto-Integrador-Programacion-Avanzada\\eross_checks.xml",
+    "java.checkstyle.version": "10.12.5"
+}

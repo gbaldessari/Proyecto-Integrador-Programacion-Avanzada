@@ -19,7 +19,7 @@ import org.w3c.dom.NodeList;
 import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.logica.Sistema;
 import cl.ucn.PIPA.utils.CiudadesProvider;
-import cl.ucn.PIPA.utils.Utils;
+import cl.ucn.PIPA.utils.Funciones;
 import cl.ucn.PIPA.utils.CiudadesProvider.Ciudad;
 
 /**
@@ -42,12 +42,13 @@ public class VentanaArchivosOnline implements Ventana{
      * @param sistema                Instancia del sistema.
      * @param tema                   Tema para la interfaz gráfica.
      */
-    public VentanaArchivosOnline(AdministradorDeVentanas administradorDeVentanas, Sistema sistema, Tema tema){
+    public VentanaArchivosOnline(final AdministradorDeVentanas administradorDeVentanas, final Sistema sistema,
+            final Tema tema) {
         // Inicialización de atributos
         this.ventana = new JFrame("Seleccionar archivos");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.ventana.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
+            public void windowClosing(final WindowEvent we) {
                 administradorDeVentanas.ventanaCierre(ventana);
                 ventana.setEnabled(false);
             }
@@ -63,17 +64,16 @@ public class VentanaArchivosOnline implements Ventana{
         provider = CiudadesProvider.instance();
         ArrayList<String> listaCiudades = new ArrayList<>();
 
-        if(provider.list()!=null){
+        if (provider.list() != null) {
             administradorDeVentanas.setConexionInternet(true);
             for (String ciudad : provider.list()) {
                 listaCiudades.add(ciudad);
             }
             ciudades = new String[listaCiudades.size()];
-            for (int i = 0;i< listaCiudades.size();i++) {
+            for (int i = 0; i < listaCiudades.size(); i++) {
                 ciudades[i] = listaCiudades.get(i);
             }
-        }
-        else{
+        } else {
             administradorDeVentanas.mostrarError("No hay conexion a internet");
             administradorDeVentanas.menu(administradorDeVentanas);
             ventana.setVisible(false);
@@ -95,15 +95,15 @@ public class VentanaArchivosOnline implements Ventana{
         ventana.getContentPane().add(panelBarra, BorderLayout.NORTH);
 
         JLabel titulo = new JLabel("Seleccione una ciudad");
-        titulo.setForeground(tema.getLetra());
+        titulo.setForeground(tema.getTexto());
         titulo.setBounds(80, 0, 250, 50);
         panel.add(titulo);
 
         JComboBox<String> seleccionArchivo = new JComboBox<>(ciudades);
         seleccionArchivo.setBackground(tema.getBoton());
-        seleccionArchivo.setForeground(tema.getLetra());
-		seleccionArchivo.setBounds(75, 50, 140, 25);
-		panel.add(seleccionArchivo);
+        seleccionArchivo.setForeground(tema.getTexto());
+        seleccionArchivo.setBounds(75, 50, 140, 25);
+        panel.add(seleccionArchivo);
 
         JPanel panelBotones = new JPanel(null);
         panelBotones.setBackground(tema.getUi());
@@ -113,10 +113,10 @@ public class VentanaArchivosOnline implements Ventana{
         JButton botonVolver = new JButton("Volver");
         botonVolver.setBounds(30, 5, 100, 20);
         botonVolver.setBackground(tema.getBoton());
-        botonVolver.setForeground(tema.getLetra());
+        botonVolver.setForeground(tema.getTexto());
         panelBotones.add(botonVolver);
         botonVolver.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();
@@ -126,10 +126,10 @@ public class VentanaArchivosOnline implements Ventana{
         JButton botonConfirmar = new JButton("Confirmar");
         botonConfirmar.setBounds(160, 5, 100, 20);
         botonConfirmar.setBackground(tema.getBoton());
-        botonConfirmar.setForeground(tema.getLetra());
+        botonConfirmar.setForeground(tema.getTexto());
         panelBotones.add(botonConfirmar);
         botonConfirmar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 botonConfirmar.setEnabled(false);
                 botonVolver.setEnabled(false);
                 seleccionArchivo.setEnabled(false);
@@ -153,15 +153,15 @@ public class VentanaArchivosOnline implements Ventana{
     /**
      * Método para leer los datos desde un archivo XML (nodos y arcos).
      */
-    private void leerXML(String ciudadSeleccionada) {
+    private void leerXML(final String ciudadSeleccionada) {
         Ciudad ciudad = provider.ciudad(ciudadSeleccionada);
-            
-        Document documento = Utils.convertStringBuilderToDocument(ciudad.getXmlNodes());
+
+        Document documento = Funciones.convertStringBuilderToDocument(ciudad.getXmlNodes());
         Element raiz = documento.getDocumentElement();
         NodeList datos = raiz.getElementsByTagName("row");
         guardarNodos(datos);
 
-        documento = Utils.convertStringBuilderToDocument(ciudad.getXmlEdges());
+        documento = Funciones.convertStringBuilderToDocument(ciudad.getXmlEdges());
         raiz = documento.getDocumentElement();
         datos = raiz.getElementsByTagName("edge");
         guardarArcos(datos);
@@ -172,7 +172,7 @@ public class VentanaArchivosOnline implements Ventana{
      *
      * @param nodos NodeList con los nodos del archivo XML.
      */
-    private void guardarNodos(NodeList nodos) {
+    private void guardarNodos(final NodeList nodos) {
         for (int i = 0; i < nodos.getLength(); i++) {
             Element nodo = (Element) nodos.item(i);
             String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
@@ -187,7 +187,7 @@ public class VentanaArchivosOnline implements Ventana{
      *
      * @param arcos NodeList con los arcos del archivo XML.
      */
-    private void guardarArcos(NodeList arcos) {
+    private void guardarArcos(final NodeList arcos) {
         Set<String> carreteras = new HashSet<>(0);
         for (int i = 0; i < arcos.getLength(); i++) {
             Element arco = (Element) arcos.item(i);
@@ -203,7 +203,9 @@ public class VentanaArchivosOnline implements Ventana{
             ArrayList<String> listaNombre = obtenerListaDeLinea(nombre);
             ArrayList<String> listaTipo = obtenerListaDeLinea(tipo);
             sistema.getGrafo().addArco(listaId, listaNombre, listaTipo, origen, destino);
-            if (tipo != null) guardarTipoCarretera(listaTipo, carreteras);
+            if (tipo != null) {
+                guardarTipoCarretera(listaTipo, carreteras);
+            }
         }
         sistema.getTiposCarreteras().clear();
         for (String t : carreteras) {
@@ -217,7 +219,7 @@ public class VentanaArchivosOnline implements Ventana{
      * @param linea Línea de texto que contiene los elementos.
      * @return Lista de elementos obtenidos.
      */
-    private ArrayList<String> obtenerListaDeLinea(String linea) {
+    private ArrayList<String> obtenerListaDeLinea(final String linea) {
         if (linea != null) {
             int inicio = linea.indexOf("[") + 1;
             int fin = linea.indexOf("]");
@@ -240,7 +242,7 @@ public class VentanaArchivosOnline implements Ventana{
      * @param tipo       Lista de tipos de carretera.
      * @param carreteras Conjunto para almacenar los tipos de carretera únicos.
      */
-    private void guardarTipoCarretera(ArrayList<String> tipo, Set<String> carreteras) {
+    private void guardarTipoCarretera(final ArrayList<String> tipo, final Set<String> carreteras) {
         for (String t : tipo) {
             carreteras.add(t);
         }

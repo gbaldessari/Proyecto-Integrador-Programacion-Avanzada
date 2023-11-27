@@ -26,13 +26,13 @@ public class VentanaCierre implements Ventana {
      * @param ventanaActiva JFrame de la ventana activa.
      * @param tema         Tema de la ventana.
      */
-    public VentanaCierre(JFrame ventanaActiva, Tema tema) {
+    public VentanaCierre(final JFrame ventanaActiva, final Tema tema) {
         this.ventanaActiva = ventanaActiva;
         this.tema = tema;
         this.ventana = new JFrame("Cerrar aplicación");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.ventana.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
+            public void windowClosing(final WindowEvent we) {
                 ventanaActiva.setEnabled(true);
                 ventana.setVisible(false);
                 ventana.dispose();
@@ -42,8 +42,8 @@ public class VentanaCierre implements Ventana {
         ventana.setLocationRelativeTo(null);
         ventana.setResizable(false);
     }
-    
-    public void iniciarVentana() {
+
+    public final void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setBackground(tema.getFondo());
         panel.setLayout(null);
@@ -51,17 +51,17 @@ public class VentanaCierre implements Ventana {
 
         JLabel texto = new JLabel("¿Desea cerrar la aplicación?");
         texto.setBounds(60, 20, 170, 25);
-        texto.setForeground(tema.getLetra());
+        texto.setForeground(tema.getTexto());
         panel.add(texto);
 
         JButton cerrar = new JButton("Cerrar");
         cerrar.setBounds(30, 50, 100, 25);
         cerrar.setBackground(tema.getBoton());
-        cerrar.setForeground(tema.getLetra());
+        cerrar.setForeground(tema.getTexto());
         panel.add(cerrar);
 
         cerrar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 System.exit(0);
             }
         });
@@ -69,11 +69,11 @@ public class VentanaCierre implements Ventana {
         JButton cancelar = new JButton("Cancelar");
         cancelar.setBounds(160, 50, 100, 25);
         cancelar.setBackground(tema.getBoton());
-        cancelar.setForeground(tema.getLetra());
+        cancelar.setForeground(tema.getTexto());
         panel.add(cancelar);
 
         cancelar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 ventanaActiva.setEnabled(true);
                 ventana.setVisible(false);
                 ventana.dispose();

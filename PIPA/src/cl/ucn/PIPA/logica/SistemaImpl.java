@@ -6,40 +6,45 @@ import cl.ucn.PIPA.dominio.Tema;
 import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 
 /**
-* Clase Sistema Implementado
+* Clase Sistema Implementado.
 */
-public class SistemaImpl implements Sistema{
+public class SistemaImpl implements Sistema {
     private AdministradorDeVentanas administradorDeVentanas;
     private Grafo grafo;
     private ArrayList<Tema> temas;
     private ArrayList<Color> coloresCalles;
     private ArrayList<String> tiposCarreteras;
 
-    public void iniciarApp(Sistema sistema) {
+    public final void iniciarApp(final Sistema sistema) {
         grafo = new Grafo();
         temas = new ArrayList<>();
         tiposCarreteras = new ArrayList<>();
         coloresCalles = new ArrayList<>();
         obtenerTemas();
         obtenerColoresCalles();
-        administradorDeVentanas = new AdministradorDeVentanas(sistema,temas);
+        administradorDeVentanas = new AdministradorDeVentanas(sistema, temas);
         administradorDeVentanas.menu(administradorDeVentanas);
     }
-    public Grafo getGrafo() {
+
+    public final Grafo getGrafo() {
         return grafo;
     }
-    public AdministradorDeVentanas getAdministradorDeVentanas() {
+
+    public final AdministradorDeVentanas getAdministradorDeVentanas() {
         return this.administradorDeVentanas;
     }
-    public String[] getListaTemas(AdministradorDeVentanas administradorDeVentanas){
-		String[] lista = new String[temas.size()+1];
+
+    public final String[] getListaTemas(
+        final AdministradorDeVentanas administradorDeVentanas) {
+        String[] lista = new String[temas.size() + 1];
         lista[0] = administradorDeVentanas.getTemaSeleccionado().getNombre();
-		for(int i =1;i<temas.size()+1;i++) {
-			lista[i] = temas.get(i-1).getNombre();
-		}
-		return lista;
-	}
-    private void obtenerColoresCalles(){
+        for (int i = 1; i < temas.size() + 1; i++) {
+            lista[i] = temas.get(i - 1).getNombre();
+        }
+        return lista;
+    }
+
+    private void obtenerColoresCalles() {
         coloresCalles.add(Color.decode("#FF3333"));
         coloresCalles.add(Color.decode("#FF9933"));
         coloresCalles.add(Color.decode("#FFFF33"));
@@ -71,34 +76,40 @@ public class SistemaImpl implements Sistema{
         coloresCalles.add(Color.decode("#FFCCCC"));
         coloresCalles.add(Color.decode("#FFCCE5"));
     }
-    private void obtenerTemas(){
-        Tema claro = new Tema("Claro"
-                                ,"#FFFFFF"//Fondo
-                                ,"#A0A0A0"//UI
-                                ,"#C8C8C8"//Botones
-                                ,"#000000"//Texto
-                                ,"#FF0000"//Puntos
-                                ,"#0000FF");//Puntos seleccionados
+
+    private void obtenerTemas() {
+        Tema claro = new Tema("Claro",
+        "#FFFFFF", // Fondo
+        "#A0A0A0", // UI
+        "#C8C8C8", // Botones
+        "#000000", // Texto
+        "#FF0000", // Puntos
+        "#0000FF"); // Puntos seleccionados
         temas.add(claro);
-        Tema oscuro = new Tema("Oscuro"
-                                ,"#2C2F33"//Fondo
-                                ,"#23272A"//UI
-                                ,"#99AAB5"//Botones
-                                ,"#FFFFFF"//Texto
-                                ,"#A0A0A0"//Puntos
-                                ,"#FF0000");//Puntos seleccionados
+        Tema oscuro = new Tema("Oscuro",
+        "#2C2F33", // Fondo
+        "#23272A", // UI
+        "#99AAB5", // Botones
+        "#FFFFFF", // Texto
+        "#A0A0A0", // Puntos
+        "#FF0000"); // Puntos seleccionados
         temas.add(oscuro);
     }
-    public void setTiposCarreteras(ArrayList<String> tiposCarreteras){
+
+    public final void setTiposCarreteras(
+        final ArrayList<String> tiposCarreteras) {
         this.tiposCarreteras = tiposCarreteras;
     }
-    public ArrayList<String> getTiposCarreteras() {
+
+    public final ArrayList<String> getTiposCarreteras() {
         return tiposCarreteras;
     }
-    public ArrayList<Tema> getTemas() {
+
+    public final ArrayList<Tema> getTemas() {
         return temas;
     }
-    public ArrayList<Color> getColoresCalles(){
+
+    public final ArrayList<Color> getColoresCalles() {
         return coloresCalles;
     }
 }

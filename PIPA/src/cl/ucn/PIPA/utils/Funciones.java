@@ -5,17 +5,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
-public class Utils {
+public abstract class Funciones {
     /**
-     * Calcula la distancia en kilómetros entre dos puntos geográficos utilizando la fórmula de Haversine.
+     * Calcula la distancia en kilómetros entre dos puntos
+     * geográficos utilizando la fórmula de Haversine.
      *
-     * @param startLat   Latitud del punto de inicio en grados.
-     * @param startLong  Longitud del punto de inicio en grados.
-     * @param endLat     Latitud del punto de destino en grados.
-     * @param endLong    Longitud del punto de destino en grados.
+     * @param startLat Latitud del punto de inicio en grados.
+     * @param startLong Longitud del punto de inicio en grados.
+     * @param endLat Latitud del punto de destino en grados.
+     * @param endLong Longitud del punto de destino en grados.
      * @return La distancia en kilómetros entre los dos puntos.
      */
-    public static double haversine(double startLat, double startLong, double endLat, double endLong) {
+    public static double haversine(double startLat, final double startLong, double endLat,
+        final double endLong) {
         // Convertir las latitudes y longitudes de grados a radianes
         double dLat = Math.toRadians((endLat - startLat));
         double dLong = Math.toRadians((endLong - startLong));
@@ -36,11 +38,11 @@ public class Utils {
      * @param val El valor para el cual se calculará la función haversin.
      * @return El resultado de la función haversin para el valor dado.
      */
-    private static double haversin(double val) {
+    private static double haversin(final double val) {
         return Math.pow(Math.sin(val / 2), 2);
     }
 
-    public static Document convertStringBuilderToDocument(StringBuilder stringBuilder) {
+    public static Document convertStringBuilderToDocument(final StringBuilder stringBuilder) {
         Document document = null;
         try {
             // Crear un DocumentBuilderFactory
@@ -63,8 +65,13 @@ public class Utils {
         return document;
     }
 
-    // Método para escapar caracteres especiales en XML
-    public static String escapeXML(String input) {
+    /**
+     * Metodo para escapar caracteres especiales en XML.
+     * 
+     * @param input texto a evaluar
+     * @return texto evaluado
+     */
+    public static String escapeXML(final String input) {
         return input.replaceAll("&", "&amp;");
     }
 }

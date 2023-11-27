@@ -30,63 +30,63 @@ public class VentanaTema implements Ventana{
      * @param sistema                Sistema.
      * @param tema                   Tema de la ventana.
      */
-    public VentanaTema(AdministradorDeVentanas administradorDeVentanas,Sistema sistema,Tema tema){
+    public VentanaTema(final AdministradorDeVentanas administradorDeVentanas, final Sistema sistema, final Tema tema) {
         this.sistema = sistema;
         this.administradorDeVentanas = administradorDeVentanas;
         this.tema = tema;
         ventana = new JFrame("Seleccion de tema");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.ventana.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent we){
+        this.ventana.addWindowListener(new WindowAdapter() {
+            public void windowClosing(final WindowEvent we) {
                 administradorDeVentanas.ventanaCierre(ventana);
                 ventana.setEnabled(false);
-			}
-		});
-        ventana.setSize(300,175);
-        ventana.setMaximumSize(new Dimension(300,175));
-		ventana.setLocationRelativeTo(null);
-		ventana.setResizable(false);
+            }
+        });
+        ventana.setSize(300, 175);
+        ventana.setMaximumSize(new Dimension(300, 175));
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
     }
 
-    public void iniciarVentana() {
+    public final void iniciarVentana() {
         JPanel panel = new JPanel();
         panel.setBackground(tema.getFondo());
-		panel.setLayout(null);
-		ventana.getContentPane().add(panel,BorderLayout.CENTER);
+        panel.setLayout(null);
+        ventana.getContentPane().add(panel, BorderLayout.CENTER);
 
-		JLabel mensaje = new JLabel("Seleccion de tema");
-        mensaje.setForeground(tema.getLetra());
-		mensaje.setBounds(85, 0, 250, 50);
-		panel.add(mensaje);
-		
-		JComboBox<String> seleccionTema = new JComboBox<>(sistema.getListaTemas(administradorDeVentanas));
+        JLabel mensaje = new JLabel("Seleccion de tema");
+        mensaje.setForeground(tema.getTexto());
+        mensaje.setBounds(85, 0, 250, 50);
+        panel.add(mensaje);
+
+        JComboBox<String> seleccionTema = new JComboBox<>(sistema.getListaTemas(administradorDeVentanas));
         seleccionTema.setBackground(tema.getBoton());
-        seleccionTema.setForeground(tema.getLetra());
-		seleccionTema.setBounds(72, 50, 140, 25);
-		panel.add(seleccionTema);
-		
-		JButton botonMenu = new JButton("Volver");
-        botonMenu.setForeground(tema.getLetra());
+        seleccionTema.setForeground(tema.getTexto());
+        seleccionTema.setBounds(72, 50, 140, 25);
+        panel.add(seleccionTema);
+
+        JButton botonMenu = new JButton("Volver");
+        botonMenu.setForeground(tema.getTexto());
         botonMenu.setBackground(tema.getBoton());
-		botonMenu.setBounds(20, 100, 100, 25);
+        botonMenu.setBounds(20, 100, 100, 25);
         panel.add(botonMenu);
-		botonMenu.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        botonMenu.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.menu(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();
             }
         });
 
-		JButton botonAplicar = new JButton("Aplicar");
-        botonAplicar.setForeground(tema.getLetra());
+        JButton botonAplicar = new JButton("Aplicar");
+        botonAplicar.setForeground(tema.getTexto());
         botonAplicar.setBackground(tema.getBoton());
-		botonAplicar.setBounds(160, 100, 100, 25);
+        botonAplicar.setBounds(160, 100, 100, 25);
         panel.add(botonAplicar);
-        
-		botonAplicar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-				administradorDeVentanas.setTema(seleccionTema.getSelectedIndex()-1);
+
+        botonAplicar.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+				administradorDeVentanas.setTema(seleccionTema.getSelectedIndex() - 1);
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();

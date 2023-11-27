@@ -30,116 +30,117 @@ public class VentanaMenu implements Ventana {
      * @param sistema                Sistema.
      * @param tema                   Tema de la ventana.
      */
-    public VentanaMenu(AdministradorDeVentanas administradorDeVentanas,Sistema sistema, Tema tema) {
+    public VentanaMenu(final AdministradorDeVentanas administradorDeVentanas, final Sistema sistema, final Tema tema) {
         this.sistema = sistema;
         this.ventana = new JFrame("Menú");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		this.ventana.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent we){
+        this.ventana.addWindowListener(new WindowAdapter() {
+            public void windowClosing(final WindowEvent we) {
                 administradorDeVentanas.ventanaCierre(ventana);
                 ventana.setEnabled(false);
-			}
-		});
+            }
+        });
         this.tema = tema;
         this.administradorDeVentanas = administradorDeVentanas;
-        ventana.setSize(350,250);
-        ventana.setMaximumSize(new Dimension(350,250));
-		ventana.setLocationRelativeTo(null);
-		ventana.setResizable(false);
+        ventana.setSize(350, 250);
+        ventana.setMaximumSize(new Dimension(350, 250));
+        ventana.setLocationRelativeTo(null);
+        ventana.setResizable(false);
     }
 
-    public void iniciarVentana() {
+    public final void iniciarVentana() {
         JTabbedPane panelPestanas = new JTabbedPane();
         panelPestanas.setBackground(tema.getFondo());
-        panelPestanas.setForeground(tema.getLetra());
-        
-        //Local -------------------------------------------------------------------------------------------------
+        panelPestanas.setForeground(tema.getTexto());
+
+        // Local
+        // ----------------------------------
         JPanel panelLocal = new JPanel();
         panelLocal.setBackground(tema.getFondo());
-		panelLocal.setLayout(null);
+        panelLocal.setLayout(null);
         panelPestanas.addTab("Local", panelLocal);
-        
-		JLabel tituloLocal = new JLabel("Local");
-        tituloLocal.setForeground(tema.getLetra());
-		tituloLocal.setBounds(150, 0, 250, 50);
-		panelLocal.add(tituloLocal);
+
+        JLabel tituloLocal = new JLabel("Local");
+        tituloLocal.setForeground(tema.getTexto());
+        tituloLocal.setBounds(150, 0, 250, 50);
+        panelLocal.add(tituloLocal);
 
         JButton botonSeleccionArchivos = new JButton("Seleccionar archivos");
         botonSeleccionArchivos.setBackground(tema.getBoton());
-        botonSeleccionArchivos.setForeground(tema.getLetra());
-		botonSeleccionArchivos.setBounds(85, 50, 165, 25);
-		panelLocal.add(botonSeleccionArchivos);
+        botonSeleccionArchivos.setForeground(tema.getTexto());
+        botonSeleccionArchivos.setBounds(85, 50, 165, 25);
+        panelLocal.add(botonSeleccionArchivos);
         botonSeleccionArchivos.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.ventanaArchivosLocales(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();
             }
         });
-        //Online----------------------------------------------------
-        
+        // Online----------------------------------------------------
+
         JPanel panelOnline = new JPanel();
         panelOnline.setBackground(tema.getFondo());
-		panelOnline.setLayout(null);
+        panelOnline.setLayout(null);
         panelPestanas.addTab("Online", panelOnline);
-        
-		JLabel tituloOnline = new JLabel("Online");
-        tituloOnline.setForeground(tema.getLetra());
-		tituloOnline.setBounds(150, 0, 250, 50);
-		panelOnline.add(tituloOnline);
+
+        JLabel tituloOnline = new JLabel("Online");
+        tituloOnline.setForeground(tema.getTexto());
+        tituloOnline.setBounds(150, 0, 250, 50);
+        panelOnline.add(tituloOnline);
 
         JButton botonSeleccionArchivosOnline = new JButton("Seleccionar archivos");
         botonSeleccionArchivosOnline.setBackground(tema.getBoton());
-        botonSeleccionArchivosOnline.setForeground(tema.getLetra());
-		botonSeleccionArchivosOnline.setBounds(85, 50, 165, 25);
-		panelOnline.add(botonSeleccionArchivosOnline);
+        botonSeleccionArchivosOnline.setForeground(tema.getTexto());
+        botonSeleccionArchivosOnline.setBounds(85, 50, 165, 25);
+        panelOnline.add(botonSeleccionArchivosOnline);
         botonSeleccionArchivosOnline.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.ventanaArchivosOnline(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();
             }
         });
 
-        //Config-------------------------------------------------------------------------------------------------
+        // Config--------------------------------------
 
         JPanel panelConfig = new JPanel();
         panelConfig.setBackground(tema.getFondo());
-		panelConfig.setLayout(null);
+        panelConfig.setLayout(null);
         panelPestanas.addTab("Configuraciones", panelConfig);
 
         JLabel tituloConfig = new JLabel("Configuraciones");
-        tituloConfig.setForeground(tema.getLetra());
-		tituloConfig.setBounds(120, 0, 250, 50);
-		panelConfig.add(tituloConfig);
+        tituloConfig.setForeground(tema.getTexto());
+        tituloConfig.setBounds(120, 0, 250, 50);
+        panelConfig.add(tituloConfig);
 
         JButton botonSeleccionTema = new JButton("Cambiar tema");
         botonSeleccionTema.setBackground(tema.getBoton());
-        botonSeleccionTema.setForeground(tema.getLetra());
-		botonSeleccionTema.setBounds(85, 50, 165, 25);
-		panelConfig.add(botonSeleccionTema);
-		
-		botonSeleccionTema.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        botonSeleccionTema.setForeground(tema.getTexto());
+        botonSeleccionTema.setBounds(85, 50, 165, 25);
+        panelConfig.add(botonSeleccionTema);
+
+        botonSeleccionTema.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.ventanaTema(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();
             }
         });
 
-        //-------------------------------------------------------------------------------------------------
+        // -------------------------------------------------
         JPanel panel = new JPanel();
         panel.setBackground(tema.getUi());
 
         JButton botonMostrarMapa = new JButton("Ver mapa");
         botonMostrarMapa.setBackground(tema.getBoton());
-        botonMostrarMapa.setForeground(tema.getLetra());
-		botonMostrarMapa.setBounds(85, 0, 165, 25);
+        botonMostrarMapa.setForeground(tema.getTexto());
+        botonMostrarMapa.setBounds(85, 0, 165, 25);
         botonMostrarMapa.setEnabled(!sistema.getGrafo().getNodos().isEmpty());
-		panel.add(botonMostrarMapa);
+        panel.add(botonMostrarMapa);
 
-		botonMostrarMapa.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        botonMostrarMapa.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
                 administradorDeVentanas.mostrarMapa(administradorDeVentanas);
                 ventana.setVisible(false);
                 ventana.dispose();

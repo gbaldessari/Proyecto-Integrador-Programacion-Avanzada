@@ -6,18 +6,24 @@ import java.awt.geom.Point2D;
  * Clase que representa un punto en un sistema de coordenadas 2D.
  */
 public class Punto {
-    private Point2D point;  // Punto representado por un objeto Point2D
-    private Nodo nodo;  // Nodo asociado al punto
+    /**
+     * Punto representado por un objeto Point2D.
+     */
+    private Point2D point2d;
+    /**
+     * Nodo asociado al punto.
+     */
+    private Nodo nodo;
 
     /**
      * Constructor de la clase Punto.
      *
      * @param point Punto representado por un objeto Point2D.
-     * @param nodo  Nodo asociado al punto.
+     * @param node  Nodo asociado al punto.
      */
-    public Punto(Point2D point, Nodo nodo) {
-        this.point = point;
-        this.nodo = nodo;
+    public Punto(final Point2D point, final Nodo node) {
+        point2d = point;
+        nodo = node;
     }
 
     /**
@@ -35,6 +41,6 @@ public class Punto {
      * @return El punto representado.
      */
     public Point2D getPoint() {
-        return point;
+        return point2d;
     }
 }

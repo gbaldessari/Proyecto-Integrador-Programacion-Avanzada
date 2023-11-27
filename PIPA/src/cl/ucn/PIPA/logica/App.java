@@ -1,15 +1,18 @@
 package cl.ucn.PIPA.logica;
 /**
- * Proyecto Integrador Programacion Avanzada
+ * Proyecto Integrador Programacion Avanzada.
  * Grupo: PAPAYON
  * Integrantes:
  *  @author Giacomo Baldessari
  *  @author Eduardo Miranda
  *  @author David Rodriguez
- *  @Version 21/11/23
  */
-public class App {
-    public static void main(String[] args) {
+public abstract class App {
+    /**
+     * Funcion main de la App.
+     *  @param args
+     */
+    public static void main(final String[] args) {
         Sistema sistema = new SistemaImpl();
         sistema.iniciarApp(sistema);
     }

@@ -17,62 +17,68 @@ import org.json.JSONObject;
  * Esta clase se encarga de listar y descargar archivos de datos NODE y EDGE
  * para ciudades. El origen de los datos es un servidor "en la nube".
  */
-public class CiudadesProvider{
+public final class CiudadesProvider {
     private static CiudadesProvider theInstance = null;
 
-    private CiudadesProvider(){}
+    private CiudadesProvider() {
+    }
 
-    public class Ciudad{
+    public class Ciudad {
         private StringBuilder xmlNodes;
         private StringBuilder xmlEdges;
-        public Ciudad(StringBuilder xmlNodes, StringBuilder xmlEdges){
+
+        public Ciudad(final StringBuilder xmlNodes, final StringBuilder xmlEdges) {
             this.xmlNodes = xmlNodes;
             this.xmlEdges = xmlEdges;
         }
-        public StringBuilder getXmlNodes(){
+
+        public final StringBuilder getXmlNodes() {
             return xmlNodes;
         }
-        public StringBuilder getXmlEdges(){
+
+        public final StringBuilder getXmlEdges() {
             return xmlEdges;
         }
     }
 
-    public static CiudadesProvider instance(){
+    public static CiudadesProvider instance() {
         if (theInstance == null) {
             theInstance = new CiudadesProvider();
         }
         return theInstance;
     }
-    /* 
-    private String getURLContents(String enlace){
-        URL url = null;
-        try {
-            url = new URI(enlace).toURL();
-        } catch (URISyntaxException | MalformedURLException e){
-            e.printStackTrace();
-        }
-        if(url!=null){
-            try {
-                URLConnection connection = url.openConnection();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder content = new StringBuilder();
-                String line;
 
-                while ((line = reader.readLine()) != null) {
-                    content.append(line).append("\n");
-                }
-                reader.close();
-
-                String urlString = content.toString();
-                return urlString;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-    */
-    private StringBuilder getURLContentsZIP(String enlace) throws IOException{
+    /*
+     * private String getURLContents(String enlace){
+     * URL url = null;
+     * try {
+     * url = new URI(enlace).toURL();
+     * } catch (URISyntaxException | MalformedURLException e){
+     * e.printStackTrace();
+     * }
+     * if(url!=null){
+     * try {
+     * URLConnection connection = url.openConnection();
+     * BufferedReader reader = new BufferedReader(new
+     * InputStreamReader(connection.getInputStream()));
+     * StringBuilder content = new StringBuilder();
+     * String line;
+     * 
+     * while ((line = reader.readLine()) != null) {
+     * content.append(line).append("\n");
+     * }
+     * reader.close();
+     * 
+     * String urlString = content.toString();
+     * return urlString;
+     * } catch (IOException e) {
+     * e.printStackTrace();
+     * }
+     * }
+     * return null;
+     * }
+     */
+    private StringBuilder getURLContentsZIP(final String enlace) throws IOException {
         System.out.println("Downloading " + enlace);
         URL url = null;
         try {
@@ -80,13 +86,13 @@ public class CiudadesProvider{
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        if(url!=null){
+        if (url != null) {
             GZIPInputStream gzipInputStream = new GZIPInputStream(url.openStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream, "UTF-8"));
             String line;
             StringBuilder content = new StringBuilder();
             while ((line = reader.readLine()) != null) {
-                content.append(Utils.escapeXML(line));
+                content.append(Funciones.escapeXML(line));
             }
             reader.close();
             return content;
@@ -94,7 +100,7 @@ public class CiudadesProvider{
         return null;
     }
 
-    public Ciudad ciudad(String nombre){
+    public Ciudad ciudad(final String nombre) {
         URL url = null;
         try {
             url = new URI("https://losvilos.ucn.cl/eross/ciudades/get.php?d=" + nombre).toURL();

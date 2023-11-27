@@ -22,106 +22,206 @@ import cl.ucn.PIPA.dominio.Linea;
 import cl.ucn.PIPA.dominio.Nodo;
 import cl.ucn.PIPA.dominio.Punto;
 import cl.ucn.PIPA.logica.Sistema;
-import cl.ucn.PIPA.utils.Utils;
+import cl.ucn.PIPA.utils.Funciones;
 
 /**
  * Panel gráfico que muestra un mapa con nodos y arcos geográficos.
  */
-public class PanelMapa extends JPanel{
+public class PanelMapa extends JPanel {
+    /** */
+    private final double escalaMinima = 0.025;
+    /** */
+    private final double escalaMaxima = 15;
+    /** */
+    private final int cteDeEscalacion = 1420;
+    /** */
+    private final double minScaleFactor = 0.9;
+    /** */
+    private final double maxScaleFactor = 1.1;
+    /** */
+    private final int cteTransformacionKm = 1000;
+    /** */
+    private final int cteTruncamientoKm = 3;
+    /** */
+    private final int cteDeEscalacionLineaRuta = 8;
+    /** */
+    private final double cteDeEscalacionPuntos = 0.75;
+    /** */
+    private final int posImagenXY = -15000;
+    /** */
+    private final int diametroPuntos = 4;
+    /** */
     private Sistema sistema;
+    /** */
     private double deltaCords;
+    /** */
     private Point2D maxPoint;
+    /** */
     private Point2D minPoint;
+    /** */
     private double minX;
+    /** */
     private double minY;
+    /** */
     private double scale;
+    /** */
     private int offsetX;
+    /** */
     private int offsetY;
+    /** */
     private double visibleWidth;
+    /** */
     private double visibleHeight;
+    /** */
     private double visibleX;
+    /** */
     private double visibleY;
+    /** */
     private Point lastDragPoint;
+    /** */
     private Graphics2D graphics2d;
+    /** */
     private ArrayList<Punto> puntos;
+    /** */
     private ArrayList<Linea> lineas;
+    /** */
     private ArrayList<Line2D> ruta;
+    /** */
     private Punto puntoPartida;
+    /** */
     private Punto puntoDestino;
+    /** */
     private double distanciaRecorrida;
+    /** */
     private ImageIcon imageIcon;
+    /** */
     private Tema tema;
+    /** */
     private JLabel c1;
+    /** */
     private JLabel c2;
+    /** */
     private JLabel id1;
+    /** */
     private String identificador1;
+    /** */
     private JLabel id2;
+    /** */
     private String identificador2;
+    /** */
     private JLabel km;
+    /** */
     private double escalador;
 
     /**
      * Constructor del panel de mapa.
      *
-     * @param sistema El sistema que contiene el grafo.
-     * @param tema    El tema de apariencia para el panel.
+     * @param sistemaEntregado El sistema que contiene el grafo.
+     * @param temaEntregado El tema de apariencia para el panel.
      */
-    public PanelMapa(Sistema sistema, Tema tema){
-        this.sistema = sistema;
-        this.tema = tema;
+    public PanelMapa(final Sistema sistemaEntregado, final Tema temaEntregado) {
+        sistema = sistemaEntregado;
+        tema = temaEntregado;
         puntos = new ArrayList<>();
         lineas = new ArrayList<>();
         puntoPartida = null;
         puntoDestino = null;
+        scale = escalaMinima;
         offsetX = 0;
         offsetY = 0;
-        scale = 0.025;
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
         getLimites();
-        escalador = Utils.haversine(minPoint.getY(), minPoint.getX(), maxPoint.getY(), maxPoint.getX())*1420;
+        escalador = Funciones.haversine(minPoint.getY(), minPoint.getX(),
+        maxPoint.getY(), maxPoint.getX()) * cteDeEscalacion;
         getPuntos();
         getLineas();
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mousePressed(final MouseEvent e) {
                 lastDragPoint = e.getPoint();
             }
+
             @Override
-            public void mouseReleased(MouseEvent e) {
+            public void mouseReleased(final MouseEvent e) {
                 lastDragPoint = null;
             }
-            public void mouseClicked(MouseEvent e) {
+
+            public void mouseClicked(final MouseEvent e) {
                 Point mousePoint = e.getPoint();
-                Point2D.Double mousePointScaled = new Point2D.Double((mousePoint.x - offsetX) / scale, (mousePoint.y - offsetY) / scale);
+                Point2D.Double mousePointScaled = scaleMousePoint(mousePoint);
+                Punto p = findNearestPoint(mousePointScaled);
+                handlePointSelection(p);
+                repaint();
+            }
+
+            private Point2D.Double scaleMousePoint(final Point mousePoint) {
+                return new Point2D.Double(
+                        (mousePoint.x - offsetX) / scale,
+                        (mousePoint.y - offsetY) / scale);
+            }
+
+            private Punto findNearestPoint(
+            final Point2D.Double mousePointScaled) {
                 double minDistance = Double.MAX_VALUE;
-                Punto p = null;
+                Punto nearestPoint = null;
+
                 for (Punto punto : puntos) {
-                    double distance = calculateDistance(mousePointScaled, punto);
+                    double distance = calculateDistance(
+                            mousePointScaled, punto);
                     if (distance < minDistance) {
                         minDistance = distance;
-                        p = punto;
+                        nearestPoint = punto;
                     }
                 }
-                if(puntoPartida!=null&&p.getNodo().getId().equals(puntoPartida.getNodo().getId())){
-                    puntoPartida = puntoDestino;
+
+                return nearestPoint;
+            }
+
+            private void handlePointSelection(final Punto selectedPoint) {
+                if (puntoPartida != null && puntoDestino != null) {
+                    handleBothPointsSelected(selectedPoint);
+                } else if (puntoDestino != null) {
+                    handleDestinoSelected(selectedPoint);
+                } else if (puntoPartida != null) {
+                    handlePartidaSelected(selectedPoint);
+                } else {
+                    puntoPartida = selectedPoint;
+                }
+            }
+
+            private void handleBothPointsSelected(final Punto selectedPoint) {
+                if (selectedPoint != null && isSameNode(
+                selectedPoint, puntoPartida)) {
+                    swapPartidaAndDestino();
+                }
+            }
+
+            private void handleDestinoSelected(final Punto selectedPoint) {
+                if (selectedPoint != null
+                && isSameNode(selectedPoint, puntoDestino)) {
                     puntoDestino = null;
                 }
-                else if(puntoDestino!=null&&p.getNodo().getId().equals(puntoDestino.getNodo().getId())){
-                    puntoDestino = null;
-                }
-                else if(puntoPartida != null){
-                    puntoDestino = p;
-                }
-                else{
-                    puntoPartida = p;
-                }
-                repaint();
+            }
+
+            private void handlePartidaSelected(final Punto selectedPoint) {
+                puntoDestino = selectedPoint;
+            }
+
+            private void swapPartidaAndDestino() {
+                Punto temp = puntoPartida;
+                puntoPartida = puntoDestino;
+                puntoDestino = temp;
+            }
+
+            private boolean isSameNode(final Punto point1, final Punto point2) {
+                return point1.getNodo().getId().equals(
+                point2.getNodo().getId());
             }
         });
         addMouseMotionListener(new MouseAdapter() {
             @Override
-            public void mouseDragged(MouseEvent e) {
+            public void mouseDragged(final MouseEvent e) {
                 if (lastDragPoint != null) {
                     int dx = e.getX() - lastDragPoint.x;
                     int dy = e.getY() - lastDragPoint.y;
@@ -134,16 +234,17 @@ public class PanelMapa extends JPanel{
         });
         addMouseWheelListener(new MouseAdapter() {
             @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
+            public void mouseWheelMoved(final MouseWheelEvent e) {
                 int notches = e.getWheelRotation();
-                double scaleFactor = (notches < 0) ? 1.1 : 0.9;  // Ajusta según la dirección del zoom
+                double scaleFactor = (notches < 0)
+                ? maxScaleFactor : minScaleFactor;
 
-                // Obtiene la posición del mouse en el sistema de coordenadas no escalado
                 Point mouse = e.getPoint();
-                Point2D.Double mouseScaled = new Point2D.Double((mouse.x - offsetX) / scale, (mouse.y - offsetY) / scale);
-                
-                // Ajusta el desplazamiento para que el punto bajo el mouse permanezca fijo
-                if(canScale(scale * scaleFactor)){
+                Point2D.Double mouseScaled = new Point2D.Double(
+                (mouse.x - offsetX) / scale,
+                (mouse.y - offsetY) / scale);
+
+                if (canScale(scale * scaleFactor)) {
                     offsetX = (int) (mouse.x - mouseScaled.x * scale);
                     offsetY = (int) (mouse.y - mouseScaled.y * scale);
                     repaint();
@@ -151,214 +252,274 @@ public class PanelMapa extends JPanel{
             }
         });
     }
+
     /**
      * Establece la etiqueta para mostrar la coordenada 1.
      *
-     * @param c1 La etiqueta para la coordenada 1.
+     * @param c1Label La etiqueta para la coordenada 1.
      */
-    public void setC1(JLabel c1){this.c1=c1;}
-    
+    public void setC1(final JLabel c1Label) {
+        c1 = c1Label;
+    }
+
     /**
      * Establece la etiqueta para mostrar la coordenada 2.
      *
-     * @param c2 La etiqueta para la coordenada 1.
+     * @param c2Label La etiqueta para la coordenada 1.
      */
-    public void setC2(JLabel c2){this.c2=c2;}
+    public void setC2(final JLabel c2Label) {
+        c2 = c2Label;
+    }
+
     /**
      * Establece la etiqueta para mostrar el id 1.
      *
-     * @param id1 La etiqueta para el id 1.
+     * @param id1Label La etiqueta para el id 1.
      */
-    public void setid1(JLabel id1){this.id1=id1;}
+    public void setid1(final JLabel id1Label) {
+        id1 = id1Label;
+    }
+
     /**
      * Establece la etiqueta para mostrar el id 2.
      *
-     * @param id2 La etiqueta para el id 2.
+     * @param id2Label La etiqueta para el id 2.
      */
-    public void setid2(JLabel id2){this.id2=id2;}
+    public void setid2(final JLabel id2Label) {
+        id2 = id2Label;
+    }
+
     /**
      * Establece la etiqueta para mostrar los kilometros.
      *
-     * @param km La etiqueta para los kilometros.
+     * @param kmLabel La etiqueta para los kilometros.
      */
-    public void setKm(JLabel km){this.km=km;}
+    public void setKm(final JLabel kmLabel) {
+        km = kmLabel;
+    }
+
     /**
      * Borra los puntos de origen y destino.
      */
-    public void borrarOrigenDestino(){
+    public void borrarOrigenDestino() {
         puntoPartida = null;
         puntoDestino = null;
         ruta = null;
         repaint();
     }
-    public String getIdentificador1() {
+
+    /**
+     * Funcion para obtener el id del nodo de inicio.
+     *
+     * @return El id del nodo de inicio
+     */
+    public final String getIdentificador1() {
         return identificador1;
     }
-    public String getIdentificador2() {
+
+    /**
+     * Funcion para obtener el id del nodo de destino.
+     *
+     * @return El id del nodo de destino
+     */
+    public final String getIdentificador2() {
         return identificador2;
     }
+
     /**
-     * Método de dibujo principal que representa el contenido del panel.
-     *
-     * @param g El objeto Graphics para dibujar.
-     */
-    public void paint(Graphics g){
-        super.paint(g);
-        graphics2d = (Graphics2D) g;
-        graphics2d.translate(offsetX, offsetY);
-        graphics2d.scale(scale, scale);
-        int panelWidth = getWidth();
-        int panelHeight = getHeight();
-        visibleWidth = (panelWidth / scale);
-        visibleHeight = (panelHeight / scale);
-        visibleX = (-offsetX / scale);
-        visibleY = (-offsetY / scale);
+ * Método de dibujo principal que representa el contenido del panel.
+ *
+ * @param g El objeto Graphics para dibujar.
+ */
+public void paint(final Graphics g) {
+    super.paint(g);
+    graphics2d = (Graphics2D) g;
+    graphics2d.translate(offsetX, offsetY);
+    graphics2d.scale(scale, scale);
+    int panelWidth = getWidth();
+    int panelHeight = getHeight();
+    visibleWidth = (panelWidth / scale);
+    visibleHeight = (panelHeight / scale);
+    visibleX = (-offsetX / scale);
+    visibleY = (-offsetY / scale);
 
-        for (Linea linea : lineas) {
-            if(inLimitesLine(linea.getLine())){
-                Color colorLinea = Color.decode("#606060");
-                if(linea.getArco().getTipo()!=null){
-                    colorLinea= sistema.getColoresCalles().get(getIndexColor(linea.getArco().getTipo().get(0)));
-                }
-                graphics2d.setColor(colorLinea);
-                graphics2d.setStroke(new BasicStroke(1));
-                graphics2d.draw(linea.getLine());
-            }
-        }
-        if(ruta != null){
-            if(distanciaRecorrida<1){
-                this.km.setText(String.format("%." + 2 + "f",distanciaRecorrida*1000) + " m");
-            }else{
-                this.km.setText(String.format("%." + 3 + "f",distanciaRecorrida) + " km");
-            }
-            for (Line2D linea : ruta) {
-                if(inLimitesLine(linea)){
-                    graphics2d.setColor(Color.decode("#FF0000"));
-                    graphics2d.setStroke(new BasicStroke((int)(8/scale)));
-                    graphics2d.draw(linea);
-                }
-            }
-        }
-        // Dibuja solo los puntos que están dentro de los límites visibles
-        if(scale>0.75){
-            for (Punto punto : puntos) {
-                int x = (int) punto.getPoint().getX();
-                int y = (int) punto.getPoint().getY();
-                if(inLimitesPoint(x,y)){
-                    graphics2d.setColor(tema.getPuntos());
-                    graphics2d.fillOval(x,y,4, 4);
-                }
-            }
-        }
-        if(puntoPartida!=null){
-            graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval((int)puntoPartida.getPoint().getX(),(int)puntoPartida.getPoint().getY(),4, 4);
-            this.id1.setText("ID: "+puntoPartida.getNodo().getId());
-            identificador1 = puntoPartida.getNodo().getId();
-            this.c1.setText(puntoPartida.getNodo().getX()+", "+puntoPartida.getNodo().getY());
-        }
-        else{
-            this.c1.setText("");
-            this.id1.setText("");
-        }
-        if(puntoDestino!=null){
-            graphics2d.setColor(tema.getPuntoSeleccionado());
-            graphics2d.fillOval((int)puntoDestino.getPoint().getX(),(int)puntoDestino.getPoint().getY(),4, 4);
-            this.id2.setText("ID: "+puntoDestino.getNodo().getId());
-            identificador2 = puntoDestino.getNodo().getId();
-            this.c2.setText(puntoDestino.getNodo().getX()+", "+puntoDestino.getNodo().getY());
-        }
-        else{
-            this.c2.setText("");
-            this.id2.setText("");
-            this.km.setText("");
-        }
+    drawLines();
+    drawRoute();
+    drawPoints();
+    drawSelectedPoints();
+    drawImage();
 
-        Image image = imageIcon.getImage();
-        graphics2d.drawImage(image, -5000,-5000, this);
+    graphics2d.dispose();
+}
 
-        graphics2d.dispose();
+private void drawLines() {
+    for (Linea linea : lineas) {
+        if (inLimitesLine(linea.getLine())) {
+            Color colorLinea = getColorLinea(linea);
+            graphics2d.setColor(colorLinea);
+            graphics2d.setStroke(new BasicStroke(1));
+            graphics2d.draw(linea.getLine());
+        }
     }
+}
+
+private Color getColorLinea(final Linea linea) {
+    if (linea.getArco().getTipos() != null) {
+        return sistema.getColoresCalles().get(getIndexColor(
+        linea.getArco().getTipos().get(0)));
+    }
+    return Color.decode("#606060");
+}
+
+private void drawRoute() {
+    if (ruta != null) {
+        if (distanciaRecorrida < 1) {
+            km.setText(String.format("%." + 2 + "f",
+            distanciaRecorrida * cteTransformacionKm) + " m");
+        } else {
+            km.setText(String.format("%." + cteTruncamientoKm + "f",
+            distanciaRecorrida) + " km");
+        }
+        for (Line2D linea : ruta) {
+            if (inLimitesLine(linea)) {
+                graphics2d.setColor(Color.decode("#FF0000"));
+                graphics2d.setStroke(new BasicStroke(
+                (int) (cteDeEscalacionLineaRuta / scale)));
+                graphics2d.draw(linea);
+            }
+        }
+    }
+}
+
+private void drawPoints() {
+    if (scale > cteDeEscalacionPuntos) {
+        for (Punto punto : puntos) {
+            int x = (int) punto.getPoint().getX();
+            int y = (int) punto.getPoint().getY();
+            if (inLimitesPoint(x, y)) {
+                graphics2d.setColor(tema.getPuntos());
+                graphics2d.fillOval(x, y, diametroPuntos, diametroPuntos);
+            }
+        }
+    }
+}
+
+private void drawSelectedPoints() {
+    drawSelectedPoint(puntoPartida, id1, c1);
+    drawSelectedPoint(puntoDestino, id2, c2);
+}
+
+private void drawSelectedPoint(final Punto punto,
+final JLabel idLabel, final JLabel cLabel) {
+    if (punto != null) {
+        graphics2d.setColor(tema.getPuntoSeleccionado());
+        graphics2d.fillOval((int) punto.getPoint().getX(),
+        (int) punto.getPoint().getY(), diametroPuntos, diametroPuntos);
+        idLabel.setText("ID: " + punto.getNodo().getId());
+        cLabel.setText(punto.getNodo().getX() + ", " + punto.getNodo().getY());
+    } else {
+        idLabel.setText("");
+        cLabel.setText("");
+    }
+}
+
+private void drawImage() {
+    Image image = imageIcon.getImage();
+    graphics2d.drawImage(image, posImagenXY, posImagenXY, this);
+}
+
+
     /**
      * Obtiene el índice del color asociado a un tipo de carretera.
      *
      * @param tipo El tipo de carretera.
      * @return El índice del color asociado.
      */
-    private int getIndexColor(String tipo) {
+    private int getIndexColor(final String tipo) {
         int index = 0;
-        int numColores = sistema.getTiposCarreteras().size()-1;
-        for (int i = 0; i<=numColores;i++) {
-            if(tipo.equals(sistema.getTiposCarreteras().get(i))){
+        int numColores = sistema.getTiposCarreteras().size() - 1;
+        for (int i = 0; i <= numColores; i++) {
+            if (tipo.equals(sistema.getTiposCarreteras().get(i))) {
                 index = i;
                 break;
             }
         }
-        while(index>numColores){
-            index=index-numColores;
+        while (index > numColores) {
+            index = index - numColores;
         }
         return index;
     }
+
     /**
      * Verifica si un punto está dentro de los límites visibles.
      *
      * @param x La coordenada x del punto.
      * @param y La coordenada y del punto.
-     * @return true si el punto está dentro de los límites visibles, false de lo contrario.
+     * @return true si el punto está dentro de los límites visibles, false de lo
+     * contrario.
      */
-    private boolean inLimitesPoint(int x, int y){
-        Rectangle2D rect = new Rectangle2D.Double(visibleX-10, visibleY-10, visibleWidth+20, visibleHeight+20);
-        if(rect.contains(x,y)){
+    private boolean inLimitesPoint(final int x, final int y) {
+        final int minPosVisible = 10;
+        final int maxPosVisible = 20;
+        Rectangle2D rect = new Rectangle2D.Double(
+        visibleX - minPosVisible, visibleY - minPosVisible,
+        visibleWidth + maxPosVisible, visibleHeight + maxPosVisible);
+        if (rect.contains(x, y)) {
             return true;
         }
         return false;
     }
+
     /**
      * Verifica si una línea está dentro de los límites visibles.
      *
      * @param linea La línea a verificar.
-     * @return true si la línea está dentro de los límites visibles, false de lo contrario.
+     * @return true si la línea está dentro de los límites visibles, false de lo
+     *         contrario.
      */
-    private boolean inLimitesLine(Line2D linea){
-        Rectangle2D rect = new Rectangle2D.Double(visibleX, visibleY, visibleWidth, visibleHeight);
-        if(rect.intersectsLine(linea)){
+    private boolean inLimitesLine(final Line2D linea) {
+        Rectangle2D rect = new Rectangle2D.Double(
+        visibleX, visibleY, visibleWidth, visibleHeight);
+        if (rect.intersectsLine(linea)) {
             return true;
         }
         return false;
     }
+
     /**
      * Normaliza un valor según el rango de coordenadas y la escala.
      *
      * @param valor El valor a normalizar.
-     * @param x     true si se está normalizando la coordenada x, false para la coordenada y.
+     * @param x     true si se está normalizando la coordenada x, false para la
+     *              coordenada y.
      * @return El valor normalizado.
      */
-    private int valorNormalizado(double valor,boolean x){
+    private int valorNormalizado(final double valor, final boolean x) {
         double valorfinal = 0;
-        if(x){
-            valorfinal = (1-(valor-minX)/(deltaCords))*escalador;
+        if (x) {
+            valorfinal = (1 - (valor - minX) / (deltaCords)) * escalador;
+        } else {
+            valorfinal = (valor - minY) / (deltaCords) * escalador;
         }
-        else{
-            valorfinal = (valor-minY)/(deltaCords)*escalador;
-        }
-        return (int)valorfinal;
+        return (int) valorfinal;
     }
+
     /**
      * Limita el zoom dentro de ciertos rangos.
      *
      * @param newScale La nueva escala propuesta.
-     * @return true si el zoom es válido y se ha aplicado, false si no es válido.
+     * @return true si el zoom es válido y se ha aplicado,
+     * false si no es válido.
      */
-    public boolean canScale(double newScale) {
+    public boolean canScale(final double newScale) {
         // Limita el zoom mínimo y máximo según tus necesidades
-        double minScale = 0.025;
-        double maxScale = 15;
-        if (newScale >= minScale && newScale <= maxScale) {
+        if (newScale >= escalaMinima && newScale <= escalaMaxima) {
             scale = newScale;
             return true;
         }
         return false;
     }
+
     /**
      * Calcula la distancia entre dos puntos.
      *
@@ -366,119 +527,116 @@ public class PanelMapa extends JPanel{
      * @param p2 El segundo punto.
      * @return La distancia entre los dos puntos.
      */
-    private double calculateDistance(Point2D.Double p1, Punto p2) {
+    private double calculateDistance(final Point2D.Double p1, final Punto p2) {
         return p1.distance(p2.getPoint().getX(), p2.getPoint().getY());
-    }
-    /**
-     * Obtiene información del nodo de origen.
-     *
-     * @return Un array de Strings con información del nodo de origen.
-     */
-    public String[] getDatoNodoOrigen(){
-        String [] datos = new String[3];
-        if(puntoPartida != null){
-            datos[0] = puntoPartida.getNodo().getId();
-            datos[1] = Double.toString(puntoPartida.getNodo().getX());
-            datos[2] = Double.toString(puntoPartida.getNodo().getY());
-        }
-        return datos;
     }
     /**
      * Obtiene y normaliza los puntos del grafo.
      */
-    private void getPuntos(){
+    private void getPuntos() {
         double mayX = Double.MIN_VALUE;
         double menX = Double.MAX_VALUE;
         double mayY = Double.MIN_VALUE;
         double menY = Double.MAX_VALUE;
 
-        for(int i =0;i<sistema.getGrafo().getNodos().size();i++){
+        for (int i = 0; i < sistema.getGrafo().getNodos().size(); i++) {
             Nodo nodo = sistema.getGrafo().getNodos().get(i);
-            Punto punto = new Punto( new Point(valorNormalizado(nodo.getX()*-1,true)-2,
-                                    valorNormalizado(nodo.getY()*-1,false)-2),
-                                    nodo);
-            if(punto.getPoint().getX()>mayX){
+            Punto punto = new Punto(new Point(
+            valorNormalizado(nodo.getX() * -1, true) - 2,
+            valorNormalizado(nodo.getY() * -1, false) - 2), nodo);
+            if (punto.getPoint().getX() > mayX) {
                 mayX = punto.getPoint().getX();
             }
-            if(punto.getPoint().getY()>mayY){
+            if (punto.getPoint().getY() > mayY) {
                 mayY = punto.getPoint().getY();
             }
-            if(punto.getPoint().getX()<menX){
+            if (punto.getPoint().getX() < menX) {
                 menX = punto.getPoint().getX();
             }
-            if(punto.getPoint().getY()<menY){
+            if (punto.getPoint().getY() < menY) {
                 menY = punto.getPoint().getY();
             }
             puntos.add(punto);
         }
-        offsetX = (int)((-(mayX+menX)/2)*scale+944/2);
-        offsetY = (int)((-(mayY+menY)/2)*scale+625/2);
+
+        final double medioX = 944 / 2;
+        final double medioY = 625 / 2;
+        offsetX = (int) ((-(mayX + menX) / 2) * scale + medioX);
+        offsetY = (int) ((-(mayY + menY) / 2) * scale + medioY);
     }
+
     /**
      * Obtiene las líneas del grafo.
      */
-    private void getLineas(){
-        for(int i  =0;i<sistema.getGrafo().getArcos().size();i++){
+    private void getLineas() {
+        for (int i = 0; i < sistema.getGrafo().getArcos().size(); i++) {
             Arco arco = sistema.getGrafo().getArcos().get(i);
             Linea linea = new Linea(new Line2D.Double(
-                        valorNormalizado(arco.getOrigen().getX()*-1,true),
-                        valorNormalizado(arco.getOrigen().getY()*-1,false),
-                        valorNormalizado(arco.getDestino().getX()*-1,true),
-                        valorNormalizado(arco.getDestino().getY()*-1,false)), 
+                    valorNormalizado(arco.getOrigen().getX() * -1, true),
+                    valorNormalizado(arco.getOrigen().getY() * -1, false),
+                    valorNormalizado(arco.getDestino().getX() * -1, true),
+                    valorNormalizado(arco.getDestino().getY() * -1, false)),
                     arco);
             lineas.add(linea);
         }
     }
+
     /**
      * Calcula los límites del mapa basándose en las coordenadas de los nodos.
      */
-    private void getLimites(){
+    private void getLimites() {
         double maxX = Double.MIN_VALUE;
         minX = Double.MAX_VALUE;
         double maxY = Double.MIN_VALUE;
         minY = Double.MAX_VALUE;
 
-        for(int i=0;i<sistema.getGrafo().getNodos().size();i++){
+        for (int i = 0; i < sistema.getGrafo().getNodos().size(); i++) {
             Nodo nodo = sistema.getGrafo().getNodos().get(i);
-            if(nodo.getX()*-1>maxX){
-                maxX = nodo.getX()*-1;
+            if (nodo.getX() * -1 > maxX) {
+                maxX = nodo.getX() * -1;
             }
-            if(nodo.getY()*-1>maxY){
-                maxY = nodo.getY()*-1;
+            if (nodo.getY() * -1 > maxY) {
+                maxY = nodo.getY() * -1;
             }
-            if(nodo.getX()*-1<minX){
-                minX = nodo.getX()*-1;
+            if (nodo.getX() * -1 < minX) {
+                minX = nodo.getX() * -1;
             }
-            if(nodo.getY()*-1<minY){
-                minY = nodo.getY()*-1;
+            if (nodo.getY() * -1 < minY) {
+                minY = nodo.getY() * -1;
             }
         }
-        double deltaX = Math.abs(maxX-minX);
-        double deltaY = Math.abs(maxY-minY);
+        double deltaX = Math.abs(maxX - minX);
+        double deltaY = Math.abs(maxY - minY);
 
-        maxPoint = new Point2D.Double(minX*-1, minY*-1);
-        minPoint = new Point2D.Double(maxX*-1, maxY*-1);
+        maxPoint = new Point2D.Double(minX * -1, minY * -1);
+        minPoint = new Point2D.Double(maxX * -1, maxY * -1);
 
-        if(deltaX>deltaY){
+        if (deltaX > deltaY) {
             deltaCords = deltaX;
-        }
-        else{
+        } else {
             deltaCords = deltaY;
         }
     }
 
-    public void caminoMasCorto(){
-        ArrayList<Nodo> lista = sistema.getGrafo().encontrarCaminoMasCorto(identificador1,identificador2);
+    /**
+     * Funcion que actualiza la lista que contiene
+     * el camino mas corto entre los 2 puntos.
+     */
+    public final void caminoMasCorto() {
+        ArrayList<Nodo> lista = sistema.getGrafo().encontrarCaminoMasCorto(
+        identificador1, identificador2);
         distanciaRecorrida = 0;
         ruta = new ArrayList<>();
-        for (int i = 0;i<lista.size()-1;i++) {
+        for (int i = 0; i < lista.size() - 1; i++) {
             Line2D linea = new Line2D.Double(
-                        valorNormalizado(lista.get(i).getX()*-1,true),
-                        valorNormalizado(lista.get(i).getY()*-1,false),
-                        valorNormalizado(lista.get(i+1).getX()*-1,true),
-                        valorNormalizado(lista.get(i+1).getY()*-1,false));
+                        valorNormalizado(lista.get(i).getX() * -1, true),
+                        valorNormalizado(lista.get(i).getY() * -1, false),
+                        valorNormalizado(lista.get(i + 1).getX() * -1, true),
+                        valorNormalizado(lista.get(i + 1).getY() * -1, false));
             ruta.add(linea);
-            distanciaRecorrida+=Utils.haversine(lista.get(i).getY(),lista.get(i).getX(),lista.get(i+1).getY(),lista.get(i+1).getX());
+            distanciaRecorrida += Funciones.haversine(lista.get(i).getY(),
+            lista.get(i).getX(), lista.get(i + 1).getY(),
+            lista.get(i + 1).getX());
         }
         repaint();
     }

@@ -6,31 +6,57 @@ import java.awt.Color;
  * Clase que representa un tema de colores para la interfaz de usuario.
  */
 public class Tema {
-    private String nombre;  // Nombre del tema
-    private Color fondo;  // Color de fondo
-    private Color ui;  // Color de interfaz
-    private Color boton;  // Color de botones
-    private Color letra;  // Color de letras
-    private Color puntos;  // Color de puntos
-    private Color puntoSeleccionado;  // Color de puntos seleccionados
+    /**
+     * Nombre del tema.
+     */
+    private String nombre;
+    /**
+     * Color de fondo.
+     */
+    private Color fondo;
+    /**
+     * Color de interfaz.
+     */
+    private Color ui;
+    /**
+     * Color de botones.
+     */
+    private Color boton;
+    /**
+     * Color de letras.
+     */
+    private Color texto;
+    /**
+     * Color de puntos.
+     */
+    private Color puntos;
+    /**
+     * Color de puntos seleccionados.
+     */
+    private Color puntoSeleccionado;
 
     /**
      * Constructor de la clase Tema.
      *
-     * @param nombre             Nombre del tema.
-     * @param hexFondo           Representación hexadecimal del color de fondo.
-     * @param hexUI              Representación hexadecimal del color de interfaz.
-     * @param hexBoton           Representación hexadecimal del color de botones.
-     * @param hexLetra           Representación hexadecimal del color de letras.
-     * @param hexPuntos          Representación hexadecimal del color de puntos.
-     * @param hexPuntoSeleccionado Representación hexadecimal del color de puntos seleccionados.
+     * @param nombreTema Nombre del tema.
+     * @param hexFondo Representación hexadecimal del color de fondo.
+     * @param hexUI Representación hexadecimal del
+     * color de interfaz.
+     * @param hexBoton Representación hexadecimal del
+     * color de botones.
+     * @param hexTexto Representación hexadecimal del color de letras.
+     * @param hexPuntos Representación hexadecimal del color de puntos.
+     * @param hexPuntoSeleccionado Representación hexadecimal del
+     * color de puntos seleccionados.
      */
-    public Tema(String nombre, String hexFondo, String hexUI, String hexBoton, String hexLetra, String hexPuntos, String hexPuntoSeleccionado) {
-        this.nombre = nombre;
+    public Tema(final String nombreTema, final String hexFondo,
+    final String hexUI, final String hexBoton, final String hexTexto,
+    final String hexPuntos, final String hexPuntoSeleccionado) {
+        nombre = nombreTema;
         fondo = Color.decode(hexFondo);
         ui = Color.decode(hexUI);
         boton = Color.decode(hexBoton);
-        letra = Color.decode(hexLetra);
+        texto = Color.decode(hexTexto);
         puntos = Color.decode(hexPuntos);
         puntoSeleccionado = Color.decode(hexPuntoSeleccionado);
     }
@@ -76,8 +102,8 @@ public class Tema {
      *
      * @return El color de letras.
      */
-    public Color getLetra() {
-        return letra;
+    public Color getTexto() {
+        return texto;
     }
 
     /**

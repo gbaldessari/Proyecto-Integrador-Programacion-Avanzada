@@ -20,7 +20,7 @@ public class AdministradorDeVentanas {
      * @param sistema Instancia del sistema.
      * @param temas   Lista de temas disponibles.
      */
-    public AdministradorDeVentanas(Sistema sistema, ArrayList<Tema> temas) {
+    public AdministradorDeVentanas(final Sistema sistema, final ArrayList<Tema> temas) {
         this.sistema = sistema;
         temaSeleccionado = temas.get(0);
         conexionInternet = false;
@@ -33,7 +33,7 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaTema(AdministradorDeVentanas administradorDeVentanas) {
+    public void ventanaTema(final AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaTema(administradorDeVentanas, sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
@@ -43,7 +43,7 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void menu(AdministradorDeVentanas administradorDeVentanas) {
+    public void menu(final AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaMenu(administradorDeVentanas, sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
@@ -53,7 +53,7 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void mostrarMapa(AdministradorDeVentanas administradorDeVentanas) {
+    public void mostrarMapa(final AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaMapa(administradorDeVentanas, sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
@@ -65,7 +65,7 @@ public class AdministradorDeVentanas {
      *
      * @param mensajeError Mensaje de error a mostrar.
      */
-    public void mostrarError(String mensajeError) {
+    public void mostrarError(final String mensajeError) {
         JOptionPane.showMessageDialog(null, mensajeError, "Error", 0);
     }
 
@@ -74,7 +74,7 @@ public class AdministradorDeVentanas {
      *
      * @param ventanaActiva Ventana activa a cerrar.
      */
-    public void ventanaCierre(JFrame ventanaActiva) {
+    public void ventanaCierre(final JFrame ventanaActiva) {
         Ventana ventana = new VentanaCierre(ventanaActiva, temaSeleccionado);
         ventana.iniciarVentana();
     }
@@ -84,7 +84,7 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaArchivosLocales(AdministradorDeVentanas administradorDeVentanas) {
+    public void ventanaArchivosLocales(final AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaArchivosLocal(administradorDeVentanas, sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
@@ -94,13 +94,13 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaArchivosOnline(AdministradorDeVentanas administradorDeVentanas) {
+    public void ventanaArchivosOnline(final AdministradorDeVentanas administradorDeVentanas) {
         Ventana ventana = new VentanaArchivosOnline(administradorDeVentanas, sistema, temaSeleccionado);
-        if(conexionInternet){
+        if (conexionInternet) {
             ventana.iniciarVentana();
             conexionInternet = false;
         }
-        
+
     }
 
     // Métodos para gestionar el tema seleccionado
@@ -115,11 +115,12 @@ public class AdministradorDeVentanas {
     }
 
     /**
-     * Establece el tema seleccionado a partir de su índice en la lista de temas del sistema.
+     * Establece el tema seleccionado a partir de su índice en la lista de temas del
+     * sistema.
      *
      * @param index Índice del tema en la lista.
      */
-    public void setTema(int index) {
+    public void setTema(final int index) {
         if (index > -1) {
             temaSeleccionado = sistema.getTemas().get(index);
         }
@@ -133,7 +134,7 @@ public class AdministradorDeVentanas {
         this.sistema.getGrafo().getArcos().clear();
     }
 
-    public void setConexionInternet(boolean conexionInternet) {
+    public final void setConexionInternet(final boolean conexionInternet) {
         this.conexionInternet = conexionInternet;
     }
 }
