@@ -2,6 +2,7 @@ package cl.ucn.PIPA.interfazGrafica.ventanas;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -17,20 +18,26 @@ import cl.ucn.PIPA.logica.Sistema;
 /**
  * Clase que representa una ventana que muestra un mapa.
  */
-public class VentanaMapa implements Ventana{
+public class VentanaMapa implements Ventana {
+    /** */
     private AdministradorDeVentanas administradorDeVentanas;
+    /** */
     private Sistema sistema;
+    /** */
     private JFrame ventana;
+    /** */
     private Tema tema;
 
     /**
      * Constructor de la clase VentanaMapa.
      *
-     * @param administradorDeVentanas Administrador de ventanas.
-     * @param sistema                Sistema.
-     * @param tema                   Tema de la ventana.
+     * @param administradorDeVentanasEntregado Administrador de ventanas.
+     * @param sistemaEntregado Sistema.
+     * @param temaEntregado Tema de la ventana.
      */
-    public VentanaMapa(final AdministradorDeVentanas administradorDeVentanas, final Sistema sistema, final Tema tema) {
+    public VentanaMapa(
+    final AdministradorDeVentanas administradorDeVentanasEntregado,
+    final Sistema sistemaEntregado, final Tema temaEntregado) {
         this.ventana = new JFrame("Mapa");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.ventana.addWindowListener(new WindowAdapter() {
@@ -39,15 +46,19 @@ public class VentanaMapa implements Ventana{
                 ventana.setEnabled(false);
             }
         });
-        this.tema = tema;
-        this.administradorDeVentanas = administradorDeVentanas;
-        this.sistema = sistema;
-        ventana.setSize(1200, 700);
-        ventana.setMinimumSize(new Dimension(1200, 700));
+        tema = temaEntregado;
+        administradorDeVentanas = administradorDeVentanasEntregado;
+        sistema = sistemaEntregado;
+        final Dimension dim = new Dimension(1200, 700);
+        ventana.setSize(dim);
+        ventana.setMinimumSize(dim);
         ventana.setLocationRelativeTo(null);
         ventana.setResizable(true);
     }
 
+    /**
+     * Método para iniciar la ventana y mostrarla al usuario.
+     */
     public final void iniciarVentana() {
         PanelMapa panelMapa = new PanelMapa(sistema, tema);
         ventana.getContentPane().add(panelMapa, BorderLayout.CENTER);
@@ -70,80 +81,89 @@ public class VentanaMapa implements Ventana{
         JPanel panelInfo = new JPanel();
         panelInfo.setLayout(null);
         panelInfo.setBackground(tema.getUi());
-        panelInfo.setPreferredSize(new Dimension(this.ventana.getWidth() / 5, this.ventana.getHeight()));
+        final Dimension dimPanelInfo = new Dimension(
+        this.ventana.getWidth() / 5, this.ventana.getHeight());
+        panelInfo.setPreferredSize(dimPanelInfo);
         ventana.getContentPane().add(panelInfo, BorderLayout.EAST);
 
         JLabel informacion = new JLabel("Informacion");
         informacion.setForeground(tema.getTexto());
-        informacion.setBounds(65, 10, 200, 50);
-        informacion.setFont(informacion.getFont().deriveFont(19f));
+        final Rectangle rectInformacion = new Rectangle(65, 10, 200, 50);
+        informacion.setBounds(rectInformacion);
+        final float fontSizeInfo = 19f;
+        informacion.setFont(informacion.getFont().deriveFont(fontSizeInfo));
         panelInfo.add(informacion);
 
+        final float fontSizeInfoNodo = 14f;
+
         JLabel infoNodo1 = new JLabel("Punto de partida: ");
-        infoNodo1.setBounds(10, 60, 200, 50);
+        final Rectangle rectInfoNodo1 = new Rectangle(10, 60, 200, 50);
+        infoNodo1.setBounds(rectInfoNodo1);
         infoNodo1.setForeground(tema.getTexto());
-        infoNodo1.setFont(infoNodo1.getFont().deriveFont(14f));
+        infoNodo1.setFont(infoNodo1.getFont().deriveFont(fontSizeInfoNodo));
         panelInfo.add(infoNodo1);
 
         JLabel id1 = new JLabel("");
-        id1.setBounds(10, 80, 200, 50);
+        final Rectangle rectId1 = new Rectangle(10, 80, 200, 50);
+        id1.setBounds(rectId1);
         id1.setForeground(tema.getTexto());
-        id1.setFont(id1.getFont().deriveFont(14f));
+        id1.setFont(id1.getFont().deriveFont(fontSizeInfoNodo));
         panelMapa.setid1(id1);
         panelInfo.add(id1);
 
         JLabel c1 = new JLabel("");
-        c1.setBounds(10, 100, 200, 50);
+        final Rectangle rectC1 = new Rectangle(10, 100, 200, 50);
+        c1.setBounds(rectC1);
         c1.setForeground(tema.getTexto());
-        c1.setFont(c1.getFont().deriveFont(14f));
+        c1.setFont(c1.getFont().deriveFont(fontSizeInfoNodo));
         panelMapa.setC1(c1);
         panelInfo.add(c1);
 
         JLabel infoNodo2 = new JLabel("Punto de llegada: ");
-        infoNodo2.setBounds(10, 130, 200, 50);
+        final Rectangle rectInfoNodo2 = new Rectangle(10, 130, 200, 50);
+        infoNodo2.setBounds(rectInfoNodo2);
         infoNodo2.setForeground(tema.getTexto());
-        infoNodo2.setFont(infoNodo2.getFont().deriveFont(14f));
+        infoNodo2.setFont(infoNodo2.getFont().deriveFont(fontSizeInfoNodo));
         panelInfo.add(infoNodo2);
 
         JLabel id2 = new JLabel("");
-        id2.setBounds(10, 150, 200, 50);
+        final Rectangle rectId2 = new Rectangle(10, 150, 200, 50);
+        id2.setBounds(rectId2);
         id2.setForeground(tema.getTexto());
-        id2.setFont(id2.getFont().deriveFont(14f));
+        id2.setFont(id2.getFont().deriveFont(fontSizeInfoNodo));
         panelMapa.setid2(id2);
         panelInfo.add(id2);
 
         JLabel c2 = new JLabel("");
-        c2.setBounds(10, 170, 200, 50);
+        final Rectangle rectC2 = new Rectangle(10, 170, 200, 50);
+        c2.setBounds(rectC2);
         c2.setForeground(tema.getTexto());
-        c2.setFont(c2.getFont().deriveFont(14f));
+        c2.setFont(c2.getFont().deriveFont(fontSizeInfoNodo));
         panelMapa.setC2(c2);
         panelInfo.add(c2);
 
         JLabel distancia = new JLabel("Distancia entre puntos: ");
-        distancia.setBounds(10, 200, 200, 50);
+        final Rectangle rectDistancia = new Rectangle(10, 200, 200, 50);
+        distancia.setBounds(rectDistancia);
         distancia.setForeground(tema.getTexto());
-        distancia.setFont(distancia.getFont().deriveFont(14f));
+        distancia.setFont(distancia.getFont().deriveFont(fontSizeInfoNodo));
         panelInfo.add(distancia);
 
         JLabel km = new JLabel("");
-        km.setBounds(10, 220, 200, 50);
+        final Rectangle rectKm = new Rectangle(10, 220, 200, 50);
+        km.setBounds(rectKm);
         km.setForeground(tema.getTexto());
-        km.setFont(km.getFont().deriveFont(14f));
+        km.setFont(km.getFont().deriveFont(fontSizeInfoNodo));
         panelInfo.add(km);
         panelMapa.setKm(km);
 
-        JLabel distanciaRecorrida = new JLabel("");
-        distanciaRecorrida.setBounds(10, 250, 200, 50);
-        distanciaRecorrida.setForeground(tema.getTexto());
-        distanciaRecorrida.setFont(distanciaRecorrida.getFont().deriveFont(14f));
-        panelInfo.add(distanciaRecorrida);
-
-        JButton botonAlgoritmo = new JButton("Calcular ruta");
-        botonAlgoritmo.setBounds(10, 290, 125, 25);
-        botonAlgoritmo.setBackground(tema.getBoton());
-        botonAlgoritmo.setForeground(tema.getTexto());
-        panelInfo.add(botonAlgoritmo);
-        botonAlgoritmo.addActionListener(new ActionListener() {
+        JButton botonRuta = new JButton("Calcular ruta");
+        final Rectangle rectRuta = new Rectangle(10, 290, 125, 25);
+        botonRuta.setBounds(rectRuta);
+        botonRuta.setBackground(tema.getBoton());
+        botonRuta.setForeground(tema.getTexto());
+        panelInfo.add(botonRuta);
+        botonRuta.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 if (!id2.getText().equals("")) {
                     panelMapa.caminoMasCorto();
@@ -152,7 +172,8 @@ public class VentanaMapa implements Ventana{
         });
 
         JButton botonBorrar = new JButton("Limpiar");
-        botonBorrar.setBounds(10, 320, 100, 25);
+        final Rectangle rectBorrar = new Rectangle(10, 320, 100, 25);
+        botonBorrar.setBounds(rectBorrar);
         botonBorrar.setBackground(tema.getBoton());
         botonBorrar.setForeground(tema.getTexto());
         panelInfo.add(botonBorrar);

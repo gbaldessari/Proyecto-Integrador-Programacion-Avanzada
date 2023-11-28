@@ -155,7 +155,7 @@ public class Grafo {
      * @return El nodo con el ID especificado, null si no se encontró.
      */
     public final ArrayList<Nodo> encontrarCaminoMasCorto(
-        final String inicio, final String destino) {
+    final String inicio, final String destino) {
         return encontrarMejorCaminoAStar(binarySearch(inicio),
         binarySearch(destino));
 

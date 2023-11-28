@@ -10,18 +10,28 @@ import cl.ucn.PIPA.logica.Sistema;
  * Clase que gestiona las ventanas de la interfaz gráfica.
  */
 public class AdministradorDeVentanas {
-    private Sistema sistema;  // Instancia del sistema
-    private Tema temaSeleccionado;  // Tema seleccionado para la interfaz
+    /**
+     * Instancia del sistema.
+    */
+    private Sistema sistema;
+    /**
+     * Tema seleccionado para la interfaz.
+    */
+    private Tema temaSeleccionado;
+    /**
+     * Booleano que determina si hay conexion a internet.
+    */
     private boolean conexionInternet;
 
     /**
      * Constructor de la clase AdministradorDeVentanas.
      *
-     * @param sistema Instancia del sistema.
+     * @param sistemaEntregado Instancia del sistema.
      * @param temas   Lista de temas disponibles.
      */
-    public AdministradorDeVentanas(final Sistema sistema, final ArrayList<Tema> temas) {
-        this.sistema = sistema;
+    public AdministradorDeVentanas(final Sistema sistemaEntregado,
+    final ArrayList<Tema> temas) {
+        sistema = sistemaEntregado;
         temaSeleccionado = temas.get(0);
         conexionInternet = false;
     }
@@ -33,8 +43,10 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaTema(final AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaTema(administradorDeVentanas, sistema, temaSeleccionado);
+    public void ventanaTema(
+    final AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaTema(administradorDeVentanas,
+        sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
 
@@ -44,7 +56,8 @@ public class AdministradorDeVentanas {
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
     public void menu(final AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaMenu(administradorDeVentanas, sistema, temaSeleccionado);
+        Ventana ventana = new VentanaMenu(administradorDeVentanas,
+        sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
 
@@ -53,8 +66,10 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void mostrarMapa(final AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaMapa(administradorDeVentanas, sistema, temaSeleccionado);
+    public void mostrarMapa(
+    final AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaMapa(administradorDeVentanas,
+        sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
 
@@ -84,8 +99,10 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaArchivosLocales(final AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaArchivosLocal(administradorDeVentanas, sistema, temaSeleccionado);
+    public void ventanaArchivosLocales(
+    final AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaArchivosLocal(administradorDeVentanas,
+        sistema, temaSeleccionado);
         ventana.iniciarVentana();
     }
 
@@ -94,8 +111,10 @@ public class AdministradorDeVentanas {
      *
      * @param administradorDeVentanas Instancia del administrador de ventanas.
      */
-    public void ventanaArchivosOnline(final AdministradorDeVentanas administradorDeVentanas) {
-        Ventana ventana = new VentanaArchivosOnline(administradorDeVentanas, sistema, temaSeleccionado);
+    public void ventanaArchivosOnline(
+    final AdministradorDeVentanas administradorDeVentanas) {
+        Ventana ventana = new VentanaArchivosOnline(administradorDeVentanas,
+        sistema, temaSeleccionado);
         if (conexionInternet) {
             ventana.iniciarVentana();
             conexionInternet = false;
@@ -115,7 +134,8 @@ public class AdministradorDeVentanas {
     }
 
     /**
-     * Establece el tema seleccionado a partir de su índice en la lista de temas del
+     * Establece el tema seleccionado a partir de su
+     * índice en la lista de temas del
      * sistema.
      *
      * @param index Índice del tema en la lista.
@@ -133,8 +153,13 @@ public class AdministradorDeVentanas {
         this.sistema.getGrafo().getNodos().clear();
         this.sistema.getGrafo().getArcos().clear();
     }
-
-    public final void setConexionInternet(final boolean conexionInternet) {
-        this.conexionInternet = conexionInternet;
+    /**
+     * Funcion que recibe el estado de la conexion.
+     *
+     * @param conexionInternetEntregada valor actual de la conexion
+     */
+    public final void setConexionInternet(
+    final boolean conexionInternetEntregada) {
+        conexionInternet = conexionInternetEntregada;
     }
 }

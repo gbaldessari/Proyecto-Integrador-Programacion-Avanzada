@@ -18,29 +18,54 @@ import org.json.JSONObject;
  * para ciudades. El origen de los datos es un servidor "en la nube".
  */
 public final class CiudadesProvider {
+    /** */
     private static CiudadesProvider theInstance = null;
 
     private CiudadesProvider() {
     }
 
     public class Ciudad {
+        /** */
         private StringBuilder xmlNodes;
+        /** */
         private StringBuilder xmlEdges;
 
-        public Ciudad(final StringBuilder xmlNodes, final StringBuilder xmlEdges) {
-            this.xmlNodes = xmlNodes;
-            this.xmlEdges = xmlEdges;
+        /**
+         * Objeto ciudad.
+         *
+         * @param xmlNodesEntregado xml de nodos
+         * @param xmlEdgesEntregado xml de arcos
+         */
+        public Ciudad(final StringBuilder xmlNodesEntregado,
+        final StringBuilder xmlEdgesEntregado) {
+            xmlNodes = xmlNodesEntregado;
+            xmlEdges = xmlEdgesEntregado;
         }
 
+        /**
+         * Funcion que retorna el archivo xml de nodos.
+         *
+         * @return el archivo xml de nodos
+         */
         public final StringBuilder getXmlNodes() {
             return xmlNodes;
         }
 
+        /**
+         * Funcion que retorna el archivo xml de arcos.
+         *
+         * @return el archivo xml de arcos
+         */
         public final StringBuilder getXmlEdges() {
             return xmlEdges;
         }
     }
 
+    /**
+     * Funcion que instancia el proveedor de ciudades.
+     *
+     * @return el proveedor de ciudades
+     */
     public static CiudadesProvider instance() {
         if (theInstance == null) {
             theInstance = new CiudadesProvider();
@@ -48,47 +73,16 @@ public final class CiudadesProvider {
         return theInstance;
     }
 
-    /*
-     * private String getURLContents(String enlace){
-     * URL url = null;
-     * try {
-     * url = new URI(enlace).toURL();
-     * } catch (URISyntaxException | MalformedURLException e){
-     * e.printStackTrace();
-     * }
-     * if(url!=null){
-     * try {
-     * URLConnection connection = url.openConnection();
-     * BufferedReader reader = new BufferedReader(new
-     * InputStreamReader(connection.getInputStream()));
-     * StringBuilder content = new StringBuilder();
-     * String line;
-     * 
-     * while ((line = reader.readLine()) != null) {
-     * content.append(line).append("\n");
-     * }
-     * reader.close();
-     * 
-     * String urlString = content.toString();
-     * return urlString;
-     * } catch (IOException e) {
-     * e.printStackTrace();
-     * }
-     * }
-     * return null;
-     * }
-     */
-    private StringBuilder getURLContentsZIP(final String enlace) throws IOException {
+
+    private StringBuilder getURLContentsZIP(final String enlace) {
         System.out.println("Downloading " + enlace);
         URL url = null;
         try {
             url = new URI(enlace).toURL();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        if (url != null) {
-            GZIPInputStream gzipInputStream = new GZIPInputStream(url.openStream());
-            BufferedReader reader = new BufferedReader(new InputStreamReader(gzipInputStream, "UTF-8"));
+            GZIPInputStream gzipInputStream = new GZIPInputStream(
+            url.openStream());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+            gzipInputStream, "UTF-8"));
             String line;
             StringBuilder content = new StringBuilder();
             while ((line = reader.readLine()) != null) {
@@ -96,22 +90,34 @@ public final class CiudadesProvider {
             }
             reader.close();
             return content;
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
+    /**
+     * Funcion que retorna la ciudad a partir de su nombre.
+     *
+     * @param nombre el nombre de la ciudad
+     * @return la ciudad obtenida
+     */
     public Ciudad ciudad(final String nombre) {
         URL url = null;
         try {
-            url = new URI("https://losvilos.ucn.cl/eross/ciudades/get.php?d=" + nombre).toURL();
+            url = new URI(
+            "https://losvilos.ucn.cl/eross/ciudades/get.php?d="
+            + nombre).toURL();
         } catch (URISyntaxException | MalformedURLException e) {
             e.printStackTrace();
         }
-        if(url!=null){
+        if (url != null) {
             try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection
+                = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader reader = new BufferedReader(
+                new InputStreamReader(connection.getInputStream()));
                 StringBuilder response = new StringBuilder();
                 String line;
 
@@ -126,7 +132,8 @@ public final class CiudadesProvider {
                 String nodes = json.getString("nodes");
                 String edges = json.getString("edges");
 
-                return new Ciudad(getURLContentsZIP(nodes), getURLContentsZIP(edges));
+                return new Ciudad(getURLContentsZIP(nodes),
+                getURLContentsZIP(edges));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -134,18 +141,20 @@ public final class CiudadesProvider {
         return null;
     }
 
-    public List<String> list(){
+    /**
+     * Funcion que retorna los nombres de las ciudades.
+     * @return los nombres de las ciudades
+     */
+    public List<String> list() {
         URL url = null;
         try {
-            url = new URI("https://losvilos.ucn.cl/eross/ciudades/list.php").toURL();
-        } catch (URISyntaxException | MalformedURLException e) {
-            e.printStackTrace();
-        }
-        if(url!=null){
-            try {
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            url = new URI(
+            "https://losvilos.ucn.cl/eross/ciudades/list.php").toURL();
+            HttpURLConnection connection
+                = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader reader = new BufferedReader(
+                new InputStreamReader(connection.getInputStream()));
                 StringBuilder response = new StringBuilder();
                 String line;
 
@@ -162,9 +171,8 @@ public final class CiudadesProvider {
                     result.add(o.toString());
                 }
                 return result;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

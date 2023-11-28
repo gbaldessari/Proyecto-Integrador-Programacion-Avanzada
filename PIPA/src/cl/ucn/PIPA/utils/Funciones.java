@@ -16,20 +16,22 @@ public abstract class Funciones {
      * @param endLong Longitud del punto de destino en grados.
      * @return La distancia en kilómetros entre los dos puntos.
      */
-    public static double haversine(double startLat, final double startLong, double endLat,
-        final double endLong) {
+    public static double haversine(final double startLat,
+    final double startLong, final double endLat, final double endLong) {
         // Convertir las latitudes y longitudes de grados a radianes
         double dLat = Math.toRadians((endLat - startLat));
         double dLong = Math.toRadians((endLong - startLong));
-        startLat = Math.toRadians(startLat);
-        endLat = Math.toRadians(endLat);
+        double newStartLat = Math.toRadians(startLat);
+        double newEndLat = Math.toRadians(endLat);
 
         // Calcular la fórmula de Haversine
-        double a = haversin(dLat) + Math.cos(startLat) * Math.cos(endLat) * haversin(dLong);
+        double a = haversin(dLat) + Math.cos(newStartLat)
+        * Math.cos(newEndLat) * haversin(dLong);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
         // Radio de la Tierra en kilómetros (aproximado)
-        return 6371 * c;
+        final double radioTierra = 6371;
+        return radioTierra * c;
     }
 
     /**
@@ -42,11 +44,19 @@ public abstract class Funciones {
         return Math.pow(Math.sin(val / 2), 2);
     }
 
-    public static Document convertStringBuilderToDocument(final StringBuilder stringBuilder) {
+    /**
+     * Convierte un objeto de tipo stringBuilder a Document.
+     *
+     * @param stringBuilder el StringBuilder a transformar
+     * @return el documento transformado
+     */
+    public static Document convertStringBuilderToDocument(
+    final StringBuilder stringBuilder) {
         Document document = null;
         try {
             // Crear un DocumentBuilderFactory
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory factory
+            = DocumentBuilderFactory.newInstance();
 
             // Crear un DocumentBuilder
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -55,7 +65,8 @@ public abstract class Funciones {
             String xmlString = stringBuilder.toString();
 
             // Crear un InputSource desde la cadena
-            InputSource inputSource = new InputSource(new StringReader(xmlString));
+            InputSource inputSource
+            = new InputSource(new StringReader(xmlString));
 
             // Parsear el InputSource en un Document
             document = builder.parse(inputSource);
@@ -67,7 +78,7 @@ public abstract class Funciones {
 
     /**
      * Metodo para escapar caracteres especiales en XML.
-     * 
+     *
      * @param input texto a evaluar
      * @return texto evaluado
      */

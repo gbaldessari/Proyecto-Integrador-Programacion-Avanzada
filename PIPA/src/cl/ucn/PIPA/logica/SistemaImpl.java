@@ -9,12 +9,22 @@ import cl.ucn.PIPA.interfazGrafica.ventanas.AdministradorDeVentanas;
 * Clase Sistema Implementado.
 */
 public class SistemaImpl implements Sistema {
+    /** */
     private AdministradorDeVentanas administradorDeVentanas;
+    /** */
     private Grafo grafo;
+    /** */
     private ArrayList<Tema> temas;
+    /** */
     private ArrayList<Color> coloresCalles;
+    /** */
     private ArrayList<String> tiposCarreteras;
 
+    /**
+     * Funcion que inicia la aplicacion.
+     *
+     * @param sistema sistema de la aplicacion
+    */
     public final void iniciarApp(final Sistema sistema) {
         grafo = new Grafo();
         temas = new ArrayList<>();
@@ -26,18 +36,35 @@ public class SistemaImpl implements Sistema {
         administradorDeVentanas.menu(administradorDeVentanas);
     }
 
+    /**
+     * Funcion que retorna el grafo del sistema.
+     *
+     * @return el grafo del sistema.
+     */
     public final Grafo getGrafo() {
         return grafo;
     }
 
+    /**
+     * Funcion que retorna el administrador de ventanas.
+     *
+     * @return el administrador de ventanas
+     */
     public final AdministradorDeVentanas getAdministradorDeVentanas() {
         return this.administradorDeVentanas;
     }
 
+    /**
+     * Funcion que retorna la lista de temas.
+     *
+     * @param administradorDeVentanasEntregado el administrador de ventanas.
+     * @return la lista de temas
+     */
     public final String[] getListaTemas(
-        final AdministradorDeVentanas administradorDeVentanas) {
+        final AdministradorDeVentanas administradorDeVentanasEntregado) {
         String[] lista = new String[temas.size() + 1];
-        lista[0] = administradorDeVentanas.getTemaSeleccionado().getNombre();
+        lista[0]
+        = administradorDeVentanasEntregado.getTemaSeleccionado().getNombre();
         for (int i = 1; i < temas.size() + 1; i++) {
             lista[i] = temas.get(i - 1).getNombre();
         }
@@ -96,19 +123,39 @@ public class SistemaImpl implements Sistema {
         temas.add(oscuro);
     }
 
+    /**
+     * Funcion que guarda los tipos de carretera.
+     *
+     * @param tiposCarreterasEntregado tipos de carretera entregado.
+     */
     public final void setTiposCarreteras(
-        final ArrayList<String> tiposCarreteras) {
-        this.tiposCarreteras = tiposCarreteras;
+        final ArrayList<String> tiposCarreterasEntregado) {
+        tiposCarreteras = tiposCarreterasEntregado;
     }
 
+    /**
+     * Funcion que retorna los tipos de carretera.
+     *
+     * @return los tipos de carretera.
+     */
     public final ArrayList<String> getTiposCarreteras() {
         return tiposCarreteras;
     }
 
+    /**
+     * Funcion que retorna los temas.
+     *
+     * @return los temas.
+     */
     public final ArrayList<Tema> getTemas() {
         return temas;
     }
 
+    /**
+     * Funcion que retorna los colores de las calles.
+     *
+     * @return los colores de las calles.
+     */
     public final ArrayList<Color> getColoresCalles() {
         return coloresCalles;
     }

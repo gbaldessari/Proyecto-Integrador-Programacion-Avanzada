@@ -1,6 +1,7 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -35,29 +36,54 @@ import cl.ucn.PIPA.logica.Sistema;
 import cl.ucn.PIPA.utils.Funciones;
 
 /**
- * Clase que representa la ventana para seleccionar archivos y cargar datos desde XML.
+ * Clase que representa la ventana para seleccionar
+ * archivos y cargar datos desde XML.
  */
 public class VentanaArchivosLocal implements Ventana {
-    // Atributos de la clase
-    private AdministradorDeVentanas administradorDeVentanas;  // Administrador de ventanas
-    private Sistema sistema;  // Sistema
-    private Tema tema;  // Tema para la interfaz gráfica
-    private JFrame ventana;  // Ventana principal
-    private Thread hiloArchivo;  // Hilo para cargar datos desde archivos XML
-    private JProgressBar barraProgreso;  // Barra de progreso para mostrar el progreso de la carga
-    private int progreso;  // Progreso de la carga
-    private String direccion;  // Dirección de la carpeta seleccionada
+    /**
+     * Administrador de ventanas.
+     */
+    private AdministradorDeVentanas administradorDeVentanas;
+    /**
+     * Sistema.
+     */
+    private Sistema sistema;
+    /**
+     * Tema para la interfaz gráfica.
+     */
+    private Tema tema;
+    /**
+     * Ventana principal.
+     */
+    private JFrame ventana;
+    /**
+     * Hilo para cargar datos desde archivos XML.
+     */
+    private Thread hiloArchivo;
+    /**
+     * Barra de progreso para mostrar el progreso de la carga.
+     */
+    private JProgressBar barraProgreso;
+    /**
+     * Progreso de la carga.
+     */
+    private int progreso;
+    /**
+     * Dirección de la carpeta seleccionada.
+     */
+    private String direccion;
 
     /**
      * Constructor de la clase VentanaArchivosLocal.
      *
-     * @param administradorDeVentanas Instancia de AdministradorDeVentanas.
-     * @param sistema                Instancia del sistema.
-     * @param tema                   Tema para la interfaz gráfica.
+     * @param administradorDeVentanasEntregado Instancia de
+     * AdministradorDeVentanas.
+     * @param sistemaEntregado Instancia del sistema.
+     * @param temaEntregado Tema para la interfaz gráfica.
      */
-    public VentanaArchivosLocal(final AdministradorDeVentanas administradorDeVentanas, final Sistema sistema,
-            final Tema tema) {
-        // Inicialización de atributos
+    public VentanaArchivosLocal(
+    final AdministradorDeVentanas administradorDeVentanasEntregado,
+    final Sistema sistemaEntregado, final Tema temaEntregado) {
         this.ventana = new JFrame("Seleccionar archivos");
         this.ventana.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.ventana.addWindowListener(new WindowAdapter() {
@@ -67,11 +93,12 @@ public class VentanaArchivosLocal implements Ventana {
             }
         });
         direccion = "";
-        this.tema = tema;
-        this.administradorDeVentanas = administradorDeVentanas;
-        this.sistema = sistema;
-        ventana.setSize(300, 150);
-        ventana.setMaximumSize(new Dimension(300, 150));
+        tema = temaEntregado;
+        administradorDeVentanas = administradorDeVentanasEntregado;
+        sistema = sistemaEntregado;
+        final Dimension dim = new Dimension(300, 150);
+        ventana.setSize(dim);
+        ventana.setMaximumSize(dim);
         ventana.setLocationRelativeTo(null);
         ventana.setResizable(false);
     }
@@ -91,11 +118,14 @@ public class VentanaArchivosLocal implements Ventana {
 
         JPanel panelBotones = new JPanel(null);
         panelBotones.setBackground(tema.getUi());
-        panelBotones.setPreferredSize(new Dimension(this.ventana.getWidth(), 30));
+        final Dimension dimPanelBotones = new Dimension(
+        this.ventana.getWidth(), 30);
+        panelBotones.setPreferredSize(dimPanelBotones);
         ventana.getContentPane().add(panelBotones, BorderLayout.SOUTH);
 
         JButton botonVolver = new JButton("Volver");
-        botonVolver.setBounds(30, 5, 100, 20);
+        final Rectangle rectVolver = new Rectangle(30, 5, 100, 20);
+        botonVolver.setBounds(rectVolver);
         botonVolver.setBackground(tema.getBoton());
         botonVolver.setForeground(tema.getTexto());
         panelBotones.add(botonVolver);
@@ -108,7 +138,8 @@ public class VentanaArchivosLocal implements Ventana {
         });
 
         JButton botonConfirmar = new JButton("Confirmar");
-        botonConfirmar.setBounds(160, 5, 100, 20);
+        final Rectangle rectConfirmar = new Rectangle(160, 5, 100, 20);
+        botonConfirmar.setBounds(rectConfirmar);
         botonConfirmar.setBackground(tema.getBoton());
         botonConfirmar.setForeground(tema.getTexto());
         panelBotones.add(botonConfirmar);
@@ -116,31 +147,37 @@ public class VentanaArchivosLocal implements Ventana {
 
         JLabel carpeta = new JLabel("Seleccione una ciudad: ");
         carpeta.setForeground(tema.getTexto());
-        carpeta.setBounds(20, 0, 250, 50);
+        final Rectangle rectCarpeta = new Rectangle(20, 0, 250, 50);
+        carpeta.setBounds(rectCarpeta);
         panel.add(carpeta);
 
         JLabel ciudadSeleccionada = new JLabel("");
         ciudadSeleccionada.setForeground(tema.getTexto());
-        ciudadSeleccionada.setBounds(20, 35, 250, 50);
+        final Rectangle rectCiudad = new Rectangle(20, 35, 250, 50);
+        ciudadSeleccionada.setBounds(rectCiudad);
         panel.add(ciudadSeleccionada);
 
         JButton botonSeleccionar = new JButton("Seleccionar");
         botonSeleccionar.setBackground(tema.getBoton());
         botonSeleccionar.setForeground(tema.getTexto());
-        botonSeleccionar.setBounds(160, 15, 110, 20);
+        final Rectangle rectSeleccionar = new Rectangle(160, 15, 110, 20);
+        botonSeleccionar.setBounds(rectSeleccionar);
         panel.add(botonSeleccionar);
         botonSeleccionar.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String carpetaInicio = "ciudades";
                 String directorioWorkspace = System.getProperty("user.dir");
-                String rutaCarpetaInicio = directorioWorkspace + File.separator + carpetaInicio;
+                String rutaCarpetaInicio = directorioWorkspace
+                + File.separator + carpetaInicio;
                 System.setProperty("user.dir", rutaCarpetaInicio);
-                JFileChooser seleccion = new JFileChooser(System.getProperty("user.dir"));
+                JFileChooser seleccion = new JFileChooser(
+                System.getProperty("user.dir"));
                 seleccion.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 int valor = seleccion.showOpenDialog(null);
                 if (valor == JFileChooser.APPROVE_OPTION) {
                     File carpSelec = seleccion.getSelectedFile();
-                    ciudadSeleccionada.setText("Ciudad seleccionada: " + getNombreCarpeta(carpSelec.getAbsolutePath()));
+                    ciudadSeleccionada.setText("Ciudad seleccionada: "
+                    + getNombreCarpeta(carpSelec.getAbsolutePath()));
                     direccion = carpSelec.getAbsolutePath();
                     botonConfirmar.setEnabled(true);
                 }
@@ -162,17 +199,20 @@ public class VentanaArchivosLocal implements Ventana {
                 barraProgreso.setBackground(tema.getFondo());
                 barraProgreso.setForeground(tema.getPuntos());
                 barraProgreso.setStringPainted(true);
-                barraProgreso.setBounds(0, 0, 300, 32);
+                final Rectangle rectBarra = new Rectangle(0, 0, 300, 32);
+                barraProgreso.setBounds(rectBarra);
                 panelBarra.add(barraProgreso);
                 hiloArchivo = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         if (direccion.equals("")) {
-                            administradorDeVentanas.mostrarError("Carpeta no encontrada");
+                            administradorDeVentanas.mostrarError(
+                            "Carpeta no encontrada");
                         } else {
                             leerXML(true);
                             leerXML(false);
-                            administradorDeVentanas.menu(administradorDeVentanas);
+                            administradorDeVentanas.menu(
+                            administradorDeVentanas);
                             ventana.setVisible(false);
                             ventana.dispose();
                         }
@@ -187,8 +227,8 @@ public class VentanaArchivosLocal implements Ventana {
     /**
      * Método para leer los datos desde un archivo XML (nodos o arcos).
      *
-     * @param nodo Verdadero si se están leyendo nodos, falso si se están leyendo
-     *             arcos.
+     * @param nodo Verdadero si se están leyendo nodos,
+     * falso si se están leyendo arcos.
      */
     private void leerXML(final boolean nodo) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -209,13 +249,15 @@ public class VentanaArchivosLocal implements Ventana {
             }
 
             // Leer el contenido del archivo como cadena
-            String xmlContent = new String(Files.readAllBytes(Paths.get(archivo)));
+            String xmlContent = new String(
+            Files.readAllBytes(Paths.get(archivo)));
 
             // Corregir las entidades problemáticas
             xmlContent = Funciones.escapeXML(xmlContent);
 
             // Crear un nuevo InputStream con el contenido corregido
-            InputStream inputStream = new ByteArrayInputStream(xmlContent.getBytes(StandardCharsets.UTF_8));
+            InputStream inputStream = new ByteArrayInputStream(
+            xmlContent.getBytes(StandardCharsets.UTF_8));
 
             // Parsear el documento
             Document documento = builder.parse(inputStream);
@@ -241,9 +283,12 @@ public class VentanaArchivosLocal implements Ventana {
     private void guardarNodos(final NodeList nodos) {
         for (int i = 0; i < nodos.getLength(); i++) {
             Element nodo = (Element) nodos.item(i);
-            String id = nodo.getElementsByTagName("osmid").item(0).getTextContent();
-            double posX = Double.parseDouble(nodo.getElementsByTagName("x").item(0).getTextContent());
-            double posY = Double.parseDouble(nodo.getElementsByTagName("y").item(0).getTextContent());
+            String id = nodo.getElementsByTagName(
+            "osmid").item(0).getTextContent();
+            double posX = Double.parseDouble(
+            nodo.getElementsByTagName("x").item(0).getTextContent());
+            double posY = Double.parseDouble(
+            nodo.getElementsByTagName("y").item(0).getTextContent());
             sistema.getGrafo().addNodo(id, posX, posY);
             progreso++;
             barraProgreso.setValue(progreso);
@@ -259,18 +304,24 @@ public class VentanaArchivosLocal implements Ventana {
         Set<String> carreteras = new HashSet<>(0);
         for (int i = 0; i < arcos.getLength(); i++) {
             Element arco = (Element) arcos.item(i);
-            String nombre = arco.getElementsByTagName("name").item(0).getTextContent();
-            String id = arco.getElementsByTagName("osmid").item(0).getTextContent();
+            String nombre = arco.getElementsByTagName(
+            "name").item(0).getTextContent();
+            String id = arco.getElementsByTagName(
+            "osmid").item(0).getTextContent();
             String tipo = null;
             if (arco.getElementsByTagName("highway").item(0) != null) {
-                tipo = arco.getElementsByTagName("highway").item(0).getTextContent();
+                tipo = arco.getElementsByTagName(
+                "highway").item(0).getTextContent();
             }
-            String origen = arco.getElementsByTagName("u").item(0).getTextContent();
-            String destino = arco.getElementsByTagName("v").item(0).getTextContent();
+            String origen = arco.getElementsByTagName(
+            "u").item(0).getTextContent();
+            String destino = arco.getElementsByTagName(
+            "v").item(0).getTextContent();
             ArrayList<String> listaId = obtenerListaDeLinea(id);
             ArrayList<String> listaNombre = obtenerListaDeLinea(nombre);
             ArrayList<String> listaTipo = obtenerListaDeLinea(tipo);
-            sistema.getGrafo().addArco(listaId, listaNombre, listaTipo, origen, destino);
+            sistema.getGrafo().addArco(listaId,
+            listaNombre, listaTipo, origen, destino);
             progreso++;
             barraProgreso.setValue(progreso);
             if (tipo != null) {
@@ -284,7 +335,8 @@ public class VentanaArchivosLocal implements Ventana {
     }
 
     /**
-     * Método para obtener el número total de líneas en los archivos XML a cargar.
+     * Método para obtener el número total de líneas
+     * en los archivos XML a cargar.
      *
      * @return Número total de líneas.
      */
@@ -294,7 +346,8 @@ public class VentanaArchivosLocal implements Ventana {
             lineas += contarLineas(direccion + "/nodes.xml");
             lineas += contarLineas(direccion + "/edges.xml");
         } catch (IOException e) {
-            administradorDeVentanas.mostrarError("Error al contar líneas en archivos XML.");
+            administradorDeVentanas.mostrarError(
+            "Error al contar líneas en archivos XML.");
         }
         return lineas;
     }
@@ -307,7 +360,8 @@ public class VentanaArchivosLocal implements Ventana {
      * @throws IOException Si ocurre un error al leer el archivo.
      */
     private int contarLineas(final String archivo) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+        try (BufferedReader reader = new BufferedReader(
+            new FileReader(archivo))) {
             int lineas = 0;
             String linea;
             while ((linea = reader.readLine()) != null) {
@@ -321,7 +375,8 @@ public class VentanaArchivosLocal implements Ventana {
     }
 
     /**
-     * Método para obtener una lista de elementos a partir de una línea de texto.
+     * Método para obtener una lista de elementos
+     * a partir de una línea de texto.
      *
      * @param linea Línea de texto que contiene los elementos.
      * @return Lista de elementos obtenidos.
@@ -349,7 +404,8 @@ public class VentanaArchivosLocal implements Ventana {
      * @param tipo       Lista de tipos de carretera.
      * @param carreteras Conjunto para almacenar los tipos de carretera únicos.
      */
-    private void guardarTipoCarretera(final ArrayList<String> tipo, final Set<String> carreteras) {
+    private void guardarTipoCarretera(final ArrayList<String> tipo,
+    final Set<String> carreteras) {
         for (String t : tipo) {
             carreteras.add(t);
         }

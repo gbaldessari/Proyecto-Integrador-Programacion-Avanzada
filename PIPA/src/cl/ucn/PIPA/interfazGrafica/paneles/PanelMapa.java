@@ -33,24 +33,6 @@ public class PanelMapa extends JPanel {
     /** */
     private final double escalaMaxima = 15;
     /** */
-    private final int cteDeEscalacion = 1420;
-    /** */
-    private final double minScaleFactor = 0.9;
-    /** */
-    private final double maxScaleFactor = 1.1;
-    /** */
-    private final int cteTransformacionKm = 1000;
-    /** */
-    private final int cteTruncamientoKm = 3;
-    /** */
-    private final int cteDeEscalacionLineaRuta = 8;
-    /** */
-    private final double cteDeEscalacionPuntos = 0.75;
-    /** */
-    private final int posImagenXY = -15000;
-    /** */
-    private final int diametroPuntos = 4;
-    /** */
     private Sistema sistema;
     /** */
     private double deltaCords;
@@ -58,6 +40,10 @@ public class PanelMapa extends JPanel {
     private Point2D maxPoint;
     /** */
     private Point2D minPoint;
+    /** */
+    private double maxX;
+    /** */
+    private double maxY;
     /** */
     private double minX;
     /** */
@@ -132,6 +118,7 @@ public class PanelMapa extends JPanel {
         imageIcon = new ImageIcon("images.jpeg");
         this.setBackground(tema.getFondo());
         getLimites();
+        final int cteDeEscalacion = 1420;
         escalador = Funciones.haversine(minPoint.getY(), minPoint.getX(),
         maxPoint.getY(), maxPoint.getX()) * cteDeEscalacion;
         getPuntos();
@@ -235,6 +222,8 @@ public class PanelMapa extends JPanel {
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(final MouseWheelEvent e) {
+                final double maxScaleFactor = 1.1;
+                final double minScaleFactor = 0.9;
                 int notches = e.getWheelRotation();
                 double scaleFactor = (notches < 0)
                 ? maxScaleFactor : minScaleFactor;
@@ -373,11 +362,13 @@ private Color getColorLinea(final Linea linea) {
 
 private void drawRoute() {
     if (ruta != null) {
+        final int cteDeEscalacionLineaRuta = 8;
         if (distanciaRecorrida < 1) {
+            final int cteTransformacionKm = 1000;
             km.setText(String.format("%." + 2 + "f",
             distanciaRecorrida * cteTransformacionKm) + " m");
         } else {
-            km.setText(String.format("%." + cteTruncamientoKm + "f",
+            km.setText(String.format("%." + (2 + 1) + "f",
             distanciaRecorrida) + " km");
         }
         for (Line2D linea : ruta) {
@@ -392,6 +383,8 @@ private void drawRoute() {
 }
 
 private void drawPoints() {
+    final double cteDeEscalacionPuntos = 0.75;
+    final int diametroPuntos = 4;
     if (scale > cteDeEscalacionPuntos) {
         for (Punto punto : puntos) {
             int x = (int) punto.getPoint().getX();
@@ -405,25 +398,29 @@ private void drawPoints() {
 }
 
 private void drawSelectedPoints() {
-    drawSelectedPoint(puntoPartida, id1, c1);
-    drawSelectedPoint(puntoDestino, id2, c2);
+    identificador1 = drawSelectedPoint(puntoPartida, id1, c1);
+    identificador2 = drawSelectedPoint(puntoDestino, id2, c2);
 }
 
-private void drawSelectedPoint(final Punto punto,
+private String drawSelectedPoint(final Punto punto,
 final JLabel idLabel, final JLabel cLabel) {
+    final int diametroPuntos = 4;
     if (punto != null) {
         graphics2d.setColor(tema.getPuntoSeleccionado());
         graphics2d.fillOval((int) punto.getPoint().getX(),
         (int) punto.getPoint().getY(), diametroPuntos, diametroPuntos);
         idLabel.setText("ID: " + punto.getNodo().getId());
         cLabel.setText(punto.getNodo().getX() + ", " + punto.getNodo().getY());
+        return punto.getNodo().getId();
     } else {
         idLabel.setText("");
         cLabel.setText("");
     }
+    return "";
 }
 
 private void drawImage() {
+    final int posImagenXY = -15000;
     Image image = imageIcon.getImage();
     graphics2d.drawImage(image, posImagenXY, posImagenXY, this);
 }
@@ -534,31 +531,54 @@ private void drawImage() {
      * Obtiene y normaliza los puntos del grafo.
      */
     private void getPuntos() {
+        ArrayList<Punto> listaPuntos = new ArrayList<>();
+        ArrayList<Double> lista = new ArrayList<>();
+
+        for (Nodo nodo : sistema.getGrafo().getNodos()) {
+            Punto punto = crearPuntoNormalizado(nodo);
+            actualizarLimites(punto, lista);
+            listaPuntos.add(punto);
+        }
+
+        ajustarOffsets(lista.get(0), lista.get(1),
+        lista.get(2), lista.get(2 + 1));
+
+        puntos = listaPuntos;
+    }
+
+    private Punto crearPuntoNormalizado(final Nodo nodo) {
+        double x = valorNormalizado(nodo.getX() * -1, true) - 2;
+        double y = valorNormalizado(nodo.getY() * -1, false) - 2;
+        return new Punto(new Point2D.Double(x, y), nodo);
+    }
+
+    private void actualizarLimites(final Punto punto,
+    final ArrayList<Double> lista) {
         double mayX = Double.MIN_VALUE;
         double menX = Double.MAX_VALUE;
         double mayY = Double.MIN_VALUE;
         double menY = Double.MAX_VALUE;
 
-        for (int i = 0; i < sistema.getGrafo().getNodos().size(); i++) {
-            Nodo nodo = sistema.getGrafo().getNodos().get(i);
-            Punto punto = new Punto(new Point(
-            valorNormalizado(nodo.getX() * -1, true) - 2,
-            valorNormalizado(nodo.getY() * -1, false) - 2), nodo);
-            if (punto.getPoint().getX() > mayX) {
-                mayX = punto.getPoint().getX();
-            }
-            if (punto.getPoint().getY() > mayY) {
-                mayY = punto.getPoint().getY();
-            }
-            if (punto.getPoint().getX() < menX) {
-                menX = punto.getPoint().getX();
-            }
-            if (punto.getPoint().getY() < menY) {
-                menY = punto.getPoint().getY();
-            }
-            puntos.add(punto);
+        if (punto.getPoint().getX() > mayX) {
+            mayX = punto.getPoint().getX();
         }
+        if (punto.getPoint().getY() > mayY) {
+            mayY = punto.getPoint().getY();
+        }
+        if (punto.getPoint().getX() < menX) {
+            menX = punto.getPoint().getX();
+        }
+        if (punto.getPoint().getY() < menY) {
+            menY = punto.getPoint().getY();
+        }
+        lista.add(mayX);
+        lista.add(menX);
+        lista.add(mayY);
+        lista.add(menY);
+    }
 
+    private void ajustarOffsets(final double mayX, final double menX,
+    final double mayY, final double menY) {
         final double medioX = 944 / 2;
         final double medioY = 625 / 2;
         offsetX = (int) ((-(mayX + menX) / 2) * scale + medioX);
@@ -585,38 +605,54 @@ private void drawImage() {
      * Calcula los límites del mapa basándose en las coordenadas de los nodos.
      */
     private void getLimites() {
-        double maxX = Double.MIN_VALUE;
+        calcularLimitesNodos();
+        calcularDeltaCords();
+    }
+
+    private void calcularLimitesNodos() {
+        maxX = Double.MIN_VALUE;
         minX = Double.MAX_VALUE;
-        double maxY = Double.MIN_VALUE;
+        maxY = Double.MIN_VALUE;
         minY = Double.MAX_VALUE;
 
-        for (int i = 0; i < sistema.getGrafo().getNodos().size(); i++) {
-            Nodo nodo = sistema.getGrafo().getNodos().get(i);
-            if (nodo.getX() * -1 > maxX) {
-                maxX = nodo.getX() * -1;
-            }
-            if (nodo.getY() * -1 > maxY) {
-                maxY = nodo.getY() * -1;
-            }
-            if (nodo.getX() * -1 < minX) {
-                minX = nodo.getX() * -1;
-            }
-            if (nodo.getY() * -1 < minY) {
-                minY = nodo.getY() * -1;
-            }
+        for (Nodo nodo : sistema.getGrafo().getNodos()) {
+            actualizarLimitesNodo(nodo);
         }
+
         double deltaX = Math.abs(maxX - minX);
         double deltaY = Math.abs(maxY - minY);
 
         maxPoint = new Point2D.Double(minX * -1, minY * -1);
         minPoint = new Point2D.Double(maxX * -1, maxY * -1);
 
-        if (deltaX > deltaY) {
-            deltaCords = deltaX;
-        } else {
-            deltaCords = deltaY;
+        deltaCords = (deltaX > deltaY) ? deltaX : deltaY;
+    }
+
+    private void actualizarLimitesNodo(final Nodo nodo) {
+        double x = nodo.getX() * -1;
+        double y = nodo.getY() * -1;
+
+        if (x > maxX) {
+            maxX = x;
+        }
+        if (y > maxY) {
+            maxY = y;
+        }
+        if (x < minX) {
+            minX = x;
+        }
+        if (y < minY) {
+            minY = y;
         }
     }
+
+    private void calcularDeltaCords() {
+        double deltaX = Math.abs(maxX - minX);
+        double deltaY = Math.abs(maxY - minY);
+
+        deltaCords = (deltaX > deltaY) ? deltaX : deltaY;
+    }
+
 
     /**
      * Funcion que actualiza la lista que contiene
