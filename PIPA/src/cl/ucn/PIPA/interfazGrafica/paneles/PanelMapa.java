@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.interfazGrafica.paneles;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -31,7 +30,7 @@ public class PanelMapa extends JPanel {
     /** */
     private final double escalaMinima = 0.025;
     /** */
-    private final double escalaMaxima = 15;
+    private final double escalaMaxima = 0.7;
     /** */
     private Sistema sistema;
     /** */
@@ -98,6 +97,8 @@ public class PanelMapa extends JPanel {
     private JLabel km;
     /** */
     private double escalador;
+    /** */
+    private boolean cambiarPerspectiva;
 
     /**
      * Constructor del panel de mapa.
@@ -112,6 +113,7 @@ public class PanelMapa extends JPanel {
         lineas = new ArrayList<>();
         puntoPartida = null;
         puntoDestino = null;
+        cambiarPerspectiva = false;
         scale = escalaMinima;
         offsetX = 0;
         offsetY = 0;
@@ -126,45 +128,46 @@ public class PanelMapa extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(final MouseEvent e) {
-                lastDragPoint = e.getPoint();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    lastDragPoint = e.getPoint();
+                }
             }
-
             @Override
             public void mouseReleased(final MouseEvent e) {
-                lastDragPoint = null;
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    lastDragPoint = null;
+                }
             }
-
+            @Override
             public void mouseClicked(final MouseEvent e) {
-                Point mousePoint = e.getPoint();
-                Point2D.Double mousePointScaled = scaleMousePoint(mousePoint);
-                Punto p = findNearestPoint(mousePointScaled);
-                handlePointSelection(p);
-                repaint();
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    Point mousePoint = e.getPoint();
+                    Point2D.Double mousePointScaled
+                    = scaleMousePoint(mousePoint);
+                    Punto p = findNearestPoint(mousePointScaled);
+                    handlePointSelection(p);
+                    repaint();
+                }
             }
-
             private Point2D.Double scaleMousePoint(final Point mousePoint) {
                 return new Point2D.Double(
                         (mousePoint.x - offsetX) / scale,
                         (mousePoint.y - offsetY) / scale);
             }
-
             private Punto findNearestPoint(
             final Point2D.Double mousePointScaled) {
                 double minDistance = Double.MAX_VALUE;
                 Punto nearestPoint = null;
-
                 for (Punto punto : puntos) {
                     double distance = calculateDistance(
-                            mousePointScaled, punto);
+                    mousePointScaled, punto);
                     if (distance < minDistance) {
                         minDistance = distance;
                         nearestPoint = punto;
                     }
                 }
-
                 return nearestPoint;
             }
-
             private void handlePointSelection(final Punto selectedPoint) {
                 if (puntoPartida != null && puntoDestino != null) {
                     handleBothPointsSelected(selectedPoint);
@@ -176,31 +179,26 @@ public class PanelMapa extends JPanel {
                     puntoPartida = selectedPoint;
                 }
             }
-
             private void handleBothPointsSelected(final Punto selectedPoint) {
                 if (selectedPoint != null && isSameNode(
                 selectedPoint, puntoPartida)) {
                     swapPartidaAndDestino();
                 }
             }
-
             private void handleDestinoSelected(final Punto selectedPoint) {
                 if (selectedPoint != null
                 && isSameNode(selectedPoint, puntoDestino)) {
                     puntoDestino = null;
                 }
             }
-
             private void handlePartidaSelected(final Punto selectedPoint) {
                 puntoDestino = selectedPoint;
             }
-
             private void swapPartidaAndDestino() {
                 Punto temp = puntoPartida;
                 puntoPartida = puntoDestino;
                 puntoDestino = temp;
             }
-
             private boolean isSameNode(final Punto point1, final Punto point2) {
                 return point1.getNodo().getId().equals(
                 point2.getNodo().getId());
@@ -209,7 +207,8 @@ public class PanelMapa extends JPanel {
         addMouseMotionListener(new MouseAdapter() {
             @Override
             public void mouseDragged(final MouseEvent e) {
-                if (lastDragPoint != null) {
+                if (lastDragPoint != null && e.getModifiersEx()
+                == MouseEvent.BUTTON1_DOWN_MASK) {
                     int dx = e.getX() - lastDragPoint.x;
                     int dy = e.getY() - lastDragPoint.y;
                     offsetX += dx;
@@ -305,6 +304,18 @@ public class PanelMapa extends JPanel {
     public final String getIdentificador1() {
         return identificador1;
     }
+    /** */
+    public final void cambiarPerspectiva() {
+        if (cambiarPerspectiva) {
+            cambiarPerspectiva = false;
+        } else {
+            final double scaleFactor = 1.1;
+            while (scale < escalaMaxima && canScale(scale * scaleFactor)) {
+                repaint();
+            }
+            cambiarPerspectiva = true;
+        }
+    }
 
     /**
      * Funcion para obtener el id del nodo de destino.
@@ -334,7 +345,6 @@ public void paint(final Graphics g) {
 
     drawLines();
     drawRoute();
-    drawPoints();
     drawSelectedPoints();
     drawImage();
 
@@ -346,7 +356,8 @@ private void drawLines() {
         if (inLimitesLine(linea.getLine())) {
             Color colorLinea = getColorLinea(linea);
             graphics2d.setColor(colorLinea);
-            graphics2d.setStroke(new BasicStroke(1));
+            final int grosorLinea = 11;
+            graphics2d.setStroke(new BasicStroke(grosorLinea));
             graphics2d.draw(linea.getLine());
         }
     }
@@ -382,21 +393,6 @@ private void drawRoute() {
     }
 }
 
-private void drawPoints() {
-    final double cteDeEscalacionPuntos = 0.75;
-    final int diametroPuntos = 4;
-    if (scale > cteDeEscalacionPuntos) {
-        for (Punto punto : puntos) {
-            int x = (int) punto.getPoint().getX();
-            int y = (int) punto.getPoint().getY();
-            if (inLimitesPoint(x, y)) {
-                graphics2d.setColor(tema.getPuntos());
-                graphics2d.fillOval(x, y, diametroPuntos, diametroPuntos);
-            }
-        }
-    }
-}
-
 private void drawSelectedPoints() {
     identificador1 = drawSelectedPoint(puntoPartida, id1, c1);
     identificador2 = drawSelectedPoint(puntoDestino, id2, c2);
@@ -404,11 +400,13 @@ private void drawSelectedPoints() {
 
 private String drawSelectedPoint(final Punto punto,
 final JLabel idLabel, final JLabel cLabel) {
-    final int diametroPuntos = 4;
+    final int diametroPuntos = 11;
     if (punto != null) {
         graphics2d.setColor(tema.getPuntoSeleccionado());
-        graphics2d.fillOval((int) punto.getPoint().getX(),
-        (int) punto.getPoint().getY(), diametroPuntos, diametroPuntos);
+        graphics2d.fillOval((int) (punto.getPoint().getX()
+        - (diametroPuntos / scale) / 2), (int) (punto.getPoint().getY()
+        - (diametroPuntos / scale) / 2), (int) (diametroPuntos / scale),
+        (int) (diametroPuntos / scale));
         idLabel.setText("ID: " + punto.getNodo().getId());
         cLabel.setText(punto.getNodo().getX() + ", " + punto.getNodo().getY());
         return punto.getNodo().getId();
@@ -445,26 +443,6 @@ private void drawImage() {
             index = index - numColores;
         }
         return index;
-    }
-
-    /**
-     * Verifica si un punto está dentro de los límites visibles.
-     *
-     * @param x La coordenada x del punto.
-     * @param y La coordenada y del punto.
-     * @return true si el punto está dentro de los límites visibles, false de lo
-     * contrario.
-     */
-    private boolean inLimitesPoint(final int x, final int y) {
-        final int minPosVisible = 10;
-        final int maxPosVisible = 20;
-        Rectangle2D rect = new Rectangle2D.Double(
-        visibleX - minPosVisible, visibleY - minPosVisible,
-        visibleWidth + maxPosVisible, visibleHeight + maxPosVisible);
-        if (rect.contains(x, y)) {
-            return true;
-        }
-        return false;
     }
 
     /**

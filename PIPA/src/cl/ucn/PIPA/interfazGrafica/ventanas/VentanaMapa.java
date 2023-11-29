@@ -157,8 +157,20 @@ public class VentanaMapa implements Ventana {
         panelInfo.add(km);
         panelMapa.setKm(km);
 
+        JButton botonPerspectiva = new JButton("Cambiar Perspectiva");
+        final Rectangle rectPerspectiva = new Rectangle(10, 290, 160, 25);
+        botonPerspectiva.setBounds(rectPerspectiva);
+        botonPerspectiva.setBackground(tema.getBoton());
+        botonPerspectiva.setForeground(tema.getTexto());
+        panelInfo.add(botonPerspectiva);
+        botonPerspectiva.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent e) {
+                panelMapa.cambiarPerspectiva();
+            }
+        });
+
         JButton botonRuta = new JButton("Calcular ruta");
-        final Rectangle rectRuta = new Rectangle(10, 290, 125, 25);
+        final Rectangle rectRuta = new Rectangle(10, 320, 160, 25);
         botonRuta.setBounds(rectRuta);
         botonRuta.setBackground(tema.getBoton());
         botonRuta.setForeground(tema.getTexto());
@@ -166,13 +178,14 @@ public class VentanaMapa implements Ventana {
         botonRuta.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 if (!id2.getText().equals("")) {
+                    botonRuta.setEnabled(false);
                     panelMapa.caminoMasCorto();
                 }
             }
         });
 
         JButton botonBorrar = new JButton("Limpiar");
-        final Rectangle rectBorrar = new Rectangle(10, 320, 100, 25);
+        final Rectangle rectBorrar = new Rectangle(10, 350, 160, 25);
         botonBorrar.setBounds(rectBorrar);
         botonBorrar.setBackground(tema.getBoton());
         botonBorrar.setForeground(tema.getTexto());
@@ -181,7 +194,7 @@ public class VentanaMapa implements Ventana {
             public void actionPerformed(final ActionEvent e) {
                 km.setText("");
                 panelMapa.borrarOrigenDestino();
-
+                botonRuta.setEnabled(true);
             }
         });
         ventana.setVisible(true);
