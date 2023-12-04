@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -27,77 +28,112 @@ import cl.ucn.PIPA.utils.Funciones;
  * Panel gráfico que muestra un mapa con nodos y arcos geográficos.
  */
 public class PanelMapa extends JPanel {
-    /** */
+    /** Valor mínimo de escala permitido. */
     private final double escalaMinima = 0.025;
-    /** */
+
+    /** Valor máximo de escala permitido. */
     private final double escalaMaxima = 0.7;
-    /** */
+
+    /** Sistema que contiene el grafo. */
     private Sistema sistema;
-    /** */
+
+    /** Diferencia entre las coordenadas máximas y mínimas. */
     private double deltaCords;
-    /** */
+
+    /** Punto máximo en el mapa. */
     private Point2D maxPoint;
-    /** */
+
+    /** Punto mínimo en el mapa. */
     private Point2D minPoint;
-    /** */
+
+    /** Coordenada X máxima. */
     private double maxX;
-    /** */
+
+    /** Coordenada Y máxima. */
     private double maxY;
-    /** */
+
+    /** Coordenada X mínima. */
     private double minX;
-    /** */
+
+    /** Coordenada Y mínima. */
     private double minY;
-    /** */
+
+    /** Factor de escala actual. */
     private double scale;
-    /** */
+
+    /** Desplazamiento horizontal. */
     private int offsetX;
-    /** */
+
+    /** Desplazamiento vertical. */
     private int offsetY;
-    /** */
+
+    /** Ancho visible del panel. */
     private double visibleWidth;
-    /** */
+
+    /** Altura visible del panel. */
     private double visibleHeight;
-    /** */
+
+    /** Posición X visible. */
     private double visibleX;
-    /** */
+
+    /** Posición Y visible. */
     private double visibleY;
-    /** */
+
+    /** Último punto de arrastre del mouse. */
     private Point lastDragPoint;
-    /** */
+
+    /** Objeto Graphics2D para dibujar. */
     private Graphics2D graphics2d;
-    /** */
+
+    /** Lista de puntos en el mapa. */
     private ArrayList<Punto> puntos;
-    /** */
+
+    /** Lista de líneas en el mapa. */
     private ArrayList<Linea> lineas;
-    /** */
+
+    /** Ruta entre los puntos seleccionados. */
     private ArrayList<Line2D> ruta;
-    /** */
+
+    /** Punto de partida para la ruta. */
     private Punto puntoPartida;
-    /** */
+
+    /** Punto de destino para la ruta. */
     private Punto puntoDestino;
-    /** */
+
+    /** Distancia total recorrida en la ruta. */
     private double distanciaRecorrida;
-    /** */
+
+    /** Icono de imagen a mostrar en el mapa. */
     private ImageIcon imageIcon;
-    /** */
+
+    /** Tema de apariencia para el panel. */
     private Tema tema;
-    /** */
+
+    /** Etiqueta para la coordenada 1. */
     private JLabel c1;
-    /** */
+
+    /** Etiqueta para la coordenada 2. */
     private JLabel c2;
-    /** */
+
+    /** Etiqueta para el id 1. */
     private JLabel id1;
-    /** */
+
+    /** Identificador del nodo 1. */
     private String identificador1;
-    /** */
+
+    /** Etiqueta para el id 2. */
     private JLabel id2;
-    /** */
+
+    /** Identificador del nodo 2. */
     private String identificador2;
-    /** */
+
+    /** Etiqueta para mostrar la distancia en kilómetros. */
     private JLabel km;
-    /** */
+
+    /** Factor de escalado para la distancia. */
     private double escalador;
-    /** */
+
+    /** Indicador de cambio de perspectiva de dibujado. */
     private boolean cambiarPerspectiva;
 
     /**
@@ -304,17 +340,17 @@ public class PanelMapa extends JPanel {
     public final String getIdentificador1() {
         return identificador1;
     }
-    /** */
+
+    /**
+     * Funcion que hace que se cambie la perspectiva de dibujado.
+     */
     public final void cambiarPerspectiva() {
         if (cambiarPerspectiva) {
             cambiarPerspectiva = false;
         } else {
-            final double scaleFactor = 1.1;
-            while (scale < escalaMaxima && canScale(scale * scaleFactor)) {
-                repaint();
-            }
             cambiarPerspectiva = true;
         }
+        repaint();
     }
 
     /**
@@ -327,109 +363,150 @@ public class PanelMapa extends JPanel {
     }
 
     /**
- * Método de dibujo principal que representa el contenido del panel.
- *
- * @param g El objeto Graphics para dibujar.
- */
-public void paint(final Graphics g) {
-    super.paint(g);
-    graphics2d = (Graphics2D) g;
-    graphics2d.translate(offsetX, offsetY);
-    graphics2d.scale(scale, scale);
-    int panelWidth = getWidth();
-    int panelHeight = getHeight();
-    visibleWidth = (panelWidth / scale);
-    visibleHeight = (panelHeight / scale);
-    visibleX = (-offsetX / scale);
-    visibleY = (-offsetY / scale);
-
-    drawLines();
-    drawRoute();
-    drawSelectedPoints();
-    drawImage();
-
-    graphics2d.dispose();
-}
-
-private void drawLines() {
-    for (Linea linea : lineas) {
-        if (inLimitesLine(linea.getLine())) {
-            Color colorLinea = getColorLinea(linea);
-            graphics2d.setColor(colorLinea);
-            final int grosorLinea = 11;
-            graphics2d.setStroke(new BasicStroke(grosorLinea));
-            graphics2d.draw(linea.getLine());
-        }
-    }
-}
-
-private Color getColorLinea(final Linea linea) {
-    if (linea.getArco().getTipos() != null) {
-        return sistema.getColoresCalles().get(getIndexColor(
-        linea.getArco().getTipos().get(0)));
-    }
-    return Color.decode("#606060");
-}
-
-private void drawRoute() {
-    if (ruta != null) {
-        final int cteDeEscalacionLineaRuta = 8;
-        if (distanciaRecorrida < 1) {
-            final int cteTransformacionKm = 1000;
-            km.setText(String.format("%." + 2 + "f",
-            distanciaRecorrida * cteTransformacionKm) + " m");
+     * Método de dibujo principal que representa el contenido del panel.
+     *
+     * @param g El objeto Graphics para dibujar.
+     */
+    public void paint(final Graphics g) {
+        super.paint(g);
+        graphics2d = (Graphics2D) g;
+        graphics2d.translate(offsetX, offsetY);
+        graphics2d.scale(scale, scale);
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+        visibleWidth = (panelWidth / scale);
+        visibleHeight = (panelHeight / scale);
+        visibleX = (-offsetX / scale);
+        visibleY = (-offsetY / scale);
+        if (!cambiarPerspectiva) {
+            drawLines();
+            drawRoute();
+            drawSelectedPoints();
+            drawImage();
         } else {
-            km.setText(String.format("%." + (2 + 1) + "f",
-            distanciaRecorrida) + " km");
+            drawLinesInPersp();
+            drawRouteInPersp();
+            drawSelectedPointsInPersp();
         }
-        for (Line2D linea : ruta) {
-            if (inLimitesLine(linea)) {
-                graphics2d.setColor(Color.decode("#FF0000"));
-                graphics2d.setStroke(new BasicStroke(
-                (int) (cteDeEscalacionLineaRuta / scale)));
-                graphics2d.draw(linea);
+
+        graphics2d.dispose();
+    }
+
+    private void drawSelectedPointsInPersp() {
+    }
+
+    private void drawRouteInPersp() {
+    }
+
+    private void drawLinesInPersp() {
+        for (Linea linea : lineas) {
+            if (inLimitesLine(linea.getLine())) {
+                Color colorLinea = getColorLinea(linea);
+                graphics2d.setColor(colorLinea);
+                final int grosorLinea = 11;
+    
+                // Obtener puntos de inicio y fin
+                Point2D.Double start = new Point2D.Double(
+                        linea.getLine().getX1(), linea.getLine().getY1());
+                Point2D.Double end = new Point2D.Double(
+                        linea.getLine().getX2(), linea.getLine().getY2());
+    
+                // Crear un polígono con vértices ajustados en el eje Y
+                Polygon polygon = create3DPolygon(start, end, grosorLinea);
+    
+                // Dibujar el polígono en lugar de la línea
+                graphics2d.fillPolygon(polygon);
             }
         }
     }
-}
-
-private void drawSelectedPoints() {
-    identificador1 = drawSelectedPoint(puntoPartida, id1, c1);
-    identificador2 = drawSelectedPoint(puntoDestino, id2, c2);
-}
-
-private String drawSelectedPoint(final Punto punto,
-final JLabel idLabel, final JLabel cLabel) {
-    final int diametroPuntos = 11;
-    if (punto != null) {
-        graphics2d.setColor(tema.getPuntoSeleccionado());
-        graphics2d.fillOval((int) (punto.getPoint().getX()
-        - (diametroPuntos / scale) / 2), (int) (punto.getPoint().getY()
-        - (diametroPuntos / scale) / 2), (int) (diametroPuntos / scale),
-        (int) (diametroPuntos / scale));
-        idLabel.setText("ID: " + punto.getNodo().getId());
-        cLabel.setText(punto.getNodo().getX() + ", " + punto.getNodo().getY());
-        return punto.getNodo().getId();
-    } else {
-        idLabel.setText("");
-        cLabel.setText("");
+    
+    private Polygon create3DPolygon(Point2D.Double start, Point2D.Double end, int grosorLinea) {
+        int[] xPoints = new int[]{(int) start.x, (int) end.x, (int) end.x, (int) start.x};
+        int[] yPoints = new int[]{adjustY(start.y, grosorLinea), adjustY(end.y, grosorLinea),
+                (int) end.y, (int) start.y};
+        int nPoints = 4;
+    
+        return new Polygon(xPoints, yPoints, nPoints);
     }
-    return "";
-}
+    
+    private int adjustY(double y, int grosorLinea) {
+        // Ajustar el valor de Y para dar la ilusión de 3D
+        return (int) (y * scale + grosorLinea * scale);
+    }
 
-private void drawImage() {
-    final int posImagenXY = -15000;
-    Image image = imageIcon.getImage();
-    graphics2d.drawImage(image, posImagenXY, posImagenXY, this);
-}
+    private void drawLines() {
+        for (Linea linea : lineas) {
+            if (inLimitesLine(linea.getLine())) {
+                Color colorLinea = getColorLinea(linea);
+                graphics2d.setColor(colorLinea);
+                final int grosorLinea = 11;
+                graphics2d.setStroke(new BasicStroke(grosorLinea));
+                graphics2d.draw(linea.getLine());
+            }
+        }
+    }
 
+    private Color getColorLinea(final Linea linea) {
+        if (linea.getArco().getTipos() != null) {
+            return sistema.getColoresCalles().get(getIndexColor(
+            linea.getArco().getTipos().get(0)));
+        }
+        return Color.decode("#606060");
+    }
 
-    /**
-     * Obtiene el índice del color asociado a un tipo de carretera.
-     *
-     * @param tipo El tipo de carretera.
-     * @return El índice del color asociado.
-     */
+    private void drawRoute() {
+        if (ruta != null) {
+            final int cteDeEscalacionLineaRuta = 8;
+            if (distanciaRecorrida < 1) {
+                final int cteTransformacionKm = 1000;
+                km.setText(String.format("%." + 2 + "f",
+                distanciaRecorrida * cteTransformacionKm) + " m");
+            } else {
+                km.setText(String.format("%." + (2 + 1) + "f",
+                distanciaRecorrida) + " km");
+            }
+            for (Line2D linea : ruta) {
+                if (inLimitesLine(linea)) {
+                    graphics2d.setColor(Color.decode("#FF0000"));
+                    graphics2d.setStroke(new BasicStroke(
+                    (int) (cteDeEscalacionLineaRuta / scale)));
+                    graphics2d.draw(linea);
+                }
+            }
+        }
+    }
+
+    private void drawSelectedPoints() {
+        identificador1 = drawSelectedPoint(puntoPartida, id1, c1);
+        identificador2 = drawSelectedPoint(puntoDestino, id2, c2);
+    }
+
+    private String drawSelectedPoint(final Punto punto,
+    final JLabel idLabel, final JLabel cLabel) {
+        final int diametroPuntos = 11;
+        if (punto != null) {
+            graphics2d.setColor(tema.getPuntoSeleccionado());
+            graphics2d.fillOval((int) (punto.getPoint().getX()
+            - (diametroPuntos / scale) / 2), (int) (punto.getPoint().getY()
+            - (diametroPuntos / scale) / 2), (int) (diametroPuntos / scale),
+            (int) (diametroPuntos / scale));
+            idLabel.setText("ID: " + punto.getNodo().getId());
+            cLabel.setText(punto.getNodo().getX()
+            + ", " + punto.getNodo().getY());
+            return punto.getNodo().getId();
+        } else {
+            idLabel.setText("");
+            cLabel.setText("");
+        }
+        return "";
+    }
+
+    private void drawImage() {
+        final int posImagenXY = -15000;
+        Image image = imageIcon.getImage();
+        graphics2d.drawImage(image, posImagenXY, posImagenXY, this);
+    }
+
     private int getIndexColor(final String tipo) {
         int index = 0;
         int numColores = sistema.getTiposCarreteras().size() - 1;
@@ -445,13 +522,6 @@ private void drawImage() {
         return index;
     }
 
-    /**
-     * Verifica si una línea está dentro de los límites visibles.
-     *
-     * @param linea La línea a verificar.
-     * @return true si la línea está dentro de los límites visibles, false de lo
-     *         contrario.
-     */
     private boolean inLimitesLine(final Line2D linea) {
         Rectangle2D rect = new Rectangle2D.Double(
         visibleX, visibleY, visibleWidth, visibleHeight);
@@ -461,14 +531,6 @@ private void drawImage() {
         return false;
     }
 
-    /**
-     * Normaliza un valor según el rango de coordenadas y la escala.
-     *
-     * @param valor El valor a normalizar.
-     * @param x     true si se está normalizando la coordenada x, false para la
-     *              coordenada y.
-     * @return El valor normalizado.
-     */
     private int valorNormalizado(final double valor, final boolean x) {
         double valorfinal = 0;
         if (x) {
@@ -495,19 +557,10 @@ private void drawImage() {
         return false;
     }
 
-    /**
-     * Calcula la distancia entre dos puntos.
-     *
-     * @param p1 El primer punto.
-     * @param p2 El segundo punto.
-     * @return La distancia entre los dos puntos.
-     */
     private double calculateDistance(final Point2D.Double p1, final Punto p2) {
         return p1.distance(p2.getPoint().getX(), p2.getPoint().getY());
     }
-    /**
-     * Obtiene y normaliza los puntos del grafo.
-     */
+
     private void getPuntos() {
         ArrayList<Punto> listaPuntos = new ArrayList<>();
         ArrayList<Double> lista = new ArrayList<>();
@@ -563,9 +616,6 @@ private void drawImage() {
         offsetY = (int) ((-(mayY + menY) / 2) * scale + medioY);
     }
 
-    /**
-     * Obtiene las líneas del grafo.
-     */
     private void getLineas() {
         for (int i = 0; i < sistema.getGrafo().getArcos().size(); i++) {
             Arco arco = sistema.getGrafo().getArcos().get(i);
@@ -579,9 +629,6 @@ private void drawImage() {
         }
     }
 
-    /**
-     * Calcula los límites del mapa basándose en las coordenadas de los nodos.
-     */
     private void getLimites() {
         calcularLimitesNodos();
         calcularDeltaCords();
