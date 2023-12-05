@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.event.MouseAdapter;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -399,39 +398,6 @@ public class PanelMapa extends JPanel {
     }
 
     private void drawLinesInPersp() {
-        for (Linea linea : lineas) {
-            if (inLimitesLine(linea.getLine())) {
-                Color colorLinea = getColorLinea(linea);
-                graphics2d.setColor(colorLinea);
-                final int grosorLinea = 11;
-    
-                // Obtener puntos de inicio y fin
-                Point2D.Double start = new Point2D.Double(
-                        linea.getLine().getX1(), linea.getLine().getY1());
-                Point2D.Double end = new Point2D.Double(
-                        linea.getLine().getX2(), linea.getLine().getY2());
-    
-                // Crear un polígono con vértices ajustados en el eje Y
-                Polygon polygon = create3DPolygon(start, end, grosorLinea);
-    
-                // Dibujar el polígono en lugar de la línea
-                graphics2d.fillPolygon(polygon);
-            }
-        }
-    }
-    
-    private Polygon create3DPolygon(Point2D.Double start, Point2D.Double end, int grosorLinea) {
-        int[] xPoints = new int[]{(int) start.x, (int) end.x, (int) end.x, (int) start.x};
-        int[] yPoints = new int[]{adjustY(start.y, grosorLinea), adjustY(end.y, grosorLinea),
-                (int) end.y, (int) start.y};
-        int nPoints = 4;
-    
-        return new Polygon(xPoints, yPoints, nPoints);
-    }
-    
-    private int adjustY(double y, int grosorLinea) {
-        // Ajustar el valor de Y para dar la ilusión de 3D
-        return (int) (y * scale + grosorLinea * scale);
     }
 
     private void drawLines() {
