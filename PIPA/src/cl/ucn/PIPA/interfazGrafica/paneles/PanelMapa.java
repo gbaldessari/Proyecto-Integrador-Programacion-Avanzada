@@ -414,28 +414,7 @@ public class PanelMapa extends JPanel {
     }
 
     private void dibujarCarreteraPerspectivaVariable(
-        final Line2D linea) {
-        final int anchoBase = 20;
-        final int anchoTope = 200;
-
-        double factorPosicion = (linea.getY2() - linea.getY1()) / panelHeight;
-        final int anchoActual = (int) (anchoTope
-                - (anchoTope - anchoBase) * factorPosicion);
-
-        int[] xPoints = {
-            (int) linea.getX1() - anchoActual / 2,
-            (int) linea.getX1() + anchoActual / 2,
-            (int) linea.getX2() + anchoTope / 2,
-            (int) linea.getX2() - anchoTope / 2
-        };
-
-        int[] yPoints = {
-            (int) linea.getY1(),
-            (int) linea.getY1(),
-            (int) linea.getY2(),
-            (int) linea.getY2()};
-        final int vertices = 4;
-        graphics2d.fillPolygon(xPoints, yPoints, vertices);
+    final Line2D linea) {
     }
 
     private void drawLines() {

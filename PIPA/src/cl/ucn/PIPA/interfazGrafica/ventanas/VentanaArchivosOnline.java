@@ -186,9 +186,13 @@ public class VentanaArchivosOnline implements Ventana {
      *
      * @param ciudadSeleccionada nombre de la ciudad de la
      * cual se obtendra el archivo
+     * @return si se puedo guardar los datos
      */
-    private void leerXML(final String ciudadSeleccionada) {
+    private boolean leerXML(final String ciudadSeleccionada) {
         Ciudad ciudad = provider.ciudad(ciudadSeleccionada);
+        if (ciudad == null) {
+            return false;
+        }
 
         Document documento = Funciones.convertStringBuilderToDocument(
         ciudad.getXmlNodes());
@@ -201,6 +205,7 @@ public class VentanaArchivosOnline implements Ventana {
         raiz = documento.getDocumentElement();
         datos = raiz.getElementsByTagName("edge");
         guardarArcos(datos);
+        return true;
     }
 
     /**
