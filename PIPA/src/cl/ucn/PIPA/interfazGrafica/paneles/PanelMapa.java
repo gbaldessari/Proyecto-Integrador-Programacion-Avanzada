@@ -142,9 +142,7 @@ public class PanelMapa extends JPanel {
     private boolean cambiarPerspectiva;
 
     private final int anchoPorDefecto = 11;
-    private int anchoSuperior = anchoPorDefecto; // Ancho de la carretera en la parte superior
-    private int anchoInferior = anchoPorDefecto; // Ancho de la carretera en la parte inferior
-    private int inclinacion = 0; // Inclinación inicial
+    private final double distanciaFocal = 1000;
 
     /**
      * Constructor del panel de mapa.
@@ -176,9 +174,6 @@ public class PanelMapa extends JPanel {
             public void mousePressed(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     lastDragPoint = e.getPoint();
-                }
-                if (e.getButton() == MouseEvent.BUTTON3) {
-                    inclinacion = e.getY();
                 }
             }
             @Override
@@ -263,15 +258,6 @@ public class PanelMapa extends JPanel {
                     offsetX += dx;
                     offsetY += dy;
                     lastDragPoint = e.getPoint();
-                    repaint();
-                }
-                if (e.getModifiersEx()
-                == MouseEvent.BUTTON3_DOWN_MASK) {
-                    int nuevaInclinacion = e.getY();
-                    int deltaY = nuevaInclinacion - inclinacion;
-                    inclinacion = nuevaInclinacion;
-                    anchoInferior += deltaY;
-                    anchoSuperior -= deltaY;
                     repaint();
                 }
             }
@@ -422,52 +408,23 @@ public class PanelMapa extends JPanel {
 
     private void drawLinesInPersp() {
         for (Linea linea : lineas) {
-            if (inLimitesLine(linea.getLine())) {
+            Line2D.Double line = lineaEnPerspectiva(linea.getLine());
+            if (inLimitesLine(line)) {
                 Color colorLinea = getColorLinea(linea);
                 graphics2d.setColor(colorLinea);
-                dibujarCarreteraPerspectivaVariable(linea.getLine());
+                graphics2d.setStroke(new BasicStroke(anchoPorDefecto));
+                graphics2d.draw(line);
             }
         }
     }
 
-    private void dibujarCarreteraPerspectivaVariable(
-    final Line2D linea) {
-        int x1 = 0;
-        int x2 = 0;
-        int y1 = 0;
-        int y2 = 0;
-        if(linea.getY1()<=linea.getY2()){
-            x1 = (int) linea.getX1();
-            x2 = (int) linea.getX2();
-            y1 = (int) linea.getY1();
-            y2 = (int) linea.getY2();
-        } else {
-            x2 = (int) linea.getX1();
-            x1 = (int) linea.getX2();
-            y2 = (int) linea.getY1();
-            y1 = (int) linea.getY2();
-        }
-        final int limiteAnchoSuperior = (int)(10 * Math.abs(y2)/panelHeight);
-        final int limiteAnchoInferior = (int)(2000 * Math.abs(y1)/panelHeight);
-        if(anchoSuperior <= limiteAnchoSuperior){
-            anchoSuperior = limiteAnchoSuperior;
-        } else if(anchoSuperior>=anchoPorDefecto){
-            anchoSuperior = anchoPorDefecto;
-        }
-        if(anchoInferior <= anchoPorDefecto){
-            anchoInferior = anchoPorDefecto;
-        } else if(anchoInferior >= limiteAnchoInferior){
-            anchoInferior = limiteAnchoInferior;
-        }
-
-        int[] xPoints = {
-                x1 - anchoSuperior / 2, x1 + anchoSuperior / 2,
-                x2 + anchoInferior / 2, x2 - anchoInferior / 2
-        };
-
-        int[] yPoints = {y1, y1, y2, y2};
-
-        graphics2d.fillPolygon(xPoints, yPoints, 4);
+    private Line2D.Double lineaEnPerspectiva(final Line2D linea) {
+        double x1 = distanciaFocal/(distanciaFocal-linea.getX1());
+        double x2 = distanciaFocal/(distanciaFocal-linea.getX2());
+        double y1 = distanciaFocal/(distanciaFocal-linea.getY1());
+        double y2 = distanciaFocal/(distanciaFocal-linea.getY2());
+        return new Line2D.Double(x1,y1,x2,y2);
+        
     }
 
     private void drawLines() {
@@ -475,8 +432,7 @@ public class PanelMapa extends JPanel {
             if (inLimitesLine(linea.getLine())) {
                 Color colorLinea = getColorLinea(linea);
                 graphics2d.setColor(colorLinea);
-                final int grosorLinea = 11;
-                graphics2d.setStroke(new BasicStroke(grosorLinea));
+                graphics2d.setStroke(new BasicStroke(anchoPorDefecto));
                 graphics2d.draw(linea.getLine());
             }
         }
