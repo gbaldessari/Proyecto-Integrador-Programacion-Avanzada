@@ -138,11 +138,11 @@ public class PanelMapa extends JPanel {
     /** Factor de escalado para la distancia. */
     private double escalador;
 
-    /** Indicador de cambio de perspectiva de dibujado. */
-    private boolean cambiarPerspectiva;
-
     private final int anchoPorDefecto = 11;
-    private final double distanciaFocal = 1000;
+    private double factorInclinacion = 1;
+    private final double maxFactorInclinacion = 1;
+    private final double minFactorInclinacion = 0.3;
+    private Point lastInclinationPoint;
 
     /**
      * Constructor del panel de mapa.
@@ -157,7 +157,6 @@ public class PanelMapa extends JPanel {
         lineas = new ArrayList<>();
         puntoPartida = null;
         puntoDestino = null;
-        cambiarPerspectiva = false;
         scale = escalaMinima;
         offsetX = 0;
         offsetY = 0;
@@ -175,11 +174,17 @@ public class PanelMapa extends JPanel {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     lastDragPoint = e.getPoint();
                 }
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    lastInclinationPoint = e.getPoint();
+                }
             }
             @Override
             public void mouseReleased(final MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON1) {
                     lastDragPoint = null;
+                }
+                if (e.getButton() == MouseEvent.BUTTON3) {
+                    lastInclinationPoint = null;
                 }
             }
             @Override
@@ -195,8 +200,8 @@ public class PanelMapa extends JPanel {
             }
             private Point2D.Double scaleMousePoint(final Point mousePoint) {
                 return new Point2D.Double(
-                        (mousePoint.x - offsetX) / scale,
-                        (mousePoint.y - offsetY) / scale);
+                (mousePoint.x - offsetX) / scale,
+                (mousePoint.y - offsetY) / scale);
             }
             private Punto findNearestPoint(
             final Point2D.Double mousePointScaled) {
@@ -258,6 +263,22 @@ public class PanelMapa extends JPanel {
                     offsetX += dx;
                     offsetY += dy;
                     lastDragPoint = e.getPoint();
+                    repaint();
+                }
+                if (lastInclinationPoint != null && e.getModifiersEx()
+                == MouseEvent.BUTTON3_DOWN_MASK) {
+                    Double dy = (double) (e.getY() - lastInclinationPoint.y);
+                    factorInclinacion -= dy*0.001;
+                    if (factorInclinacion<minFactorInclinacion) {
+                        factorInclinacion = minFactorInclinacion;
+                        dy=0.0;
+                    }
+                    if (factorInclinacion>maxFactorInclinacion) {
+                        factorInclinacion = maxFactorInclinacion;
+                        dy=0.0;
+                    }
+                    offsetY+=dy;
+                    lastInclinationPoint = e.getPoint();
                     repaint();
                 }
             }
@@ -350,18 +371,6 @@ public class PanelMapa extends JPanel {
     }
 
     /**
-     * Funcion que hace que se cambie la perspectiva de dibujado.
-     */
-    public final void cambiarPerspectiva() {
-        if (cambiarPerspectiva) {
-            cambiarPerspectiva = false;
-        } else {
-            cambiarPerspectiva = true;
-        }
-        repaint();
-    }
-
-    /**
      * Funcion para obtener el id del nodo de destino.
      *
      * @return El id del nodo de destino
@@ -386,54 +395,25 @@ public class PanelMapa extends JPanel {
         visibleHeight = (panelHeight / scale);
         visibleX = (-offsetX / scale);
         visibleY = (-offsetY / scale);
-        if (!cambiarPerspectiva) {
-            drawLines();
-            drawRoute();
-            drawSelectedPoints();
-            drawImage();
-        } else {
-            drawLinesInPersp();
-            drawRouteInPersp();
-            drawSelectedPointsInPersp();
-        }
-
+        drawLines();
+        drawRoute();
+        drawSelectedPoints();
+        drawImage();
         graphics2d.dispose();
-    }
-
-    private void drawSelectedPointsInPersp() {
-    }
-
-    private void drawRouteInPersp() {
-    }
-
-    private void drawLinesInPersp() {
-        for (Linea linea : lineas) {
-            Line2D.Double line = lineaEnPerspectiva(linea.getLine());
-            if (inLimitesLine(line)) {
-                Color colorLinea = getColorLinea(linea);
-                graphics2d.setColor(colorLinea);
-                graphics2d.setStroke(new BasicStroke(anchoPorDefecto));
-                graphics2d.draw(line);
-            }
-        }
-    }
-
-    private Line2D.Double lineaEnPerspectiva(final Line2D linea) {
-        double x1 = distanciaFocal/(distanciaFocal-linea.getX1());
-        double x2 = distanciaFocal/(distanciaFocal-linea.getX2());
-        double y1 = distanciaFocal/(distanciaFocal-linea.getY1());
-        double y2 = distanciaFocal/(distanciaFocal-linea.getY2());
-        return new Line2D.Double(x1,y1,x2,y2);
-        
     }
 
     private void drawLines() {
         for (Linea linea : lineas) {
-            if (inLimitesLine(linea.getLine())) {
+            Point2D starPoint = new Point2D.Double(linea.getLine().getX1(),
+            linea.getLine().getY1()*factorInclinacion);
+            Point2D endPoint = new Point2D.Double(linea.getLine().getX2(),
+            linea.getLine().getY2()*factorInclinacion);
+            Line2D newLine = new Line2D.Double(starPoint,endPoint);
+            if (inLimitesLine(newLine)) {
                 Color colorLinea = getColorLinea(linea);
                 graphics2d.setColor(colorLinea);
                 graphics2d.setStroke(new BasicStroke(anchoPorDefecto));
-                graphics2d.draw(linea.getLine());
+                graphics2d.draw(newLine);
             }
         }
     }
@@ -457,12 +437,18 @@ public class PanelMapa extends JPanel {
                 km.setText(String.format("%." + (2 + 1) + "f",
                 distanciaRecorrida) + " km");
             }
+            
             for (Line2D linea : ruta) {
-                if (inLimitesLine(linea)) {
+                Point2D starPoint = new Point2D.Double(linea.getX1(),
+                linea.getY1()*factorInclinacion);
+                Point2D endPoint = new Point2D.Double(linea.getX2(),
+                linea.getY2()*factorInclinacion);
+                Line2D newLine = new Line2D.Double(starPoint,endPoint);
+                if (inLimitesLine(newLine)) {
                     graphics2d.setColor(Color.decode("#FF0000"));
                     graphics2d.setStroke(new BasicStroke(
                     (int) (cteDeEscalacionLineaRuta / scale)));
-                    graphics2d.draw(linea);
+                    graphics2d.draw(newLine);
                 }
             }
         }
@@ -479,9 +465,9 @@ public class PanelMapa extends JPanel {
         if (punto != null) {
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int) (punto.getPoint().getX()
-            - (diametroPuntos / scale) / 2), (int) (punto.getPoint().getY()
-            - (diametroPuntos / scale) / 2), (int) (diametroPuntos / scale),
-            (int) (diametroPuntos / scale));
+            - (diametroPuntos / scale) / 2), (int) ((punto.getPoint().getY()
+            - (diametroPuntos / scale) / 2)*factorInclinacion), (int) (diametroPuntos / scale),
+            (int) ((diametroPuntos / scale)*factorInclinacion));
             idLabel.setText("ID: " + punto.getNodo().getId());
             cLabel.setText(punto.getNodo().getX()
             + ", " + punto.getNodo().getY());
@@ -496,7 +482,7 @@ public class PanelMapa extends JPanel {
     private void drawImage() {
         final int posImagenXY = -15000;
         Image image = imageIcon.getImage();
-        graphics2d.drawImage(image, posImagenXY, posImagenXY, this);
+        graphics2d.drawImage(image, posImagenXY,(int) (posImagenXY*factorInclinacion), this);
     }
 
     private int getIndexColor(final String tipo) {

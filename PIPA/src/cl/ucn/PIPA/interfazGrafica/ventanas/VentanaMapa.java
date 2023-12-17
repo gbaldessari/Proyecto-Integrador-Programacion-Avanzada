@@ -157,18 +157,6 @@ public class VentanaMapa implements Ventana {
         panelInfo.add(km);
         panelMapa.setKm(km);
 
-        JButton botonPerspectiva = new JButton("Cambiar Perspectiva");
-        final Rectangle rectPerspectiva = new Rectangle(10, 290, 160, 25);
-        botonPerspectiva.setBounds(rectPerspectiva);
-        botonPerspectiva.setBackground(tema.getBoton());
-        botonPerspectiva.setForeground(tema.getTexto());
-        panelInfo.add(botonPerspectiva);
-        botonPerspectiva.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent e) {
-                panelMapa.cambiarPerspectiva();
-            }
-        });
-
         JButton botonRuta = new JButton("Calcular ruta");
         final Rectangle rectRuta = new Rectangle(10, 320, 160, 25);
         botonRuta.setBounds(rectRuta);
