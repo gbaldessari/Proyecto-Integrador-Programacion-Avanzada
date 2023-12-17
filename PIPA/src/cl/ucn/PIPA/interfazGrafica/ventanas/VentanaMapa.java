@@ -1,5 +1,4 @@
 package cl.ucn.PIPA.interfazGrafica.ventanas;
-
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Rectangle;

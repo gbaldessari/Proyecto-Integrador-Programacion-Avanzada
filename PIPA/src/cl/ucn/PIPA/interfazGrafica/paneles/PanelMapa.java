@@ -138,10 +138,19 @@ public class PanelMapa extends JPanel {
     /** Factor de escalado para la distancia. */
     private double escalador;
 
+    /** Ancho por defecto de las lineas del mapa. */
     private final int anchoPorDefecto = 11;
+
+    /** Factor de inclinacion del mapa. */
     private double factorInclinacion = 1;
+
+    /** Maximo factor de inclinacion del mapa. */
     private final double maxFactorInclinacion = 1;
+
+    /** Minimo factor de inclinacion del mapa. */
     private final double minFactorInclinacion = 0.3;
+
+    /** Último punto de inclinacion del mouse. */
     private Point lastInclinationPoint;
 
     /**
@@ -150,24 +159,20 @@ public class PanelMapa extends JPanel {
      * @param sistemaEntregado El sistema que contiene el grafo.
      * @param temaEntregado El tema de apariencia para el panel.
      */
-    public PanelMapa(final Sistema sistemaEntregado, final Tema temaEntregado) {
+    public PanelMapa(final Sistema sistemaEntregado,
+    final Tema temaEntregado) {
         sistema = sistemaEntregado;
         tema = temaEntregado;
         puntos = new ArrayList<>();
         lineas = new ArrayList<>();
-        puntoPartida = null;
-        puntoDestino = null;
-        scale = escalaMinima;
-        offsetX = 0;
-        offsetY = 0;
+        puntoPartida = null; puntoDestino = null;
+        scale = escalaMinima; offsetX = 0; offsetY = 0;
         imageIcon = new ImageIcon("images.jpeg");
-        this.setBackground(tema.getFondo());
-        getLimites();
+        this.setBackground(tema.getFondo()); getLimites();
         final int cteDeEscalacion = 1420;
         escalador = Funciones.haversine(minPoint.getY(), minPoint.getX(),
         maxPoint.getY(), maxPoint.getX()) * cteDeEscalacion;
-        getPuntos();
-        getLineas();
+        getPuntos(); getLineas();
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(final MouseEvent e) {
@@ -258,29 +263,29 @@ public class PanelMapa extends JPanel {
             public void mouseDragged(final MouseEvent e) {
                 if (lastDragPoint != null && e.getModifiersEx()
                 == MouseEvent.BUTTON1_DOWN_MASK) {
-                    int dx = e.getX() - lastDragPoint.x;
-                    int dy = e.getY() - lastDragPoint.y;
-                    offsetX += dx;
-                    offsetY += dy;
-                    lastDragPoint = e.getPoint();
-                    repaint();
+                    handleLeftButtonDrag(e);
                 }
                 if (lastInclinationPoint != null && e.getModifiersEx()
                 == MouseEvent.BUTTON3_DOWN_MASK) {
-                    Double dy = (double) (e.getY() - lastInclinationPoint.y);
-                    factorInclinacion -= dy*0.001;
-                    if (factorInclinacion<minFactorInclinacion) {
-                        factorInclinacion = minFactorInclinacion;
-                        dy=0.0;
-                    }
-                    if (factorInclinacion>maxFactorInclinacion) {
-                        factorInclinacion = maxFactorInclinacion;
-                        dy=0.0;
-                    }
-                    offsetY+=dy;
-                    lastInclinationPoint = e.getPoint();
-                    repaint();
+                    handleRightButtonDrag(e);
                 }
+            }
+            private void handleLeftButtonDrag(final MouseEvent e) {
+                int dx = e.getX() - lastDragPoint.x;
+                int dy = e.getY() - lastDragPoint.y;
+                offsetX += dx; offsetY += dy;
+                lastDragPoint = e.getPoint();
+                repaint();
+            }
+            private void handleRightButtonDrag(final MouseEvent e) {
+                Double dy = (double) (e.getY() - lastInclinationPoint.y);
+                final double proporcion = 0.001;
+                if (!canIncline(factorInclinacion - dy * proporcion)) {
+                    dy = 0.0;
+                }
+                offsetY += dy;
+                lastInclinationPoint = e.getPoint();
+                repaint();
             }
         });
         addMouseWheelListener(new MouseAdapter() {
@@ -405,10 +410,10 @@ public class PanelMapa extends JPanel {
     private void drawLines() {
         for (Linea linea : lineas) {
             Point2D starPoint = new Point2D.Double(linea.getLine().getX1(),
-            linea.getLine().getY1()*factorInclinacion);
+            linea.getLine().getY1() * factorInclinacion);
             Point2D endPoint = new Point2D.Double(linea.getLine().getX2(),
-            linea.getLine().getY2()*factorInclinacion);
-            Line2D newLine = new Line2D.Double(starPoint,endPoint);
+            linea.getLine().getY2() * factorInclinacion);
+            Line2D newLine = new Line2D.Double(starPoint, endPoint);
             if (inLimitesLine(newLine)) {
                 Color colorLinea = getColorLinea(linea);
                 graphics2d.setColor(colorLinea);
@@ -437,13 +442,12 @@ public class PanelMapa extends JPanel {
                 km.setText(String.format("%." + (2 + 1) + "f",
                 distanciaRecorrida) + " km");
             }
-            
             for (Line2D linea : ruta) {
                 Point2D starPoint = new Point2D.Double(linea.getX1(),
-                linea.getY1()*factorInclinacion);
+                linea.getY1() * factorInclinacion);
                 Point2D endPoint = new Point2D.Double(linea.getX2(),
-                linea.getY2()*factorInclinacion);
-                Line2D newLine = new Line2D.Double(starPoint,endPoint);
+                linea.getY2() * factorInclinacion);
+                Line2D newLine = new Line2D.Double(starPoint, endPoint);
                 if (inLimitesLine(newLine)) {
                     graphics2d.setColor(Color.decode("#FF0000"));
                     graphics2d.setStroke(new BasicStroke(
@@ -466,8 +470,9 @@ public class PanelMapa extends JPanel {
             graphics2d.setColor(tema.getPuntoSeleccionado());
             graphics2d.fillOval((int) (punto.getPoint().getX()
             - (diametroPuntos / scale) / 2), (int) ((punto.getPoint().getY()
-            - (diametroPuntos / scale) / 2)*factorInclinacion), (int) (diametroPuntos / scale),
-            (int) ((diametroPuntos / scale)*factorInclinacion));
+            - (diametroPuntos / scale) / 2) * factorInclinacion),
+            (int) (diametroPuntos / scale),
+            (int) ((diametroPuntos / scale) * factorInclinacion));
             idLabel.setText("ID: " + punto.getNodo().getId());
             cLabel.setText(punto.getNodo().getX()
             + ", " + punto.getNodo().getY());
@@ -482,7 +487,8 @@ public class PanelMapa extends JPanel {
     private void drawImage() {
         final int posImagenXY = -15000;
         Image image = imageIcon.getImage();
-        graphics2d.drawImage(image, posImagenXY,(int) (posImagenXY*factorInclinacion), this);
+        graphics2d.drawImage(image, posImagenXY,
+        (int) (posImagenXY * factorInclinacion), this);
     }
 
     private int getIndexColor(final String tipo) {
@@ -527,9 +533,24 @@ public class PanelMapa extends JPanel {
      * false si no es válido.
      */
     public boolean canScale(final double newScale) {
-        // Limita el zoom mínimo y máximo según tus necesidades
         if (newScale >= escalaMinima && newScale <= escalaMaxima) {
             scale = newScale;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Limita la inclinacion dentro de ciertos rangos.
+     *
+     * @param newInclination La nueva inclinacion propuesta.
+     * @return true si la inclinacion es válida y se ha aplicado,
+     * false si no es válida.
+     */
+    public boolean canIncline(final double newInclination) {
+        if (newInclination >= minFactorInclinacion
+        && newInclination <= maxFactorInclinacion) {
+            factorInclinacion = newInclination;
             return true;
         }
         return false;
@@ -655,7 +676,6 @@ public class PanelMapa extends JPanel {
 
         deltaCords = (deltaX > deltaY) ? deltaX : deltaY;
     }
-
 
     /**
      * Funcion que actualiza la lista que contiene
