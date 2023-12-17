@@ -161,10 +161,8 @@ public class PanelMapa extends JPanel {
      */
     public PanelMapa(final Sistema sistemaEntregado,
     final Tema temaEntregado) {
-        sistema = sistemaEntregado;
-        tema = temaEntregado;
-        puntos = new ArrayList<>();
-        lineas = new ArrayList<>();
+        sistema = sistemaEntregado; tema = temaEntregado;
+        puntos = new ArrayList<>(); lineas = new ArrayList<>();
         puntoPartida = null; puntoDestino = null;
         scale = escalaMinima; offsetX = 0; offsetY = 0;
         imageIcon = new ImageIcon("images.jpeg");
@@ -199,8 +197,7 @@ public class PanelMapa extends JPanel {
                     Point2D.Double mousePointScaled
                     = scaleMousePoint(mousePoint);
                     Punto p = findNearestPoint(mousePointScaled);
-                    handlePointSelection(p);
-                    repaint();
+                    handlePointSelection(p); repaint();
                 }
             }
             private Point2D.Double scaleMousePoint(final Point mousePoint) {
@@ -249,8 +246,7 @@ public class PanelMapa extends JPanel {
                 puntoDestino = selectedPoint;
             }
             private void swapPartidaAndDestino() {
-                Punto temp = puntoPartida;
-                puntoPartida = puntoDestino;
+                Punto temp = puntoPartida; puntoPartida = puntoDestino;
                 puntoDestino = temp;
             }
             private boolean isSameNode(final Punto point1, final Punto point2) {
@@ -274,8 +270,7 @@ public class PanelMapa extends JPanel {
                 int dx = e.getX() - lastDragPoint.x;
                 int dy = e.getY() - lastDragPoint.y;
                 offsetX += dx; offsetY += dy;
-                lastDragPoint = e.getPoint();
-                repaint();
+                lastDragPoint = e.getPoint(); repaint();
             }
             private void handleRightButtonDrag(final MouseEvent e) {
                 Double dy = (double) (e.getY() - lastInclinationPoint.y);
@@ -283,8 +278,7 @@ public class PanelMapa extends JPanel {
                 if (!canIncline(factorInclinacion - dy * proporcion)) {
                     dy = 0.0;
                 }
-                offsetY += dy;
-                lastInclinationPoint = e.getPoint();
+                offsetY += dy; lastInclinationPoint = e.getPoint();
                 repaint();
             }
         });
@@ -296,12 +290,10 @@ public class PanelMapa extends JPanel {
                 int notches = e.getWheelRotation();
                 double scaleFactor = (notches < 0)
                 ? maxScaleFactor : minScaleFactor;
-
                 Point mouse = e.getPoint();
                 Point2D.Double mouseScaled = new Point2D.Double(
                 (mouse.x - offsetX) / scale,
                 (mouse.y - offsetY) / scale);
-
                 if (canScale(scale * scaleFactor)) {
                     offsetX = (int) (mouse.x - mouseScaled.x * scale);
                     offsetY = (int) (mouse.y - mouseScaled.y * scale);
@@ -312,98 +304,21 @@ public class PanelMapa extends JPanel {
     }
 
     /**
-     * Establece la etiqueta para mostrar la coordenada 1.
-     *
-     * @param c1Label La etiqueta para la coordenada 1.
-     */
-    public void setC1(final JLabel c1Label) {
-        c1 = c1Label;
-    }
-
-    /**
-     * Establece la etiqueta para mostrar la coordenada 2.
-     *
-     * @param c2Label La etiqueta para la coordenada 1.
-     */
-    public void setC2(final JLabel c2Label) {
-        c2 = c2Label;
-    }
-
-    /**
-     * Establece la etiqueta para mostrar el id 1.
-     *
-     * @param id1Label La etiqueta para el id 1.
-     */
-    public void setid1(final JLabel id1Label) {
-        id1 = id1Label;
-    }
-
-    /**
-     * Establece la etiqueta para mostrar el id 2.
-     *
-     * @param id2Label La etiqueta para el id 2.
-     */
-    public void setid2(final JLabel id2Label) {
-        id2 = id2Label;
-    }
-
-    /**
-     * Establece la etiqueta para mostrar los kilometros.
-     *
-     * @param kmLabel La etiqueta para los kilometros.
-     */
-    public void setKm(final JLabel kmLabel) {
-        km = kmLabel;
-    }
-
-    /**
-     * Borra los puntos de origen y destino.
-     */
-    public void borrarOrigenDestino() {
-        puntoPartida = null;
-        puntoDestino = null;
-        ruta = null;
-        repaint();
-    }
-
-    /**
-     * Funcion para obtener el id del nodo de inicio.
-     *
-     * @return El id del nodo de inicio
-     */
-    public final String getIdentificador1() {
-        return identificador1;
-    }
-
-    /**
-     * Funcion para obtener el id del nodo de destino.
-     *
-     * @return El id del nodo de destino
-     */
-    public final String getIdentificador2() {
-        return identificador2;
-    }
-
-    /**
      * Método de dibujo principal que representa el contenido del panel.
      *
      * @param g El objeto Graphics para dibujar.
      */
     public void paint(final Graphics g) {
-        super.paint(g);
-        graphics2d = (Graphics2D) g;
+        super.paint(g); graphics2d = (Graphics2D) g;
         graphics2d.translate(offsetX, offsetY);
         graphics2d.scale(scale, scale);
-        panelWidth = getWidth();
-        panelHeight = getHeight();
+        panelWidth = getWidth(); panelHeight = getHeight();
         visibleWidth = (panelWidth / scale);
         visibleHeight = (panelHeight / scale);
         visibleX = (-offsetX / scale);
         visibleY = (-offsetY / scale);
-        drawLines();
-        drawRoute();
-        drawSelectedPoints();
-        drawImage();
+        drawLines(); drawRoute();
+        drawSelectedPoints(); drawImage();
         graphics2d.dispose();
     }
 
@@ -478,8 +393,7 @@ public class PanelMapa extends JPanel {
             + ", " + punto.getNodo().getY());
             return punto.getNodo().getId();
         } else {
-            idLabel.setText("");
-            cLabel.setText("");
+            idLabel.setText(""); cLabel.setText("");
         }
         return "";
     }
@@ -534,8 +448,7 @@ public class PanelMapa extends JPanel {
      */
     public boolean canScale(final double newScale) {
         if (newScale >= escalaMinima && newScale <= escalaMaxima) {
-            scale = newScale;
-            return true;
+            scale = newScale; return true;
         }
         return false;
     }
@@ -563,16 +476,13 @@ public class PanelMapa extends JPanel {
     private void getPuntos() {
         ArrayList<Punto> listaPuntos = new ArrayList<>();
         ArrayList<Double> lista = new ArrayList<>();
-
         for (Nodo nodo : sistema.getGrafo().getNodos()) {
             Punto punto = crearPuntoNormalizado(nodo);
             actualizarLimites(punto, lista);
             listaPuntos.add(punto);
         }
-
         ajustarOffsets(lista.get(0), lista.get(1),
         lista.get(2), lista.get(2 + 1));
-
         puntos = listaPuntos;
     }
 
@@ -588,7 +498,6 @@ public class PanelMapa extends JPanel {
         double menX = Double.MAX_VALUE;
         double mayY = Double.MIN_VALUE;
         double menY = Double.MAX_VALUE;
-
         if (punto.getPoint().getX() > mayX) {
             mayX = punto.getPoint().getX();
         }
@@ -601,10 +510,8 @@ public class PanelMapa extends JPanel {
         if (punto.getPoint().getY() < menY) {
             menY = punto.getPoint().getY();
         }
-        lista.add(mayX);
-        lista.add(menX);
-        lista.add(mayY);
-        lista.add(menY);
+        lista.add(mayX); lista.add(menX);
+        lista.add(mayY); lista.add(menY);
     }
 
     private void ajustarOffsets(final double mayX, final double menX,
@@ -619,11 +526,10 @@ public class PanelMapa extends JPanel {
         for (int i = 0; i < sistema.getGrafo().getArcos().size(); i++) {
             Arco arco = sistema.getGrafo().getArcos().get(i);
             Linea linea = new Linea(new Line2D.Double(
-                    valorNormalizado(arco.getOrigen().getX() * -1, true),
-                    valorNormalizado(arco.getOrigen().getY() * -1, false),
-                    valorNormalizado(arco.getDestino().getX() * -1, true),
-                    valorNormalizado(arco.getDestino().getY() * -1, false)),
-                    arco);
+                valorNormalizado(arco.getOrigen().getX() * -1, true),
+                valorNormalizado(arco.getOrigen().getY() * -1, false),
+                valorNormalizado(arco.getDestino().getX() * -1, true),
+                valorNormalizado(arco.getDestino().getY() * -1, false)), arco);
             lineas.add(linea);
         }
     }
@@ -634,28 +540,21 @@ public class PanelMapa extends JPanel {
     }
 
     private void calcularLimitesNodos() {
-        maxX = Double.MIN_VALUE;
-        minX = Double.MAX_VALUE;
-        maxY = Double.MIN_VALUE;
-        minY = Double.MAX_VALUE;
-
+        maxX = Double.MIN_VALUE; minX = Double.MAX_VALUE;
+        maxY = Double.MIN_VALUE; minY = Double.MAX_VALUE;
         for (Nodo nodo : sistema.getGrafo().getNodos()) {
             actualizarLimitesNodo(nodo);
         }
-
         double deltaX = Math.abs(maxX - minX);
         double deltaY = Math.abs(maxY - minY);
-
         maxPoint = new Point2D.Double(minX * -1, minY * -1);
         minPoint = new Point2D.Double(maxX * -1, maxY * -1);
-
         deltaCords = (deltaX > deltaY) ? deltaX : deltaY;
     }
 
     private void actualizarLimitesNodo(final Nodo nodo) {
         double x = nodo.getX() * -1;
         double y = nodo.getY() * -1;
-
         if (x > maxX) {
             maxX = x;
         }
@@ -673,7 +572,6 @@ public class PanelMapa extends JPanel {
     private void calcularDeltaCords() {
         double deltaX = Math.abs(maxX - minX);
         double deltaY = Math.abs(maxY - minY);
-
         deltaCords = (deltaX > deltaY) ? deltaX : deltaY;
     }
 
@@ -688,15 +586,86 @@ public class PanelMapa extends JPanel {
         ruta = new ArrayList<>();
         for (int i = 0; i < lista.size() - 1; i++) {
             Line2D linea = new Line2D.Double(
-                        valorNormalizado(lista.get(i).getX() * -1, true),
-                        valorNormalizado(lista.get(i).getY() * -1, false),
-                        valorNormalizado(lista.get(i + 1).getX() * -1, true),
-                        valorNormalizado(lista.get(i + 1).getY() * -1, false));
+                valorNormalizado(lista.get(i).getX() * -1, true),
+                valorNormalizado(lista.get(i).getY() * -1, false),
+                valorNormalizado(lista.get(i + 1).getX() * -1, true),
+                valorNormalizado(lista.get(i + 1).getY() * -1, false));
             ruta.add(linea);
             distanciaRecorrida += Funciones.haversine(lista.get(i).getY(),
             lista.get(i).getX(), lista.get(i + 1).getY(),
             lista.get(i + 1).getX());
         }
         repaint();
+    }
+
+    /**
+     * Establece la etiqueta para mostrar la coordenada 1.
+     *
+     * @param c1Label La etiqueta para la coordenada 1.
+     */
+    public void setC1(final JLabel c1Label) {
+        c1 = c1Label;
+    }
+
+    /**
+     * Establece la etiqueta para mostrar la coordenada 2.
+     *
+     * @param c2Label La etiqueta para la coordenada 1.
+     */
+    public void setC2(final JLabel c2Label) {
+        c2 = c2Label;
+    }
+
+    /**
+     * Establece la etiqueta para mostrar el id 1.
+     *
+     * @param id1Label La etiqueta para el id 1.
+     */
+    public void setid1(final JLabel id1Label) {
+        id1 = id1Label;
+    }
+
+    /**
+     * Establece la etiqueta para mostrar el id 2.
+     *
+     * @param id2Label La etiqueta para el id 2.
+     */
+    public void setid2(final JLabel id2Label) {
+        id2 = id2Label;
+    }
+
+    /**
+     * Establece la etiqueta para mostrar los kilometros.
+     *
+     * @param kmLabel La etiqueta para los kilometros.
+     */
+    public void setKm(final JLabel kmLabel) {
+        km = kmLabel;
+    }
+
+    /**
+     * Borra los puntos de origen y destino.
+     */
+    public void borrarOrigenDestino() {
+        puntoPartida = null; puntoDestino = null;
+        ruta = null; repaint();
+    }
+
+    /**
+     * Funcion para obtener el id del nodo de inicio.
+     *
+     * @return El id del nodo de inicio
+     */
+    public final String getIdentificador1() {
+        return identificador1;
+    }
+
+    /**
+     * Funcion para obtener el id del nodo de destino.
+     *
+     * @return El id del nodo de destino
+     */
+    public final String getIdentificador2() {
+        return identificador2;
     }
 }
